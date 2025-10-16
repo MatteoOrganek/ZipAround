@@ -12,4 +12,12 @@ module uk.ac.roehampton.ziparound {
 
     opens uk.ac.roehampton.ziparound to javafx.fxml;
     exports uk.ac.roehampton.ziparound;
+    exports uk.ac.roehampton.ziparound.vehicles;
+    opens uk.ac.roehampton.ziparound.vehicles to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.users;
+    opens uk.ac.roehampton.ziparound.users to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.users.staff;
+    opens uk.ac.roehampton.ziparound.users.staff to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.application;
+    opens uk.ac.roehampton.ziparound.application to javafx.fxml;
 }

@@ -1,9 +1,10 @@
-package uk.ac.roehampton.ziparound;
+package uk.ac.roehampton.ziparound.application;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import uk.ac.roehampton.ziparound.vehicles.vehicletypes.Scooter;
 
 import java.io.IOException;
 
@@ -15,7 +16,6 @@ public class HelloApplication extends Application {
         stage.setTitle("ZipAround");
         stage.setScene(scene);
         stage.show();
-        Staff s = new Staff();
     }
 }
 

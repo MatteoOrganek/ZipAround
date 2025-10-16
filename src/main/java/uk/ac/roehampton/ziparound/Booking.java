@@ -1,5 +1,9 @@
 package uk.ac.roehampton.ziparound;
 
+import uk.ac.roehampton.ziparound.users.User;
+import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.vehicles.Vehicle;
+
 import java.time.Instant;
 import java.util.ArrayList;
 

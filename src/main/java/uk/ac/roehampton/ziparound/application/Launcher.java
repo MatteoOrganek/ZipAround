@@ -1,4 +1,4 @@
-package uk.ac.roehampton.ziparound;
+package uk.ac.roehampton.ziparound.application;
 
 import javafx.application.Application;
 
