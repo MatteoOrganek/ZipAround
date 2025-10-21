@@ -1,80 +1,92 @@
 package uk.ac.roehampton.ziparound.vehicles;
 
+import org.jetbrains.annotations.NotNull;
+import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public abstract class Vehicle {
 
     // Vehicle description
+    private Integer vehicleID;
     private String name;
     private String type;
     private String numberPlate;
-    private String registrationNumber;
-    private Integer totalMiles;
+    private Float totalMiles;
     private Integer maxSpeed;
 
-
-    public Vehicle() {}
-
-    public String getName(Staff s) {
-        if (s.getAccessLevel() > 4) {
-            return name;
-        }
-        else
-        {
-            System.out.println("Not Authorised");
-            return null;
-        }
-    }
-
-    public int setName(String name, Staff s) {
-        if (s.getAccessLevel() > 4) {
-            this.name = name;
-            return 1;
-        }
-        else
-        {
-            System.out.println("Not Authorised");
-            return 0;
-        }
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
+    public Vehicle(Integer vehicleID, String name, String type, String numberPlate, Float totalMiles, Integer maxSpeed) {
+        this.vehicleID = vehicleID;
+        this.name = name;
         this.type = type;
-    }
-
-    public String getNumberPlate() {
-        return numberPlate;
-    }
-
-    public void setNumberPlate(String numberPlate) {
         this.numberPlate = numberPlate;
-    }
-
-    public String getRegistrationNumber() {
-        return registrationNumber;
-    }
-
-    public void setRegistrationNumber(String registrationNumber) {
-        this.registrationNumber = registrationNumber;
-    }
-
-    public Integer getTotalMiles() {
-        return totalMiles;
-    }
-
-    public void setTotalMiles(Integer totalMiles) {
         this.totalMiles = totalMiles;
-    }
-
-    public Integer getMaxSpeed() {
-        return maxSpeed;
-    }
-
-    public void setMaxSpeed(Integer maxSpeed) {
         this.maxSpeed = maxSpeed;
     }
+
+    // Getter / Setter for vehicleID
+    public Integer getID(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return vehicleID; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setID(@NotNull Integer vehicleID, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.vehicleID = vehicleID; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for name
+    public String getName(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return name; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setName(@NotNull String name, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.name = name; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for type
+    public String getType(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return type; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setType(@NotNull String type, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.type = type; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for numberPlate
+    public String getNumberPlate(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return numberPlate; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setNumberPlate(@NotNull String numberPlate, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.numberPlate = numberPlate; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for totalMiles
+    public Float getTotalMiles(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return totalMiles; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setTotalMiles(@NotNull Float totalMiles, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.totalMiles = totalMiles; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for maxSpeed
+    public Integer getMaxSpeed(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return maxSpeed; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setMaxSpeed(@NotNull Integer maxSpeed, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.maxSpeed = maxSpeed; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
 }

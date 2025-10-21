@@ -1,7 +1,7 @@
 package uk.ac.roehampton.ziparound.vehicles;
 
 public interface Electric {
-    Integer AmountBatteries = null;
+    Integer AmountOfBatteries = null;
     Integer maxPowerKw = null;
     Float batteryLevel = null;
 

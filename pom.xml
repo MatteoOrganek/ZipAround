@@ -15,6 +15,7 @@
     </properties>
 
     <dependencies>
+
         <dependency>
             <groupId>org.openjfx</groupId>
             <artifactId>javafx-controls</artifactId>
@@ -101,6 +102,7 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -123,7 +125,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>uk.ac.roehampton.ziparound/uk.ac.roehampton.ziparound.application.HelloApplication
+                            <mainClass>uk.ac.roehampton.ziparound/uk.ac.roehampton.ziparound.application.MainApplication
                             </mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>

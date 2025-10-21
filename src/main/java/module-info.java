@@ -9,6 +9,7 @@ module uk.ac.roehampton.ziparound {
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
+    requires org.jetbrains.annotations;
 
     opens uk.ac.roehampton.ziparound to javafx.fxml;
     exports uk.ac.roehampton.ziparound;
@@ -20,4 +21,6 @@ module uk.ac.roehampton.ziparound {
     opens uk.ac.roehampton.ziparound.users.staff to javafx.fxml;
     exports uk.ac.roehampton.ziparound.application;
     opens uk.ac.roehampton.ziparound.application to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.equipment;
+    opens uk.ac.roehampton.ziparound.equipment to javafx.fxml;
 }
