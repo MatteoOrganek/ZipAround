@@ -54,7 +54,7 @@
 
             <Spinner min="0" max="10" initialValue="1"/>
 
-            <Button text="Hover me">
+            <Button fx:id="button1" text="Hover me">
                 <tooltip>
                     <Tooltip text="I am a tooltip!"/>
                 </tooltip>

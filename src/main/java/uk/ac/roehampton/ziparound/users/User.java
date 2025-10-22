@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.users;
 
+import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public class User {
@@ -7,28 +8,33 @@ public class User {
     protected String forename;
     protected String lastname;
 
-    public String getForeName(Staff staff) {
-        if (staff.canViewUserInfo()) { return forename; }
-        else { return null; }
+    public Integer getId(Staff staff) {
+        if (staff.canViewUserInfo()) { return id; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
-    public int setForeName(String forename, Staff staff) {
-        if (staff.canModifyUsers()) { this.forename = forename; return 1; }
-        else { return 0; }
+    public String getForeName(Staff staff) {
+        if (staff.canViewUserInfo()) { return forename; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setForeName(String forename, Staff staff) {
+        if (staff.canModifyUsers()) { this.forename = forename; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
     public String getLastName(Staff staff) {
         if (staff.canViewUserInfo()) { return lastname; }
-        else { return null; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
-    public int setLastName(String lastname, Staff staff) {
-        if (staff.canModifyUsers()) { this.lastname = lastname; return 1; }
-        else { return 0; }
+    public void setLastName(String lastname, Staff staff) {
+        if (staff.canModifyUsers()) { this.lastname = lastname; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
     public String getFullName(Staff staff) {
         if (staff.canViewUserInfo()) { return "%s %s".formatted(forename, lastname); }
-        else { return null; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 }

@@ -24,10 +24,22 @@ public class MainApplication extends Application {
         Manager manager = new Manager();
         BookingAgent bookingAgent = new BookingAgent();
 
-        Scooter scooter = new Scooter(1, "Scooty", "Scooter", "EG3425", 12.3f, 30);
+        System.out.println(bookingAgent.getPermissionSummary(admin));
 
+        Scooter scooter1 = new Scooter(
+                1,
+                "Scooty",
+                "EG3425",
+                12.3f,
+                30,
+                30,
+                2);
+
+
+        System.out.println(scooter1.getMaxPowerKw(admin));
 
         System.exit(0);
+
         FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/uk/ac/roehampton/ziparound/application/main-view.fxml")));
         Scene scene = new Scene(loader.load());
 

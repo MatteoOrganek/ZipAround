@@ -24,4 +24,7 @@ public class Admin extends Staff {
     @Override public Boolean canAddEquipment()      { return true; }
     @Override public Boolean canViewEquipmentInfo() { return true; }
 
+    @Override public Boolean canModifyStaff()       { return true; }
+    @Override public Boolean canViewStaffInfo()     { return true; }
+
 }

@@ -16,7 +16,7 @@ import uk.ac.roehampton.ziparound.vehicles.Electric;
 import uk.ac.roehampton.ziparound.vehicles.Vehicle;
 
 /**
- * The Scooter class combines the Vehicle class and Electric Interface to
+ * The Ebike class combines the Vehicle class and Electric Interface to
  * create a specific type of vehicle.
  *
  * <p>This class is typically used by the booking and staff management system.</p>
@@ -26,20 +26,20 @@ import uk.ac.roehampton.ziparound.vehicles.Vehicle;
  * @see Vehicle
  * @see Electric
  */
-public class Scooter extends Vehicle implements Electric {
+public class EBike extends Vehicle implements Electric {
 
     private Integer maxPowerKw;
     private Integer amountOfBatteries;
     private Integer batteryLevel = 100;
 
 
-    public Scooter(Integer vehicleID,
+    public EBike(Integer vehicleID,
                    String brand,
                    String numberPlate,
                    Float totalMiles,
                    Integer maxPowerKw,
                    Integer amountOfBatteries) {
-        super(vehicleID, brand, "Scooter", numberPlate, totalMiles, 10);
+        super(vehicleID, brand, "Ebike", numberPlate, totalMiles, 15);
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
     }
@@ -58,5 +58,6 @@ public class Scooter extends Vehicle implements Electric {
     @Override public Integer getAmountOfBatteries() { return amountOfBatteries; }
 
     @Override public void setAmountOfBatteries(Integer amountOfBatteries) { this.amountOfBatteries = amountOfBatteries; }
+
 
 }

@@ -1,6 +1,17 @@
+/**
+ * Permissions.java
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ *
+ * @see uk.ac.roehampton.ziparound.users.staff.Staff
+ */
+
 package uk.ac.roehampton.ziparound.users.staff;
 
 public interface Permissions {
+
 
     // Booking Permissions
     default Boolean canDeleteBookings()    { return false; }
@@ -25,5 +36,9 @@ public interface Permissions {
     default Boolean canModifyEquipment()   { return false; }
     default Boolean canAddEquipment()      { return false; }
     default Boolean canViewEquipmentInfo() { return false; }
+
+    // Staff
+    default Boolean canModifyStaff()       { return false; }
+    default Boolean canViewStaffInfo()     { return false; }
 
 }
