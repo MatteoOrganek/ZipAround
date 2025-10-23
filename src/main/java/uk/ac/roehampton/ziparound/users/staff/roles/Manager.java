@@ -1,8 +1,28 @@
+/**
+ * Manager.java
+ * The Manager class is able to access most of the functionality of the system,
+ * but is not able to delete certain objects.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ */
+
 package uk.ac.roehampton.ziparound.users.staff.roles;
 
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public class Manager extends Staff {
+
+    public Manager(Integer userID, String foreName, String lastName, String department) {
+        this.userID = userID;
+        this.active = true;
+        this.foreName = foreName;
+        this.lastname = lastName;
+        this.department = department;
+    }
+
+    // Set permissions
 
     @Override public Boolean canDeleteBookings()    { return true; }
     @Override public Boolean canModifyBookings()    { return true; }

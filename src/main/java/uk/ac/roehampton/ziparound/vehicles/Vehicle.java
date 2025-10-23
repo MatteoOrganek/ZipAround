@@ -28,43 +28,22 @@ import uk.ac.roehampton.ziparound.users.staff.Staff;
 public abstract class Vehicle {
 
     /** The unique identifier for this vehicle. */
-    private Integer vehicleID;
+    protected Integer vehicleID;
     /** The brand of this vehicle. */
-    private String brand;
+    protected String brand;
     /** The type of vehicle. */
-    private String type;
+    protected String type;
     /** This vehicle's number plate. */
-    private String numberPlate;
+    protected String numberPlate;
     /** The total miles driven by this vehicle. */
-    private Float totalMiles;
+    protected Float totalMiles;
     /** The max speed for this vehicle in miles per hour. */
-    private Integer maxSpeed;
-
-    public Vehicle(Integer vehicleID,
-                   String brand,
-                   String type,
-                   String numberPlate,
-                   Float totalMiles,
-                   Integer maxSpeed) {
-
-        this.vehicleID = vehicleID;
-        this.brand = brand;
-        this.type = type;
-        this.numberPlate = numberPlate;
-        this.totalMiles = totalMiles;
-        this.maxSpeed = maxSpeed;
-
-    }
+    protected Integer maxSpeed;
 
     // Getter / Setter for "vehicleID"
     public Integer getID(@NotNull Staff staff) {
         if (staff.canViewVehicleInfo()) { return vehicleID; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
-    }
-
-    public void setID(@NotNull Integer vehicleID, @NotNull Staff staff) {
-        if (staff.canModifyVehicles()) { this.vehicleID = vehicleID; }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
     // Getter / Setter for "brand"

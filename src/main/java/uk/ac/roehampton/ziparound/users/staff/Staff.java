@@ -1,12 +1,23 @@
+/**
+ * Staff.java
+ * SuperClass of Admin, Manager and BookingAgent.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ *
+ * @see uk.ac.roehampton.ziparound.users.staff.Staff
+ */
+
 package uk.ac.roehampton.ziparound.users.staff;
 
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.User;
 
-public class Staff extends User implements Permissions {
+public abstract class Staff extends User implements Permissions {
 
-    private String department;
-    private Boolean active;
+    protected String department;
+    protected Boolean active;
 
     public String getDepartment(Staff staff) {
         if (staff.canViewStaffInfo()) { return department;}
@@ -52,5 +63,14 @@ public class Staff extends User implements Permissions {
                     (canDeleteEquipment() ? "Delete " : "");
         }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    @Override public void printFullInformation(Staff staff) {
+        try {
+            System.out.printf("[%s] [%s - %s] - %s\n%s%n", isActive(staff) ? "Active" : "Not Active", getID(staff), getDepartment(staff), getFullName(staff), getPermissionSummary(staff));
+        }
+        catch (SecurityException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

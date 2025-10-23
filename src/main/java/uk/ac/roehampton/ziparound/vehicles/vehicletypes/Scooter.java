@@ -21,7 +21,6 @@ import uk.ac.roehampton.ziparound.vehicles.Vehicle;
  *
  * <p>This class is typically used by the booking and staff management system.</p>
  *
- * @see Staff
  * @see Booking
  * @see Vehicle
  * @see Electric
@@ -39,7 +38,12 @@ public class Scooter extends Vehicle implements Electric {
                    Float totalMiles,
                    Integer maxPowerKw,
                    Integer amountOfBatteries) {
-        super(vehicleID, brand, "Scooter", numberPlate, totalMiles, 10);
+        this.vehicleID = vehicleID;
+        this.brand = brand;
+        this.type = "Scooter";
+        this.numberPlate = numberPlate;
+        this.totalMiles = totalMiles;
+        this.maxSpeed = 10;
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
     }

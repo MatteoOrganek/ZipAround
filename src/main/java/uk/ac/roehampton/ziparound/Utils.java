@@ -1,6 +1,5 @@
 /**
  * Utils.java
- *
  * General collection of utility functions / localization variables
  *
  * @author Matteo Organek

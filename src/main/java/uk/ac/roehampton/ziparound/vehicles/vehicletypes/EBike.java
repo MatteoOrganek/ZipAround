@@ -1,5 +1,5 @@
 /**
- * Scooter.java
+ * Ebike.java
  *
  * @author Matteo Organek
  * @version 1.0
@@ -21,7 +21,6 @@ import uk.ac.roehampton.ziparound.vehicles.Vehicle;
  *
  * <p>This class is typically used by the booking and staff management system.</p>
  *
- * @see Staff
  * @see Booking
  * @see Vehicle
  * @see Electric
@@ -32,17 +31,22 @@ public class EBike extends Vehicle implements Electric {
     private Integer amountOfBatteries;
     private Integer batteryLevel = 100;
 
-
     public EBike(Integer vehicleID,
-                   String brand,
-                   String numberPlate,
-                   Float totalMiles,
-                   Integer maxPowerKw,
-                   Integer amountOfBatteries) {
-        super(vehicleID, brand, "Ebike", numberPlate, totalMiles, 15);
+                 String brand,
+                 String numberPlate,
+                 Float totalMiles,
+                 Integer maxPowerKw,
+                 Integer amountOfBatteries) {
+        this.vehicleID = vehicleID;
+        this.brand = brand;
+        this.type = "EBike";
+        this.numberPlate = numberPlate;
+        this.totalMiles = totalMiles;
+        this.maxSpeed = 15;
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
     }
+
 
     // Getter / Setter for "maxPowerKw"
     @Override public Integer getMaxPowerKw() { return maxPowerKw; }

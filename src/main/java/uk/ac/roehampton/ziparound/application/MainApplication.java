@@ -1,3 +1,12 @@
+/**
+ * MainApplication.java
+ * Handles window management (CSS load, page definition, etc.).
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ */
+
 package uk.ac.roehampton.ziparound.application;
 
 import javafx.application.Application;
@@ -5,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.kordamp.bootstrapfx.BootstrapFX;
+import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.roles.Admin;
 import uk.ac.roehampton.ziparound.users.staff.roles.BookingAgent;
@@ -20,11 +30,12 @@ public class MainApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         // Test section
-        Admin admin = new Admin();
-        Manager manager = new Manager();
-        BookingAgent bookingAgent = new BookingAgent();
+        Admin admin = new Admin(1,
+                "Matteo",
+                "Organek",
+                "Operations");
 
-        System.out.println(bookingAgent.getPermissionSummary(admin));
+        admin.printFullInformation(admin);
 
         Scooter scooter1 = new Scooter(
                 1,
@@ -32,11 +43,7 @@ public class MainApplication extends Application {
                 "EG3425",
                 12.3f,
                 30,
-                30,
                 2);
-
-
-        System.out.println(scooter1.getMaxPowerKw(admin));
 
         System.exit(0);
 

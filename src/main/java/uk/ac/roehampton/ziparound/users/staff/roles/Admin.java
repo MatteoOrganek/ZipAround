@@ -1,8 +1,28 @@
+/**
+ * Admin.java
+ * The Admin class can create admin objects that have all the permissions set to true.
+ * This gives the Admin access to all functionalities of the system.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ */
+
 package uk.ac.roehampton.ziparound.users.staff.roles;
 
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public class Admin extends Staff {
+
+    public Admin(Integer userID, String foreName, String lastName, String department) {
+        this.userID = userID;
+        this.active = true;
+        this.foreName = foreName;
+        this.lastname = lastName;
+        this.department = department;
+    }
+
+    // Set permissions
 
     @Override public Boolean canDeleteBookings()    { return true; }
     @Override public Boolean canModifyBookings()    { return true; }
