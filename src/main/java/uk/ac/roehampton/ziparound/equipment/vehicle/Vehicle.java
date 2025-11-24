@@ -8,7 +8,7 @@
  * @since 22/10/2025
  */
 
-package uk.ac.roehampton.ziparound.vehicles;
+package uk.ac.roehampton.ziparound.equipment.vehicle;
 
 import org.jetbrains.annotations.NotNull;
 import uk.ac.roehampton.ziparound.booking.Booking;
@@ -16,7 +16,7 @@ import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 /**
- * The Vehicle class stores and manages information about a vehicle.
+ * The Vehicle abstract class stores and manages information about a vehicle.
  * It provides methods to set and retrieve details like ID, brand, and type.
  *
  * <p>This class is typically used by the booking and staff management system.</p>
@@ -28,7 +28,7 @@ import uk.ac.roehampton.ziparound.users.staff.Staff;
 public abstract class Vehicle {
 
     /** The unique identifier for this vehicle. */
-    protected Integer vehicleID;
+    protected Integer id;
     /** The brand of this vehicle. */
     protected String brand;
     /** The type of vehicle. */
@@ -37,12 +37,12 @@ public abstract class Vehicle {
     protected String numberPlate;
     /** The total miles driven by this vehicle. */
     protected Float totalMiles;
-    /** The max speed for this vehicle in miles per hour. */
-    protected Integer maxSpeed;
+    /** Whether the vehicle is available for any bookings to be used. (note that the vehicle can be in a booking but still be available) */
+    protected Boolean available;
 
-    // Getter / Setter for "vehicleID"
+    // Getter / Setter for "id"
     public Integer getID(@NotNull Staff staff) {
-        if (staff.canViewVehicleInfo()) { return vehicleID; }
+        if (staff.canViewVehicleInfo()) { return id; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
@@ -91,14 +91,29 @@ public abstract class Vehicle {
     }
 
     // Getter / Setter for "maxSpeed"
-    public Integer getMaxSpeed(@NotNull Staff staff) {
-        if (staff.canViewVehicleInfo()) { return maxSpeed; }
+    public Boolean isAvailable(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return available; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
-    public void setMaxSpeed(@NotNull Integer maxSpeed, @NotNull Staff staff) {
-        if (staff.canModifyVehicles()) { this.maxSpeed = maxSpeed; }
+    public void setAvailable(@NotNull Boolean available, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.available = available; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    public void printInfo(@NotNull Staff staff) {
+        if (!staff.canViewVehicleInfo()) {
+            throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
+        }
+
+        System.out.println("----- Vehicle Details ----------------------------------------------");
+        System.out.println("Vehicle ID     : " + (id != null ? id : "N/A"));
+        System.out.println("Brand          : " + (brand != null ? brand : "N/A"));
+        System.out.println("Type           : " + (type != null ? type : "N/A"));
+        System.out.println("Number Plate   : " + (numberPlate != null ? numberPlate : "N/A"));
+        System.out.println("Total Miles    : " + (totalMiles != null ? totalMiles + " mi" : "N/A"));
+        System.out.println("Available      : " + (available != null ? (available ? "Yes" : "No") : "N/A"));
+        System.out.println("--------------------------------------------------------------------");
     }
 
 }

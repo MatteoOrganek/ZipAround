@@ -18,6 +18,7 @@ public interface Permissions {
     default Boolean canModifyBookings()    { return false; }
     default Boolean canAddBookings()       { return false; }
     default Boolean canViewBookingInfo()   { return false; }
+    default Boolean canApproveBookings()   { return false; }
 
     // Vehicle Permissions
     default Boolean canDeleteVehicles()    { return false; }
@@ -40,5 +41,9 @@ public interface Permissions {
     // Staff
     default Boolean canModifyStaff()       { return false; }
     default Boolean canViewStaffInfo()     { return false; }
+
+    // Maintenance
+    default Boolean canModifyMaintenance()       { return false; }
+    default Boolean canViewMaintenanceInfo()     { return false; }
 
 }

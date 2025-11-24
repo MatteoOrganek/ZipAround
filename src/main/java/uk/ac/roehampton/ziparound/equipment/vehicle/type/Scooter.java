@@ -5,15 +5,22 @@
  * @version 1.0
  * @since 22/10/2025
  *
- * @see uk.ac.roehampton.ziparound.vehicles.Vehicle
+ * @see uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle
  */
 
-package uk.ac.roehampton.ziparound.vehicles.vehicletypes;
+package uk.ac.roehampton.ziparound.equipment.vehicle.type;
 
+import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
+import uk.ac.roehampton.ziparound.equipment.maintenance.Maintainable;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
-import uk.ac.roehampton.ziparound.vehicles.Electric;
-import uk.ac.roehampton.ziparound.vehicles.Vehicle;
+import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
+
+import java.time.Instant;
 
 /**
  * The Scooter class combines the Vehicle class and Electric Interface to
@@ -25,25 +32,26 @@ import uk.ac.roehampton.ziparound.vehicles.Vehicle;
  * @see Vehicle
  * @see Electric
  */
-public class Scooter extends Vehicle implements Electric {
+public class Scooter extends Vehicle implements Electric, Bookable, Maintainable {
 
     private Integer maxPowerKw;
     private Integer amountOfBatteries;
     private Integer batteryLevel = 100;
+    private Booking lastInspection;
 
 
-    public Scooter(Integer vehicleID,
+    public Scooter(Integer id,
                    String brand,
                    String numberPlate,
                    Float totalMiles,
                    Integer maxPowerKw,
                    Integer amountOfBatteries) {
-        this.vehicleID = vehicleID;
+        this.id = id;
         this.brand = brand;
         this.type = "Scooter";
         this.numberPlate = numberPlate;
         this.totalMiles = totalMiles;
-        this.maxSpeed = 10;
+        this.available = true;
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
     }
@@ -63,4 +71,26 @@ public class Scooter extends Vehicle implements Electric {
 
     @Override public void setAmountOfBatteries(Integer amountOfBatteries) { this.amountOfBatteries = amountOfBatteries; }
 
+
+    @Override
+    public void bookInspection(Instant startTime, Instant endTime) {
+        BookingManager bookingManager = BookingManager.getInstance();
+        try {
+            bookingManager.addBooking(startTime, endTime, new SelfService(), this);
+        } catch (BookingManager.BookingException e) {
+            System.out.println("Cannot book at this time. Please retry.");
+        }
+    }
+
+    @Override
+    public void setLastInspection(Booking lastInspection, Staff staff) {
+        if (staff.canModifyMaintenance()) { this.lastInspection = lastInspection; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    @Override
+    public Booking getLastInspection(Staff staff) {
+        if (staff.canViewMaintenanceInfo()) { return lastInspection; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
 }

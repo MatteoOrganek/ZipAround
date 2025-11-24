@@ -19,6 +19,20 @@ public abstract class Staff extends User implements Permissions {
     protected String department;
     protected Boolean active;
 
+    /**
+     * Constructor for Staff
+     * @param userID ID that identifies each user
+     * @param foreName First name
+     * @param lastname Last name
+     * @param department Staff department
+     * @param active Active status for the user
+     */
+    public Staff(Integer userID, String foreName, String lastname, String department, Boolean active) {
+        super(userID, foreName, lastname);
+        this.department = department;
+        this.active = active;
+    }
+
     public String getDepartment(Staff staff) {
         if (staff.canViewStaffInfo()) { return department;}
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
@@ -39,6 +53,11 @@ public abstract class Staff extends User implements Permissions {
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
+    /**
+     * This function gives the permission summary of a Staff object
+     * @param staff Staff used for permissions
+     * @return String of all permissions in a formatted and structured manner
+     */
     public String getPermissionSummary(Staff staff) {
         if (staff.canViewStaffInfo()) {
             return "Permissions:\n" + "\tBookings: " +
@@ -65,12 +84,19 @@ public abstract class Staff extends User implements Permissions {
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
+    /**
+     * Print full information of the staff (Requires )
+     * @param staff Staff used for
+     */
     @Override public void printFullInformation(Staff staff) {
-        try {
-            System.out.printf("[%s] [%s - %s] - %s\n%s%n", isActive(staff) ? "Active" : "Not Active", getID(staff), getDepartment(staff), getFullName(staff), getPermissionSummary(staff));
-        }
-        catch (SecurityException e) {
-            System.out.println(e.getMessage());
+        if (staff.canViewStaffInfo()) {
+            try {
+                System.out.printf("[%s] [%s - %s] - %s\n%s%n", isActive(staff) ? "Active" : "Not Active", getID(staff), getDepartment(staff), getFullName(staff), getPermissionSummary(staff));
+            } catch (SecurityException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
         }
     }
 }

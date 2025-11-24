@@ -8,18 +8,13 @@
  * @since 22/10/2025
  */
 
-package uk.ac.roehampton.ziparound.users.staff.roles;
+package uk.ac.roehampton.ziparound.users.staff.role;
 
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public class BookingAgent extends Staff {
-
-    public BookingAgent(Integer userID, String foreName, String lastName, String department) {
-        this.userID = userID;
-        this.active = true;
-        this.foreName = foreName;
-        this.lastname = lastName;
-        this.department = department;
+    public BookingAgent(Integer userID, String foreName, String lastname, String department) {
+        super(userID, foreName, lastname, department, true);
     }
 
     // Set permissions
@@ -28,6 +23,7 @@ public class BookingAgent extends Staff {
     @Override public Boolean canModifyBookings()    { return true; }
     @Override public Boolean canAddBookings()       { return true; }
     @Override public Boolean canViewBookingInfo()   { return true; }
+    @Override public Boolean canApproveBookings()   { return true; }
 
     @Override public Boolean canViewVehicleInfo()   { return true; }
 
@@ -36,6 +32,9 @@ public class BookingAgent extends Staff {
 
 
     @Override public Boolean canViewEquipmentInfo() { return true; }
+
+    @Override public Boolean canModifyMaintenance()       { return true; }
+    @Override public Boolean canViewMaintenanceInfo()     { return true; }
 
 }
 

@@ -10,18 +10,34 @@
 package uk.ac.roehampton.ziparound.equipment;
 
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.booking.Bookable;
+import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
+import uk.ac.roehampton.ziparound.equipment.maintenance.Maintainable;
+import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
-public class Equipment {
+import java.awt.print.Book;
+import java.time.Instant;
 
-    private final Integer equipmentID;
+public class Equipment implements Bookable, Maintainable {
+
+    private final Integer id;
     private String name;
     private String description;
     private Boolean available;
+    private Booking lastInspection;
 
-    // Constructor
-    public Equipment(Integer equipmentID, String name, String description, Boolean available) {
-        this.equipmentID = equipmentID;
+    /**
+     * Constructor for Equipment.
+     * @param id Identifier for this Equipment
+     * @param name Name of the equipment
+     * @param description Description Of the Equipment
+     * @param available Whether the Equipment is available for any bookings to be used. (note that the vehicle can be in a booking but still be available)
+     */
+    public Equipment(Integer id, String name, String description, Boolean available) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.available = available;
@@ -29,7 +45,7 @@ public class Equipment {
 
     // Getter for "equipmentID"
     public Integer getID(Staff staff) {
-        if (staff.canViewEquipmentInfo()) { return equipmentID; }
+        if (staff.canViewEquipmentInfo()) { return id; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
@@ -56,6 +72,7 @@ public class Equipment {
     }
 
     // Getter / Setter for "available"
+    @Override
     public Boolean isAvailable(Staff staff) {
         if (staff.canViewEquipmentInfo()) { return available; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
@@ -64,6 +81,41 @@ public class Equipment {
     public void setAvailable(Boolean available, Staff staff) {
         if (staff.canModifyEquipment()) { this.available = available; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    public void printInfo(Staff staff) {
+        if (!staff.canViewEquipmentInfo()) {
+            throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
+        }
+
+        System.out.println("----- Equipment Details --------------------------------------------");
+        System.out.println("Equipment ID  : " + (id != null ? id : "N/A"));
+        System.out.println("Name          : " + (name != null ? name : "N/A"));
+        System.out.println("Description   : " + (description != null ? description : "N/A"));
+        System.out.println("Available     : " + (available != null ? (available ? "Yes" : "No") : "N/A"));
+        System.out.println("--------------------------------------------------------------------");
+    }
+
+    @Override
+    public void bookInspection(Instant startTime, Instant endTime) {
+        BookingManager bookingManager = BookingManager.getInstance();
+        try {
+            bookingManager.addBooking(startTime, endTime, new SelfService(), this);
+        } catch (BookingManager.BookingException e) {
+            System.out.println("Cannot book at this time. Please retry.");
+        }
+    }
+
+    @Override
+    public void setLastInspection(Booking lastInspection, Staff staff) {
+        if (staff.canModifyMaintenance()) { this.lastInspection = lastInspection; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    @Override
+    public Booking getLastInspection(Staff staff) {
+        if (staff.canViewMaintenanceInfo()) { return lastInspection; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
 }

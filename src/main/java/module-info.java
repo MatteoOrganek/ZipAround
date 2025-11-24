@@ -10,11 +10,15 @@ module uk.ac.roehampton.ziparound {
     requires org.kordamp.bootstrapfx.core;
     requires eu.hansolo.tilesfx;
     requires org.jetbrains.annotations;
+    requires jdk.jshell;
+    requires java.desktop;
+    requires com.calendarfx.view;
+    requires javafx.graphics;
 
     opens uk.ac.roehampton.ziparound to javafx.fxml;
     exports uk.ac.roehampton.ziparound;
-    exports uk.ac.roehampton.ziparound.vehicles;
-    opens uk.ac.roehampton.ziparound.vehicles to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.equipment.vehicle;
+    opens uk.ac.roehampton.ziparound.equipment.vehicle to javafx.fxml;
     exports uk.ac.roehampton.ziparound.users;
     opens uk.ac.roehampton.ziparound.users to javafx.fxml;
     exports uk.ac.roehampton.ziparound.users.staff;

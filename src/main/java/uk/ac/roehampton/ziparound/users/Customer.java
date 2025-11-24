@@ -9,9 +9,7 @@
 package uk.ac.roehampton.ziparound.users;
 
 public class Customer extends User {
-    public Customer(Integer userID, String foreName, String lastname) {
-        this.userID = userID;
-        this.foreName = foreName;
-        this.lastname = lastname;
+    public Customer(Integer id, String foreName, String lastName) {
+        super(id, foreName, lastName);
     }
 }

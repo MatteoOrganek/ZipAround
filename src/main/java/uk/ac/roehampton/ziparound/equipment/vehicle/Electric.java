@@ -7,7 +7,7 @@
  * @since 22/10/2025
  */
 
-package uk.ac.roehampton.ziparound.vehicles;
+package uk.ac.roehampton.ziparound.equipment.vehicle;
 
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;

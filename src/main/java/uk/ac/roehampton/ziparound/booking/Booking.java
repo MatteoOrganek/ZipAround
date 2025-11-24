@@ -12,48 +12,66 @@ package uk.ac.roehampton.ziparound.booking;
 
 import org.jetbrains.annotations.NotNull;
 import uk.ac.roehampton.ziparound.Utils;
-import uk.ac.roehampton.ziparound.equipment.Equipment;
 import uk.ac.roehampton.ziparound.users.Customer;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
-import uk.ac.roehampton.ziparound.vehicles.Vehicle;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class Booking {
 
-    // Booking info
+    /** Identification for each booking */
+    Integer bookingID;
+    /** Start time */
     Instant bookedStartTime;
+    /** End time */
     Instant bookedEndTime;
+    /** Time of creation */
     Instant createdOn;
-    Customer customer;
-
-    ArrayList<Equipment> lEquipment;
-    ArrayList<Vehicle> lVehicles;
-
+    /** User */
+    User user;
+    /** Bookable object, can be either Vehicle or Equipment */
+    Bookable bookableObject;
+    /** Approved By staff */
     Boolean approved;
-    Staff staff;
+    /** Staff that approved the booking */
+    Staff staffApproved;
 
-    public Booking(Instant bookedStartTime,
+    /**
+     * Constructor for Booking
+     * @param bookingID ID used to identify each booking
+     * @param bookedStartTime Start time for the booking
+     * @param bookedEndTime End time for the booking
+     * @param createdOn Creation timestamp
+     * @param user User object
+     * @param bookableObject Bookable Object, including Vehicle and Equipment types.
+     * @param approved Whether the booking has been approved by a staff
+     * @param staffApproved Staff that approved the booking
+     */
+    public Booking(Integer bookingID,
+                   Instant bookedStartTime,
                    Instant bookedEndTime,
                    Instant createdOn,
-                   Customer customer,
-                   ArrayList<Equipment> lEquipment,
-                   ArrayList<Vehicle> lVehicles,
+                   User user,
+                   Bookable bookableObject,
                    Boolean approved,
-                   Staff staff) {
+                   Staff staffApproved) {
+        this.bookingID = bookingID;
         this.bookedStartTime = bookedStartTime;
         this.bookedEndTime = bookedEndTime;
         this.createdOn = createdOn;
-        this.customer = customer;
-        this.lEquipment = lEquipment;
-        this.lVehicles = lVehicles;
+        this.user = user;
+        this.bookableObject = bookableObject;
         this.approved = approved;
-        this.staff = staff;
+        this.staffApproved = staffApproved;
     }
 
+    // Getter / Setter for "bookingID"
+    public Integer getID(@NotNull Staff staff) {
+        if (staff.canViewBookingInfo()) { return bookingID; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+    
     // Getter / Setter for "bookedStartTime" - Can be null
     public Instant getBookedStartTime(@NotNull Staff staff) {
         if (staff.canViewBookingInfo()) { return bookedStartTime; }
@@ -87,36 +105,24 @@ public class Booking {
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
-    // Getter / Setter for "customer"
-    public Customer getCustomer(@NotNull Staff staff) {
-        if (staff.canViewBookingInfo()) { return customer; }
+    // Getter / Setter for "user"
+    public User getUser(@NotNull Staff staff) {
+        if (staff.canViewBookingInfo()) { return user; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
-    public void setCustomer(@NotNull Customer customer, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.customer = customer; }
+    public void setUser(@NotNull User user, @NotNull Staff staff) {
+        if (staff.canModifyBookings()) { this.user = user; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
-    // Getter / Setter for "lEquipment"
-    public ArrayList<Equipment> getLEquipment(@NotNull Staff staff) {
-        if (staff.canViewBookingInfo()) { return lEquipment; }
+    // Getter / Setter for "bookableObject"
+    public Bookable getBookableObject(@NotNull Staff staff) {
+        if (staff.canViewBookingInfo()) { return bookableObject; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
-
-    public void setLEquipment(@NotNull ArrayList<Equipment> lEquipment, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.lEquipment = lEquipment; }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
-    }
-
-    // Getter / Setter for "lVehicles"
-    public ArrayList<Vehicle> getLVehicles(@NotNull Staff staff) {
-        if (staff.canViewBookingInfo()) { return lVehicles; }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
-    }
-
-    public void setLVehicles(@NotNull ArrayList<Vehicle> lVehicles, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.lVehicles = lVehicles; }
+    public void setBookableObject(@NotNull Bookable bookableObject, @NotNull Staff staff) {
+        if (staff.canModifyBookings()) { this.bookableObject = bookableObject; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
@@ -133,105 +139,47 @@ public class Booking {
 
     // Getter / Setter for "staff"
     public Staff getStaff(@NotNull Staff staff) {
-        if (staff.canViewBookingInfo()) { return staff; }
+        if (staff.canViewBookingInfo()) { return this.staffApproved; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
-    public void setStaff(Staff newStaff, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.staff = newStaff; }
+    public void setStaff(Staff staffApproved, @NotNull Staff staff) {
+        if (staff.canModifyBookings()) { this.staffApproved = staffApproved; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
-    // Adds an equipment to LEquipment
-    public void addEquipment(Equipment equipment, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.lEquipment.add(equipment); }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
-    }
-
-    // Removes a specified equipment from the list of Equipments
-    public void removeEquipment(Equipment equipment, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) {
-            // for each equipment in lEquipment
-            for (Equipment currentEquipment : lEquipment) {
-                // Check if both ids are the same, in case the object was modified.
-                if (Objects.equals(currentEquipment.getID(staff), equipment.getID(staff))) {
-                    // Try to remove the element from the list
-                    try { this.lEquipment.remove(currentEquipment); }
-                    // Ignore any kind of exceptions
-                    catch (Exception ignored) {}
-                }
-            }
-        }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
-    }
-
-    // Adds a vehicle to lVehicles
-    public void addVehicles(Vehicle vehicle, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) { this.lVehicles.add(vehicle); }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
-    }
-
-    // Removes a specified vehicle from the list of Vehicles
-    public void removeVehicle(Vehicle vehicle, @NotNull Staff staff) {
-        if (staff.canModifyBookings()) {
-            // for each equipment in lVehicles
-            for (Vehicle currentVehicle : lVehicles) {
-                // Check if both ids are the same, in case the object was modified.
-                if (Objects.equals(currentVehicle.getID(staff), vehicle.getID(staff))) {
-                    // Try to remove the element from the list
-                    try { this.lVehicles.remove(currentVehicle); }
-                    // Ignore any kind of exceptions
-                    catch (Exception ignored) {}
-                }
-            }
-        }
-        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
-    }
-
-    // Prints a comprehensive list of all the attributes in the current booking.
-    public void printBookingInfo(@NotNull Staff staff) {
+    /**
+     * Prints a comprehensive list of all the attributes in the current booking.
+     *
+     * @param staff SStaff for permissions
+     */
+    public void printInfo(@NotNull Staff staff) {
         if (!staff.canViewBookingInfo()) {
             throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
         }
 
-        System.out.println("===== Booking Details =====");
+        System.out.println("===== Booking Details ==============================================");
         System.out.println("Booked Start Time : " + bookedStartTime);
         System.out.println("Booked End Time   : " + bookedEndTime);
         System.out.println("Created On        : " + createdOn);
 
-        if (customer != null) {
-            System.out.println("Customer Name     : " + customer.getFullName(staff));
-            System.out.println("Customer ID       : " + customer.getID(staff));
+        if (user != null) {
+            System.out.println("Customer Name     : " + user.getFullName(staff));
+            System.out.println("Customer ID       : " + user.getID(staff));
         } else {
             System.out.println("Customer          : null");
         }
 
         System.out.println("Approved          : " + approved);
-        System.out.println("Staff Responsible : " + (this.staff != null ? this.staff.getFullName(staff) : "null"));
+        System.out.println("Staff Responsible : " + (this.staffApproved != null ? this.staffApproved.getFullName(staff) : "null"));
 
-        System.out.println("Equipment List:");
-        // If lEquipment is not null and empty
-        if (lEquipment != null && !lEquipment.isEmpty()) {
-            for (Equipment eq : lEquipment) {
-                System.out.println(" - ID: " + eq.getID(staff) + ", Name: " + eq.getName(staff)
-                        + ", Description: " + eq.getDescription(staff)
-                        + ", Available: " + eq.isAvailable(staff));
-            }
+        // If bookable object is not null, print
+        if (bookableObject != null) {
+            bookableObject.printInfo(staff);
         } else {
-            System.out.println(" - None");
+            System.out.println("[None]");
         }
-
-        System.out.println("Vehicle List:");
-        // If lVehicles is not null and empty
-        if (lVehicles != null && !lVehicles.isEmpty()) {
-            for (Vehicle v : lVehicles) {
-                System.out.println(" - ID: " + v.getID(staff) + ", Type: " + v.getType(staff));
-            }
-        } else {
-            System.out.println(" - None");
-        }
-
-        System.out.println("===========================");
+        System.out.println("====================================================================");
     }
 
 }

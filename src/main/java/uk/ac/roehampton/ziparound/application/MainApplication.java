@@ -9,63 +9,71 @@
 
 package uk.ac.roehampton.ziparound.application;
 
+import com.calendarfx.model.Calendar;
+import com.calendarfx.model.CalendarSource;
+import com.calendarfx.model.Entry;
+import com.calendarfx.view.CalendarView;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import org.kordamp.bootstrapfx.BootstrapFX;
-import uk.ac.roehampton.ziparound.users.User;
-import uk.ac.roehampton.ziparound.users.staff.Staff;
-import uk.ac.roehampton.ziparound.users.staff.roles.Admin;
-import uk.ac.roehampton.ziparound.users.staff.roles.BookingAgent;
-import uk.ac.roehampton.ziparound.users.staff.roles.Manager;
-import uk.ac.roehampton.ziparound.vehicles.vehicletypes.Scooter;
 
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class MainApplication extends Application {
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
 
-        // Test section
-        Admin admin = new Admin(1,
-                "Matteo",
-                "Organek",
-                "Operations");
+        CalendarView calendarView = new CalendarView();
+        Calendar vehiclesCalendar = new Calendar("Vehicles");
+        Calendar equipmentCalendar = new Calendar("Equipment");
+        CalendarSource myCalendarSource = new CalendarSource("My Calendars"); // (4)
+        myCalendarSource.getCalendars().addAll(vehiclesCalendar, equipmentCalendar);
 
-        admin.printFullInformation(admin);
+        calendarView.getCalendarSources().addAll(myCalendarSource); // (5)
 
-        Scooter scooter1 = new Scooter(
-                1,
-                "Scooty",
-                "EG3425",
-                12.3f,
-                30,
-                2);
+        calendarView.setRequestedTime(LocalTime.now());
 
-        System.exit(0);
+        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
+            @Override
+            public void run() {
+                while (true) {
+                    Platform.runLater(() -> {
+                        calendarView.setToday(LocalDate.now());
+                        calendarView.setTime(LocalTime.now());
+                    });
 
-        FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(getClass().getResource("/uk/ac/roehampton/ziparound/application/main-view.fxml")));
-        Scene scene = new Scene(loader.load());
+                    try {
+                        // update every 10 seconds
+                        sleep(10000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-        // Correct CSS loading
-        URL css = getClass().getResource("/modern.css");
-        System.out.println(css);
-        if (css != null) {
-            scene.getStylesheets().add(css.toExternalForm());
-        } else {
-            System.out.println("'modern.css' not found!");
-        }
+                }
+            }
+        };
 
-        scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/modern.css")).toExternalForm());
+        updateTimeThread.setPriority(Thread.MIN_PRIORITY);
+        updateTimeThread.setDaemon(true);
+        updateTimeThread.start();
 
-        primaryStage.setTitle("Modern JavaFX Demo");
-        primaryStage.setScene(scene);
-        primaryStage.setWidth(900);
-        primaryStage.setHeight(700);
-        primaryStage.show();
+        Entry<String> entry = new Entry<>("V12345");
+        vehiclesCalendar.addEntry(entry);
+
+        Scene scene = new Scene(calendarView);
+        stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/imgs/logo_circular.png"));
+        stage.setTitle("Zip Around");
+        stage.setScene(scene);
+        stage.setWidth(1300);
+        stage.setHeight(800);
+        stage.show();
     }
 
     public static void main(String[] args) {
