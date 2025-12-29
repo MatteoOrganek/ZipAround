@@ -16,9 +16,13 @@ import com.calendarfx.view.CalendarView;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
+import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 
 import java.net.URL;
 import java.time.LocalDate;
@@ -27,55 +31,34 @@ import java.util.Objects;
 
 public class MainApplication extends Application {
 
+    public SceneController sceneController;
+    BookingManager bookingManager;
+
+
     @Override
     public void start(Stage stage) throws Exception {
 
-        CalendarView calendarView = new CalendarView();
-        Calendar vehiclesCalendar = new Calendar("Vehicles");
-        Calendar equipmentCalendar = new Calendar("Equipment");
-        CalendarSource myCalendarSource = new CalendarSource("My Calendars"); // (4)
-        myCalendarSource.getCalendars().addAll(vehiclesCalendar, equipmentCalendar);
+        Admin admin = new Admin(0, "Matteo", "Organek", "Admin");
 
-        calendarView.getCalendarSources().addAll(myCalendarSource); // (5)
+        bookingManager = BookingManager.getInstance(admin);
 
-        calendarView.setRequestedTime(LocalTime.now());
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
 
-        Thread updateTimeThread = new Thread("Calendar: Update Time Thread") {
-            @Override
-            public void run() {
-                while (true) {
-                    Platform.runLater(() -> {
-                        calendarView.setToday(LocalDate.now());
-                        calendarView.setTime(LocalTime.now());
-                    });
-
-                    try {
-                        // update every 10 seconds
-                        sleep(10000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-            }
-        };
-
-        updateTimeThread.setPriority(Thread.MIN_PRIORITY);
-        updateTimeThread.setDaemon(true);
-        updateTimeThread.start();
-
-        Entry<String> entry = new Entry<>("V12345");
-        vehiclesCalendar.addEntry(entry);
-
-        Scene scene = new Scene(calendarView);
+        Scene scene = new Scene(root);
         stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/imgs/logo_circular.png"));
         stage.setTitle("Zip Around");
         stage.setScene(scene);
-        stage.setWidth(1300);
-        stage.setHeight(800);
         stage.show();
-    }
 
+        sceneController = new SceneController(stage.getScene());
+        Parent testView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("test-view.fxml")));
+        sceneController.addScreen("test", (Pane) testView);
+        Parent loginView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login-view.fxml")));
+        sceneController.addScreen("login", (Pane) loginView);
+        sceneController.activate("login");
+
+
+    }
     public static void main(String[] args) {
         launch(args);
     }

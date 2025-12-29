@@ -10,18 +10,7 @@ import org.kordamp.bootstrapfx.scene.layout.Panel;
 import java.awt.event.KeyEvent;
 
 public class MainController {
-
-    @FXML
-    private Panel topPanel;
-
     @FXML
     public void initialize() {
-    }
-
-    public void onEnter(MouseEvent mouseEvent) {
-        System.out.println(mouseEvent.getEventType());
-    }
-    public void onExit(MouseEvent mouseEvent) {
-        System.out.println(mouseEvent.getEventType());
     }
 }

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.bootstrapfx.scene.layout.Panel?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.MainController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.TestController">
 
     <!-- Top Panel -->
     <top>
@@ -30,7 +30,7 @@
 
             <HBox spacing="10">
                 <CheckBox text="Accept terms"/>
-                <RadioButton text="Option 1"/>
+                <RadioButton fx:id="testRadioButton" text="Option 1"/>
                 <RadioButton text="Option 2"/>
             </HBox>
 
@@ -52,12 +52,7 @@
             </HBox>
 
             <Spinner min="0" max="10" initialValue="1"/>
-
-            <Button onMouseEntered="#onEnter" onMouseExited="#onExit" text="Hover me">
-                <tooltip>
-                    <Tooltip text="Don't touch me!"/>
-                </tooltip>
-            </Button>
+            <Button fx:id="buttonTest" text="Click Me!" onAction="#test"/>
         </VBox>
     </center>
 

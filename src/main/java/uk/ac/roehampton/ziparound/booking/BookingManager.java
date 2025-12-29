@@ -21,15 +21,15 @@ public class BookingManager {
 
     private static BookingManager instance;
     // Array that stores all bookings
-    ArrayList<Booking> bookingArrayList;
+    private ArrayList<Booking> bookingArrayList;
     // Staff object for permissions
-    Staff staff;
+    private Staff staff;
 
     /**
      * Private Constructor for BookingManager
      * @param user Staff object required for low level permissions
      */
-    private  BookingManager(User user) {
+    private BookingManager(User user) {
         this.bookingArrayList = new ArrayList<>();
         // Check if user is Staff
         if (user instanceof Staff) {

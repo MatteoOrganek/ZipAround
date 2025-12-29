@@ -1,6 +1,5 @@
-package uk.ac.roehampton.ziparound.application;
+package uk.ac.roehampton.ziparound;
 
-import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
 import uk.ac.roehampton.ziparound.users.Customer;
