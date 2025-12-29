@@ -1,0 +1,102 @@
+/**
+ * Staff.java
+ * SuperClass of Admin, Manager and BookingAgent.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ *
+ * @see uk.ac.roehampton.ziparound.users.staff.Staff
+ */
+
+package uk.ac.roehampton.ziparound.users.staff;
+
+import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.users.User;
+
+public abstract class Staff extends User implements Permissions {
+
+    protected String department;
+    protected Boolean active;
+
+    /**
+     * Constructor for Staff
+     * @param userID ID that identifies each user
+     * @param foreName First name
+     * @param lastname Last name
+     * @param department Staff department
+     * @param active Active status for the user
+     */
+    public Staff(Integer userID, String foreName, String lastname, String department, Boolean active) {
+        super(userID, foreName, lastname);
+        this.department = department;
+        this.active = active;
+    }
+
+    public String getDepartment(Staff staff) {
+        if (staff.canViewStaffInfo()) { return department;}
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setDepartment(String department, Staff staff) {
+        if (staff.canModifyStaff()) { this.department = department;}
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    public Boolean isActive(Staff staff) {
+        if (staff.canViewStaffInfo()) { return active;}
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setActive(Boolean active, Staff staff) {
+        if (staff.canModifyStaff()) { this.active = active;}
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    /**
+     * This function gives the permission summary of a Staff object
+     * @param staff Staff used for permissions
+     * @return String of all permissions in a formatted and structured manner
+     */
+    public String getPermissionSummary(Staff staff) {
+        if (staff.canViewStaffInfo()) {
+            return "Permissions:\n" + "\tBookings: " +
+                    (canViewBookingInfo() ? "View " : "") +
+                    (canAddBookings() ? "Add " : "") +
+                    (canModifyBookings() ? "Modify " : "") +
+                    (canDeleteBookings() ? "Delete " : "") +
+                    "\n\tVehicles: " +
+                    (canViewVehicleInfo() ? "View " : "") +
+                    (canAddVehicles() ? "Add " : "") +
+                    (canModifyVehicles() ? "Modify " : "") +
+                    (canDeleteVehicles() ? "Delete " : "") +
+                    "\n\tUsers: " +
+                    (canViewUserInfo() ? "View " : "") +
+                    (canAddUsers() ? "Add " : "") +
+                    (canModifyUsers() ? "Modify " : "") +
+                    (canDeleteUsers() ? "Delete " : "") +
+                    "\n\tEquipment: " +
+                    (canViewEquipmentInfo() ? "View " : "") +
+                    (canAddEquipment() ? "Add " : "") +
+                    (canModifyEquipment() ? "Modify " : "") +
+                    (canDeleteEquipment() ? "Delete " : "");
+        }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    /**
+     * Print full information of the staff (Requires )
+     * @param staff Staff used for
+     */
+    @Override public void printFullInformation(Staff staff) {
+        if (staff.canViewStaffInfo()) {
+            try {
+                System.out.printf("[%s] [%s - %s] - %s\n%s%n", isActive(staff) ? "Active" : "Not Active", getID(staff), getDepartment(staff), getFullName(staff), getPermissionSummary(staff));
+            } catch (SecurityException e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
+        }
+    }
+}

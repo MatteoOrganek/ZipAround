@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.bootstrapfx.scene.layout.Panel?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.TestController">
+
+    <!-- Top Panel -->
+    <top>
+        <Panel fx:id="topPanel">
+            <children>
+                <HBox spacing="10">
+                    <Label text="Example" />
+                    <Button text="Primary" styleClass="btn btn-primary"/>
+                    <Button text="Danger" styleClass="btn btn-danger"/>
+                    <Hyperlink text="Click me"/>
+                </HBox>
+            </children>
+        </Panel>
+    </top>
+
+    <!-- Center content -->
+    <center>
+        <VBox spacing="15">
+            <HBox spacing="10">
+                <TextField promptText="Enter text"/>
+                <PasswordField promptText="Enter password"/>
+                <TextArea promptText="Enter multi-line text" prefRowCount="3"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <CheckBox text="Accept terms"/>
+                <RadioButton fx:id="testRadioButton" text="Option 1"/>
+                <RadioButton text="Option 2"/>
+            </HBox>
+
+            <TableView prefHeight="150">
+                <columns>
+                    <TableColumn text="Name"/>
+                    <TableColumn text="Age"/>
+                    <TableColumn text="Email"/>
+                </columns>
+                <items>
+                    <FXCollections fx:factory="observableArrayList"/>
+                </items>
+            </TableView>
+
+            <HBox spacing="10">
+                <Slider value="50"/>
+                <ProgressBar progress="0.5"/>
+                <ProgressIndicator progress="0.75"/>
+            </HBox>
+
+            <Spinner min="0" max="10" initialValue="1"/>
+            <Button fx:id="buttonTest" text="Click Me!" onAction="#test"/>
+        </VBox>
+    </center>
+
+</BorderPane>
