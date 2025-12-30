@@ -1,12 +1,12 @@
 
-/* --- 1. Root font & base styles --- */
+/* --- Root font & base styles --- */
 .root {
     -fx-font-family: "Roboto", "Segoe UI", "Open Sans", sans-serif;
     -fx-font-size: 14px;
     -fx-background-color: #f5f5f5;  /* Light grey background */
 }
 
-/* --- 2. Panels / Containers --- */
+/* --- Panels / Containers --- */
 .panel {
     -fx-background-color: #ffffff;   /* White panels */
     -fx-background-radius: 0px;      /* Squared corners */
@@ -27,47 +27,35 @@
     -fx-padding: 10px 15px 15px 15px;
 }
 
-/* --- 3. Buttons --- */
+/* --- Buttons --- */
 .button, .btn {
-    -fx-background-radius: 0px;          /* Square buttons */
-    -fx-border-radius: 0px;
+    -fx-background-radius: 2px;          /* Square buttons */
+    -fx-border-radius: 4px;
     -fx-padding: 8px 16px;
     -fx-font-size: 14px;
     -fx-font-weight: 500;
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
     -fx-text-fill: #ffffff;
-    -fx-background-color: #007bff;      /* Primary color */
+    -fx-background-color: #A4C3B2;      /* Primary color */
     -fx-border-width: 0;
     -fx-transition: all 0.2s ease;
 }
 
 /* Button hover */
 .button:hover, .btn:hover {
-    -fx-background-color: #0056b3;
+    -fx-background-color: #6B9080;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
 /* Button pressed */
 .button:pressed, .btn:pressed {
-    -fx-background-color: #004085;
+    -fx-background-color: #31614d;
     -fx-effect: none;
 }
 
-/* Danger button example */
-.btn-danger {
-    -fx-background-color: #dc3545;
-}
 
-.btn-danger:hover {
-    -fx-background-color: #c82333;
-}
-
-.btn-danger:pressed {
-    -fx-background-color: #bd2130;
-}
-
-/* --- 4. Text fields and inputs --- */
+/* --- Text fields and inputs --- */
 .text-field, .text-area, .password-field {
     -fx-background-radius: 4px;
     -fx-border-radius: 4px;
@@ -80,18 +68,24 @@
     -fx-prompt-text-fill: #6c757d;
 }
 
+.text-field.error {
+ -fx-border-color: red ;
+ -fx-border-width: 2px ;
+}
+
 /* Focused input */
 .text-field:focused, .text-area:focused, .password-field:focused {
-    -fx-border-color: #007bff;
+    -fx-border-color: #6B9080;
     -fx-border-width: 1.5px;
 }
 
-/* --- 5. Labels --- */
+
+/* --- Labels --- */
 .label {
     -fx-text-fill: #212529;
 }
 
-/* --- 6. Tables --- */
+/* --- Tables --- */
 .table-view {
     -fx-background-color: #ffffff;
     -fx-border-color: #dee2e6;
@@ -108,7 +102,7 @@
     -fx-background-color: #007bff33; /* light blue selection */
 }
 
-/* --- 7. Scrollbars --- */
+/* --- Scrollbars --- */
 .scroll-bar:vertical {
     -fx-background-color: transparent;
 }
@@ -122,7 +116,7 @@
     -fx-background-radius: 4px;
 }
 
-/* --- 8. Tooltips --- */
+/* --- Tooltips --- */
 .tooltip {
     -fx-background-color: #343a40;
     -fx-text-fill: #ffffff;
@@ -132,7 +126,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
 }
 
-/* --- 9. Hyperlinks --- */
+/* --- Hyperlinks --- */
 .hyperlink {
     -fx-text-fill: #007bff;
     -fx-underline: true;

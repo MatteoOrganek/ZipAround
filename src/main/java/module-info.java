@@ -12,8 +12,10 @@ module uk.ac.roehampton.ziparound {
     requires org.jetbrains.annotations;
     requires jdk.jshell;
     requires java.desktop;
-    requires com.calendarfx.view;
     requires javafx.graphics;
+    requires java.sql;
+    requires java.net.http;
+    requires com.google.gson;
 
     opens uk.ac.roehampton.ziparound to javafx.fxml;
     exports uk.ac.roehampton.ziparound;
@@ -29,4 +31,6 @@ module uk.ac.roehampton.ziparound {
     opens uk.ac.roehampton.ziparound.equipment to javafx.fxml;
     exports uk.ac.roehampton.ziparound.booking;
     opens uk.ac.roehampton.ziparound.booking to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.application.controllers;
+    opens uk.ac.roehampton.ziparound.application.controllers to javafx.fxml;
 }

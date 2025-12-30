@@ -3,14 +3,14 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.bootstrapfx.scene.layout.Panel?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.LoginController">
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.LoginController">
 
     <!-- Center content -->
     <center>
         <HBox spacing="10" alignment="CENTER">
             <VBox spacing="10" alignment="CENTER">
-                <TextField promptText="Enter text"/>
-                <PasswordField promptText="Enter password"/>
+                <TextField fx:id="usernameEntry" promptText="Enter username"/>
+                <PasswordField fx:id="passwordEntry" promptText="Enter password"/>
                 <Button fx:id="loginButton" text="Login" onAction="#login"/>
             </VBox>
         </HBox>

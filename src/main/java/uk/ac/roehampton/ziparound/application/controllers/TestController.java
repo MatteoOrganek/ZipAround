@@ -1,8 +1,7 @@
-package uk.ac.roehampton.ziparound.application;
+package uk.ac.roehampton.ziparound.application.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
 
 public class TestController {
 

@@ -5,11 +5,11 @@ import javafx.scene.layout.Pane;
 
 import java.util.HashMap;
 
-public class SceneController {
+public class SceneManager {
     private final HashMap<String, Pane> screenMap = new HashMap<>();
     private final Scene main;
 
-    public SceneController(Scene main) {
+    public SceneManager(Scene main) {
         this.main = main;
     }
 
