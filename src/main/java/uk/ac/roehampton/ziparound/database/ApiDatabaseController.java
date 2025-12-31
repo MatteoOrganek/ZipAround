@@ -1,13 +1,15 @@
 package uk.ac.roehampton.ziparound.database;
 
 import java.net.URI;
-import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
+import uk.ac.roehampton.ziparound.users.User;
+
 import java.lang.reflect.Type;
 import java.io.IOException;
 import java.util.List;
@@ -17,11 +19,24 @@ public class ApiDatabaseController {
     private final String apiBaseUrl;
     private final HttpClient client;
     private final Gson gson;
+    private static ApiDatabaseController instance;
 
-    public ApiDatabaseController() {
+    private ApiDatabaseController() {
         this.apiBaseUrl = "https://owres.org/ziparound/";
         this.client = HttpClient.newHttpClient();
         this.gson = new Gson();
+    }
+
+    /**
+     * Get the singleton instance.
+     */
+    public static synchronized ApiDatabaseController getInstance() {
+        // If instance does not exist
+        if (instance == null) {
+            // Call private constructor
+            instance = new ApiDatabaseController();
+        }
+        return instance;
     }
 
     // VIEW ALL RECORDS
@@ -33,7 +48,7 @@ public class ApiDatabaseController {
                 .build();
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println(apiBaseUrl + "api.php?table=" + table);
+
 
         Type listType = new TypeToken<List<Map<String, Object>>>(){}.getType();
         // TODO Detect bad response ({status=fail, error=...})

@@ -3,6 +3,7 @@ package uk.ac.roehampton.ziparound.application;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import uk.ac.roehampton.ziparound.Utils;
 
 public class TestController {
 
@@ -10,11 +11,11 @@ public class TestController {
     public Button buttonTest;
 
     public void test(){
-        System.out.println("Testing");
+        Utils.log("Testing");
     }
 
     @FXML
     public void initialize() {
-        System.out.println("Test controller ready");
+
     }
 }

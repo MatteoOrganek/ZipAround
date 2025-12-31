@@ -1,17 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import org.kordamp.bootstrapfx.scene.layout.Panel?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.LoginController">
 
     <!-- Center content -->
     <center>
         <HBox spacing="10" alignment="CENTER">
             <VBox spacing="10" alignment="CENTER">
-                <TextField fx:id="usernameEntry" promptText="Enter username"/>
-                <PasswordField fx:id="passwordEntry" promptText="Enter password"/>
-                <Button fx:id="loginButton" text="Login" onAction="#login"/>
+                <Label>Please enter your credentials below.</Label>
+
+                <VBox spacing="40" alignment="CENTER"/>
+                <TextField fx:id="usernameEntry" promptText="Enter Username"/>
+                <PasswordField fx:id="passwordEntry" promptText="Enter Password"/>
+                <VBox spacing="10" alignment="CENTER"/>
+                <Label fx:id="hint"/>
+                <VBox spacing="10" alignment="CENTER"/>
+                <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
             </VBox>
         </HBox>
     </center>

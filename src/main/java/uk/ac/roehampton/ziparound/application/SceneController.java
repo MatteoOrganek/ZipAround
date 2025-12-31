@@ -13,7 +13,7 @@ public class SceneController {
         this.main = main;
     }
 
-    protected void addScreen(String name, Pane pane){
+    public void addScreen(String name, Pane pane){
         screenMap.put(name, pane);
     }
 
@@ -21,7 +21,7 @@ public class SceneController {
         screenMap.remove(name);
     }
 
-    protected void activate(String name){
+    public void switchTo(String name){
         main.setRoot( screenMap.get(name) );
     }
 }

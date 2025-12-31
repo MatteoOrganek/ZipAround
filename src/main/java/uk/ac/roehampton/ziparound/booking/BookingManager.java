@@ -21,9 +21,9 @@ public class BookingManager {
 
     private static BookingManager instance;
     // Array that stores all bookings
-    private ArrayList<Booking> bookingArrayList;
+    private final ArrayList<Booking> bookingArrayList;
     // Staff object for permissions
-    private Staff staff;
+    private final Staff staff;
 
     /**
      * Private Constructor for BookingManager

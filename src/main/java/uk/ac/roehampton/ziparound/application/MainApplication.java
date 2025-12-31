@@ -14,30 +14,27 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import uk.ac.roehampton.ziparound.booking.BookingManager;
-import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
-import uk.ac.roehampton.ziparound.equipment.Equipment;
-import uk.ac.roehampton.ziparound.users.staff.role.Admin;
+import uk.ac.roehampton.ziparound.Utils;
 
-import java.util.Map;
 import java.util.Objects;
 
 public class MainApplication extends Application {
-
-    public SceneManager sceneController;
-    BookingManager bookingManager;
 
 
     @Override
     public void start(Stage stage) throws Exception {
 
+        // Declare root
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
 
-
+        // Create base scene
         Scene scene = new Scene(root);
+
+        // Select css style
         scene.getStylesheets().add("modern.css");
+
+        // Setup Stage
         stage.setMinHeight(300);
         stage.setMinWidth(600);
         stage.setMaximized(true);
@@ -46,16 +43,20 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        sceneController = new SceneManager(stage.getScene());
-        Parent testView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("test-view.fxml")));
-        sceneController.addScreen("test", (Pane) testView);
-        Parent loginView = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login-view.fxml")));
-        sceneController.addScreen("login", (Pane) loginView);
-        sceneController.activate("login");
+
+        // Create a new scene controller
+        Utils.sceneControllerInstance = new SceneController(stage.getScene());
+
+        // Initialize instances (ApiDatabaseController and BookingManager)
+        Utils.initializeInstances();
+
+        // Switch to Log in scene
+        Utils.sceneControllerInstance.switchTo("login");
 
 
     }
     public static void main(String[] args) {
         launch(args);
     }
+
 }

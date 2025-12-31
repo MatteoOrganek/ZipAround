@@ -69,8 +69,8 @@
 }
 
 .text-field.error {
- -fx-border-color: red ;
- -fx-border-width: 2px ;
+    -fx-border-color: red;
+    -fx-background-color: #f2e1e1
 }
 
 /* Focused input */
