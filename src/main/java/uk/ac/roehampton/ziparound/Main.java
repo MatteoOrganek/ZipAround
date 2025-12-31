@@ -3,8 +3,10 @@ package uk.ac.roehampton.ziparound;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 
+import java.io.IOException;
+
 public class Main {
-    public static void main(String[] args) throws BookingManager.BookingException {
+    public static void main(String[] args) throws BookingManager.BookingException, IOException, InterruptedException {
 //        // Staff creation
 //        Admin admin1 = new Admin(
 //                1,

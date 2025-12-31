@@ -16,7 +16,11 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.users.User;
+import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 
+import java.util.List;
 import java.util.Objects;
 
 public class MainApplication extends Application {
@@ -51,8 +55,13 @@ public class MainApplication extends Application {
         Utils.initializeInstances();
 
         // Switch to Log in scene
+        // TODO Change to login when done testing
         Utils.sceneControllerInstance.switchTo("login");
 
+//        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllStaff();
+//        for (User user : listUsers){
+//            user.printFullInformation(new Admin(1000, "", "", ""));
+//        }
 
     }
     public static void main(String[] args) {

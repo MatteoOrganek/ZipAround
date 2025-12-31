@@ -60,22 +60,22 @@ public abstract class Staff extends User implements Permissions {
      */
     public String getPermissionSummary(Staff staff) {
         if (staff.canViewStaffInfo()) {
-            return "Permissions:\n" + "\tBookings: " +
+            return "    O Permissions:\n" + "    ├\tBookings: " +
                     (canViewBookingInfo() ? "View " : "") +
                     (canAddBookings() ? "Add " : "") +
                     (canModifyBookings() ? "Modify " : "") +
                     (canDeleteBookings() ? "Delete " : "") +
-                    "\n\tVehicles: " +
+                    "\n    ├\tVehicles: " +
                     (canViewVehicleInfo() ? "View " : "") +
                     (canAddVehicles() ? "Add " : "") +
                     (canModifyVehicles() ? "Modify " : "") +
                     (canDeleteVehicles() ? "Delete " : "") +
-                    "\n\tUsers: " +
+                    "\n    ├\tUsers: " +
                     (canViewUserInfo() ? "View " : "") +
                     (canAddUsers() ? "Add " : "") +
                     (canModifyUsers() ? "Modify " : "") +
                     (canDeleteUsers() ? "Delete " : "") +
-                    "\n\tEquipment: " +
+                    "\n    └\tEquipment: " +
                     (canViewEquipmentInfo() ? "View " : "") +
                     (canAddEquipment() ? "Add " : "") +
                     (canModifyEquipment() ? "Modify " : "") +
@@ -91,7 +91,7 @@ public abstract class Staff extends User implements Permissions {
     @Override public void printFullInformation(Staff staff) {
         if (staff.canViewStaffInfo()) {
             try {
-                System.out.printf("[%s] [%s - %s] - %s\n%s%n", isActive(staff) ? "Active" : "Not Active", getID(staff), getDepartment(staff), getFullName(staff), getPermissionSummary(staff));
+                System.out.printf("[i] |STAFF| %s - %s [%s] (%s)\n%s%n", getID(staff), getFullName(staff), isActive(staff) ? "Active" : "Not Active", getDepartment(staff), getPermissionSummary(staff));
             } catch (SecurityException e) {
                 System.out.println(e.getMessage());
             }

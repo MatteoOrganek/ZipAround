@@ -18,8 +18,12 @@ import uk.ac.roehampton.ziparound.application.MainApplication;
 import uk.ac.roehampton.ziparound.application.SceneController;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
+import uk.ac.roehampton.ziparound.users.User;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 
 public class Utils {
@@ -31,6 +35,9 @@ public class Utils {
     public static BookingManager bookingManagerInstance;
     public static ApiDatabaseController apiDatabaseControllerInstance;
     public static SceneController sceneControllerInstance;
+
+
+    public static User currentUser;
 
     public static void initializeInstances() throws IOException {
         setApiDatabaseControllerInstance();
@@ -88,5 +95,29 @@ public class Utils {
 
     public static void log(){
         System.out.println(" ");
+    }
+
+    public static String hashString(String s) throws NoSuchAlgorithmException {
+
+        // Encrypt string using sha265
+        MessageDigest digest = MessageDigest.getInstance("SHA-256");
+        byte[] hashBytes = digest.digest(s.getBytes(StandardCharsets.UTF_8));
+
+        // Reassemble hex from bytes
+        StringBuilder hashedString = new StringBuilder();
+        for (byte b : hashBytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hashedString.append('0');
+            hashedString.append(hex);
+        }
+        return hashedString.toString();
+    }
+
+    public static User getCurrentUser() {
+        return currentUser;
+    }
+
+    public static void setCurrentUser(User currentUser) {
+        Utils.currentUser = currentUser;
     }
 }

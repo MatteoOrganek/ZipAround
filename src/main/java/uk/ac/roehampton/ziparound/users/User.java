@@ -70,10 +70,10 @@ public abstract class User {
     public void printFullInformation(Staff staff) {
         if (staff.canViewUserInfo())
             try {
-                System.out.printf("%s - %s%n", getID(staff), getFullName(staff));
+                Utils.log("|USER| %s - %s".formatted(getID(staff), getFullName(staff)), 3);
             }
             catch (SecurityException e) {
-                System.out.println(e.getMessage());
+                Utils.log(e.getMessage(), 5);
             }
         else {
             throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);

@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.application.controllers;
 
+import eu.hansolo.toolbox.tuples.Tuple;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -8,8 +9,12 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
+import uk.ac.roehampton.ziparound.users.User;
+import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.io.IOException;
 import java.net.ConnectException;
@@ -83,7 +88,6 @@ public class LoginController {
 
             if (success) {
                 clearErrors();
-                Utils.log("Successful login!", 2);
                 hint.setText("Successful login!");
                 Utils.sceneControllerInstance.switchTo("main");
                 // Switch scene
@@ -109,19 +113,8 @@ public class LoginController {
 
         // Fetch username from entry
         String username = usernameEntry.getText();
-
-        // Fetch password from entry and encrypt it using sha265
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hashBytes = digest.digest((passwordEntry.getText()).getBytes(StandardCharsets.UTF_8));
-
-        // Reassemble hex from bytes
-        StringBuilder password = new StringBuilder();
-        for (byte b : hashBytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) password.append('0');
-            password.append(hex);
-        }
-
+        // Fetch password from entry and hash it
+        String password = Utils.hashString(passwordEntry.getText());
 
         ApiDatabaseController apiDatabaseControllerInstance = Utils.apiDatabaseControllerInstance;
 
@@ -135,6 +128,9 @@ public class LoginController {
 
         // For each credential in list
         for (Map<String, Object> credentialInfo : credentialsList) {
+
+            // Hold current id
+            int user_id = -1;
 
             Utils.log();
 
@@ -162,10 +158,16 @@ public class LoginController {
                     Utils.log(entry.getKey() + "/" + entry.getValue());
                 }
 
+                // Get user_id
+                if (Objects.equals(entry.getKey(), "user_id")){
+                    user_id = Integer.parseInt((String) entry.getValue());
+                }
+
             }
 
             // If both username and password match, there is no need to continue, return true.
             if (usernameHit && passwordHit) {
+                assignGlobalUser(user_id);
                 return true;
             }
         }
@@ -191,4 +193,26 @@ public class LoginController {
         hint.setText("");
     }
 
+    private User assignGlobalUser(Integer user_id) throws IOException, InterruptedException {
+        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllStaff();
+
+        for (User user : listUsers){
+
+            if (Objects.equals(user.getID(new SelfService()), user_id)){
+                Utils.log();
+                Utils.log("User found!", 2);
+                if (user instanceof Staff){
+                    Utils.currentUser = user;
+                    user.printFullInformation((Staff) user);
+                    Utils.log("User is Staff. Heading to Staff View.");
+                } else {
+                    Utils.log("User is a Customer. Creating selfService. Heading to Customer View.");
+                    Utils.currentUser = new SelfService();
+                }
+                return user;
+            }
+
+        }
+        return null;
+    }
 }
