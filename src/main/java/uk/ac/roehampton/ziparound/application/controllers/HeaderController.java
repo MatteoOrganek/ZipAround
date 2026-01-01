@@ -1,6 +1,7 @@
 package uk.ac.roehampton.ziparound.application.controllers;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import uk.ac.roehampton.ziparound.Utils;
 
 public class HeaderController {
@@ -10,6 +11,7 @@ public class HeaderController {
     public Button homeButton;
     public Button staffButton;
     public Button customerButton;
+    public Label logo;
 
     public void logout(){
         Utils.currentStaff = null;
@@ -42,28 +44,29 @@ public class HeaderController {
     }
 
     public void hideStaffControls() {
-        reset();
         staffButton.setManaged(false);
         staffButton.setVisible(false);
 
     }
 
-
-
-
     public void inHomeView() {
         reset();
-        customerButton.setManaged(false);
-        customerButton.setVisible(false);
         homeButton.setManaged(false);
         homeButton.setVisible(false);
+        customerButton.setManaged(false);
+        customerButton.setVisible(false);
 
     }
 
     public void inStaffView() {
         reset();
+        logo.setText("Staff Portal");
         staffButton.setManaged(false);
         staffButton.setVisible(false);
+        bookingsButton.setManaged(false);
+        bookingsButton.setVisible(false);
+        vehicleButton.setManaged(false);
+        vehicleButton.setVisible(false);
         homeButton.setManaged(false);
         homeButton.setVisible(false);
 
@@ -101,14 +104,15 @@ public class HeaderController {
     }
 
     public void reset() {
-        staffButton.setManaged(true);
-        staffButton.setVisible(true);
+        logo.setText("ZipAround");
         vehicleButton.setManaged(true);
         vehicleButton.setVisible(true);
         accountButton.setManaged(true);
         accountButton.setVisible(true);
         customerButton.setManaged(true);
         customerButton.setVisible(true);
+        bookingsButton.setManaged(true);
+        bookingsButton.setVisible(true);
     }
 
 }

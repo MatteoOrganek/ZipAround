@@ -11,6 +11,7 @@
 package uk.ac.roehampton.ziparound.equipment.vehicle;
 
 import org.jetbrains.annotations.NotNull;
+import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;

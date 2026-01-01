@@ -10,16 +10,14 @@
       alignment="CENTER_LEFT"
       style="-fx-background-color: #F0F2F5; -fx-padding: 15px;">
 
-    <ImageView fx:id="logo"
-               fitWidth="40"
+    <ImageView fitWidth="40"
                fitHeight="40"
                preserveRatio="true">
-        <image>
-            <Image url="@imgs/logo_circular.png"/>
-        </image>
+        <Image url="@imgs/logo_circular.png"/>
     </ImageView>
 
     <Label text="ZipAround"
+           fx:id="logo"
            style="-fx-text-fill: #446356;
                   -fx-font-size: 24px;
                   -fx-font-weight: bold;"/>
@@ -32,6 +30,6 @@
     <Button text="Staff" fx:id="staffButton" onAction="#goToStaffView"/>
     <Button text="Customer" fx:id="customerButton" onAction="#goToCustomerView"/>
     <Button text="Home" fx:id="homeButton" onAction="#goToHomeView"/>
-    <Button text="Logout" onAction="#logout"/>
+    <Button text="Logout" onAction="#logout" styleClass="red"/>
 </HBox>
 

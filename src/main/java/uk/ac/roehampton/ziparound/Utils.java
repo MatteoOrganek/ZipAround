@@ -26,6 +26,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Utils {
@@ -91,6 +95,15 @@ public class Utils {
         System.out.println(" ");
     }
 
+    public static void logBreakpoint(){
+
+        System.out.println();
+        log("--------------------------------------------------------------------------------------------------", 1);
+        log("Breakpoint reached!", 1);
+        log("--------------------------------------------------------------------------------------------------", 1);
+        System.out.println();
+    }
+
     public static String hashString(String s) throws NoSuchAlgorithmException {
 
         // Encrypt string using sha265
@@ -126,12 +139,20 @@ public class Utils {
                 scene.setRoot(root);
             }
 
-            log("Heading to %s".formatted(name), 3);
+            log("Heading to %s-view.fxml".formatted(name), 3);
             stage.show();
         } catch (Exception e) {
             log("Failed to change scene: " + e.getMessage(), 5);
             e.printStackTrace();
         }
+    }
+
+    public static Instant convertStringToInstant(String s) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // Parse to LocalDateTime
+        LocalDateTime localDateTime = LocalDateTime.parse(s, formatter);
+        // Convert to Instant (specify the timezone, e.g., system default)
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant();
     }
 
 }

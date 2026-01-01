@@ -5,6 +5,7 @@ import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
+import java.awt.print.Book;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -20,8 +21,12 @@ import java.util.Objects;
 public class BookingManager {
 
     private static BookingManager instance;
-    // Array that stores all bookings
+    // Array that stores all current bookings
     private final ArrayList<Booking> bookingArrayList;
+    // Array that stores all current bookable items
+    private final ArrayList<Bookable> bookableArrayList;
+    // Array that stores all current users
+    private final ArrayList<User> userArrayList;
     // Staff object for permissions
     private final Staff staff;
 
@@ -30,7 +35,9 @@ public class BookingManager {
      * @param user Staff object required for low level permissions
      */
     private BookingManager(User user) {
+        this.bookableArrayList = new ArrayList<>();
         this.bookingArrayList = new ArrayList<>();
+        this.userArrayList = new ArrayList<>();
         // Check if user is Staff
         if (user instanceof Staff) {
             // Assign user (staff) to this.staff
@@ -68,14 +75,20 @@ public class BookingManager {
         }
         return instance;
     }
+
     // Getter for booking List
     public ArrayList<Booking> getBookingArrayList() {
         return bookingArrayList;
     }
 
+    // Getter for bookable List
+    public ArrayList<Bookable> getBookableArrayList() {
+        return bookableArrayList;
+    }
+
 
     /**
-     * Creates and adds a booking to bookableArrayList based on whether the booking is valid and if it overlaps with
+     * Creates and adds a booking to bookingArrayList based on whether the booking is valid and if it overlaps with
      * another booking containing the same object.
      *
      * @param bookedStartTime Start time of the booking.
@@ -119,40 +132,29 @@ public class BookingManager {
     }
 
     /**
-     * Creates and adds a booking to bookableArrayList based on whether the booking is valid and if it overlaps with
-     * another booking containing the same object.
-     *
-     * @param booking Booking to be added.
-     * @throws BookingException Will throw OverlappingBookingException and BookableObjectUnavailableException.
+     * This function adds a booking to bookingArrayList
+     * @param booking Booking to be added
      */
-    public void addBooking(Booking booking) throws BookingException {
+    public void addBooking(Booking booking) {
+        bookingArrayList.add(booking);
+    }
 
-        // Assign ID as it might not be valid
-        booking.bookingID = assignID();
+    /**
+     * Adds a bookable item to bookableArrayList
+     *
+     * @param bookable Bookable item to be added.
+     */
+    public void addBookable(Bookable bookable) {
+        bookableArrayList.add(bookable);
+    }
 
-        // If the bookable object is available
-        if (booking.bookableObject.isAvailable(staff)) {
-
-            // If the list is not null and not empty
-            if (bookingArrayList != null && !bookingArrayList.isEmpty()) {
-                // If the booking does not overlap
-                if (isValid(booking)) {
-                    // Add the booking in the list.
-                    bookingArrayList.add(booking);
-                } else {
-                    // Booking overlaps with another booking of the same item
-                    throw new OverlappingBookingException();
-                }
-            } else {
-                // Add Booking in list if the list is not null
-                assert bookingArrayList != null;
-                bookingArrayList.add(booking);
-            }
-        } else {
-            // Bookable Object is not available
-            throw new BookableObjectUnavailableException();
-        }
-
+    /**
+     * Adds a user to bookableArrayList
+     *
+     * @param user Bookable item to be added.
+     */
+    public void addUser(User user) {
+        userArrayList.add(user);
     }
 
     /**
@@ -202,6 +204,7 @@ public class BookingManager {
      * This function assigns a new ID based on the last item's id on the booking list.
      * @return New ID.
      */
+    // TODO Remove this as it may cause some issues later on
     int assignID() {
         // If the booking list is not empty
         if (!bookingArrayList.isEmpty()){

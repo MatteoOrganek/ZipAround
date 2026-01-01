@@ -208,7 +208,7 @@ public class LoginController {
     }
 
     private User assignGlobalUser(Integer user_id) throws IOException, InterruptedException {
-        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllStaff();
+        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllUsers();
 
         for (User user : listUsers){
 

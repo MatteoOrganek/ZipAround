@@ -24,20 +24,19 @@ public class HomeController {
     private HeaderController headerController;
 
     @FXML
-    // TODO Remove Exceptions
-    public void initialize() throws IOException, InterruptedException {
+    public void initialize() {
 
         headerController.inHomeView();
 
         if (!(Utils.currentUser instanceof Staff)){
             headerController.hideStaffControls();
         }
+
         if (Utils.currentStaff != null){
             greetText.setText("Hello %s,\nBook Your Ride in Seconds".formatted(Utils.currentUser.getForeName(Utils.currentStaff)));
+        } else {
+            greetText.setText("Book Your Ride in Seconds");
         }
-
-        // TODO Remove this
-        Utils.apiDatabaseControllerInstance.getAllBookings();
 
     }
 }

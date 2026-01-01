@@ -20,7 +20,7 @@ public class BookingController {
         headerController.inBookingView();
     }
 
-    public void createBooking(ActionEvent event) {
+    public void createBooking() {
     }
 }
 

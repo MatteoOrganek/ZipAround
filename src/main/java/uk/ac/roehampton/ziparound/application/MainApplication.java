@@ -17,6 +17,7 @@ import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.Admin;
@@ -30,8 +31,10 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        // TODO Remove ghost login
         Utils.currentUser = new Admin(-1, "Matteo", "Organek", "Admin");
         Utils.currentStaff = new Admin(-1, "Matteo", "Organek", "Admin");
+        Utils.setBookingManagerInstance();
 
         // Declare root
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
@@ -60,6 +63,15 @@ public class MainApplication extends Application {
         // Switch to Log in scene
         // TODO Change to login when done testing
         Utils.changeScene("home");
+
+
+        // TODO Remove this
+        Utils.apiDatabaseControllerInstance.update();
+        List<Bookable> bookableList = Utils.bookingManagerInstance.getBookableArrayList();
+
+        for (Bookable bookable : bookableList){
+            bookable.printInfo(Utils.currentStaff);
+        }
 
     }
     public static void main(String[] args) {

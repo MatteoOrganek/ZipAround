@@ -1,20 +1,21 @@
 package uk.ac.roehampton.ziparound.database;
 
-import java.awt.print.Book;
 import java.net.URI;
-import java.net.URLStreamHandler;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Map;
+import java.time.Instant;
+import java.util.*;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import jdk.jshell.execution.Util;
-import org.jetbrains.annotations.NotNull;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
-import uk.ac.roehampton.ziparound.booking.BookingManager;
+import uk.ac.roehampton.ziparound.equipment.Equipment;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
+import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
+import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
 import uk.ac.roehampton.ziparound.users.Customer;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
@@ -25,8 +26,6 @@ import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.lang.reflect.Type;
 import java.io.IOException;
-import java.util.List;
-import java.util.Stack;
 
 public class ApiDatabaseController {
 
@@ -156,7 +155,7 @@ public class ApiDatabaseController {
         return listUsersInfo;
     }
 
-    public List<User> getAllStaff() throws IOException, InterruptedException {
+    public List<User> getAllUsers() throws IOException, InterruptedException {
 
         List<User> listUsers = new ArrayList<>();
 
@@ -236,51 +235,136 @@ public class ApiDatabaseController {
         return listUsers;
     }
 
-    public List<Booking> getAllObjects() throws IOException, InterruptedException {
-
-        List<Booking> listBookings = new ArrayList<>();
+    public List<Bookable> getAllBookables() throws IOException, InterruptedException {
 
         List<Map<String, Object>> listMaps = getAll("vehicle");
 
         // Loop over each vehicle
-        for (Map<String, Object> userInfo : listMaps) {
+        for (Map<String, Object> vehicleInfo : listMaps) {
 
-            // Loop over each info in booking
-            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+            List<Object> listVehicleInfo = new ArrayList<>();
 
-                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
+            // Loop over each vehicle info
+            for (Map.Entry<String, Object> entry : vehicleInfo.entrySet()) {
+                listVehicleInfo.add(entry.getValue());
             }
+
+            Vehicle vehicle =  switch ((String) listVehicleInfo.get(2)) {
+                case "EBike" -> new EBike(
+                        Integer.parseInt((String) listVehicleInfo.get(0)),
+                        (String) listVehicleInfo.get(1),
+                        (String) listVehicleInfo.get(3),
+                        Float.parseFloat((String) listVehicleInfo.get(4)),
+                        Integer.parseInt((String) listVehicleInfo.get(5)),
+                        Integer.parseInt((String) listVehicleInfo.get(6))
+                );
+                case "Scooter" -> new Scooter(
+                        Integer.parseInt((String) listVehicleInfo.get(0)),
+                        (String) listVehicleInfo.get(1),
+                        (String) listVehicleInfo.get(3),
+                        Float.parseFloat((String) listVehicleInfo.get(4)),
+                        Integer.parseInt((String) listVehicleInfo.get(5)),
+                        Integer.parseInt((String) listVehicleInfo.get(6))
+                );
+                default -> throw new IllegalStateException("Unexpected value: " + (String) listVehicleInfo.get(2));
+            };
+
+            // Add it to the bookable list in booking manager (Cast it to Bookable as the abstract class Vehicle is not Bookable, (EBike and ))
+            Utils.bookingManagerInstance.addBookable((Bookable) vehicle);
         }
 
-        return listBookings;
+        // Get all equipment
+        listMaps = getAll("equipment");
+
+        // Loop over each equipment
+        for (Map<String, Object> equipmentInfo : listMaps) {
+
+            List<Object> listEquipmentInfo = new ArrayList<>();
+
+            // Loop over each equipment info
+            for (Map.Entry<String, Object> entry : equipmentInfo.entrySet()) {
+                listEquipmentInfo.add(entry.getValue());
+            }
+
+            Equipment equipment = new Equipment(
+                    Integer.parseInt((String) listEquipmentInfo.get(0)),
+                    (String) listEquipmentInfo.get(1),
+                    (String) listEquipmentInfo.get(2),
+                    Boolean.getBoolean((String) listEquipmentInfo.get(3))
+            );
+
+            // Add it to the bookable list in booking manager
+            Utils.bookingManagerInstance.addBookable(equipment);
+        }
+
+        return Utils.bookingManagerInstance.getBookableArrayList();
     }
 
     public List<Booking> getAllBookings() throws IOException, InterruptedException {
 
-        List<Booking> listBookings = new ArrayList<>();
-
         List<Map<String, Object>> listMaps = getAll("booking");
 
-        // Loop over each boking
+        // Loop over each booking
         for (Map<String, Object> userInfo : listMaps) {
+
+            List<Object> listBookingInfo = new ArrayList<>();
 
             // Loop over each info in booking
             for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
+                listBookingInfo.add(entry.getValue());
+            }
+
+            // Get time
+            Instant startTime = Utils.convertStringToInstant((String) listBookingInfo.get(1));
+            Instant endTime = Utils.convertStringToInstant((String) listBookingInfo.get(2));
+            Instant createdOnTime = Utils.convertStringToInstant((String) listBookingInfo.get(3));
+
+            User user;
+            Bookable bookable;
+            Staff staff;
+
+            Booking booking = new Booking(
+                    Integer.parseInt((String) listBookingInfo.get(0)),
+                    startTime,
+                    endTime,
+                    createdOnTime,
+                    user,
+                    bookable,
+                    Boolean.parseBoolean((String) listBookingInfo.get(7)),
+                    staff
+            );
+            Utils.bookingManagerInstance.addBooking(booking);
+        }
+
+        return Utils.bookingManagerInstance.getBookingArrayList();
+    }
+
+    public List<Object> getAllObjects(String s) throws IOException, InterruptedException {
+
+        // Initialize return list
+        List<Object> listObject = new ArrayList<>();
+
+        // Get objects
+        List<Map<String, Object>> listMaps = getAll(s);
+
+        // Loop over each Objects
+        for (Map<String, Object> objectInfo : listMaps) {
+
+            // Loop over each info in Object
+            for (Map.Entry<String, Object> entry : objectInfo.entrySet()) {
 
                 Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
-//                switch (entry.getKey()){
-//                    case
-//                }
             }
         }
 
-        return listBookings;
+        return listObject;
     }
-//    private void convertAll(String table) throws IOException, InterruptedException {
-//        List<Map<String, Object>> listObjects = getAll(table);
-//        List<E> listObjects = new List<E>();
-//    }
 
-
+    public void update() throws IOException, InterruptedException {
+        getAllObjects("vehicles");
+        getAllBookables();
+        getAllBookings();
+    }
 
 }
