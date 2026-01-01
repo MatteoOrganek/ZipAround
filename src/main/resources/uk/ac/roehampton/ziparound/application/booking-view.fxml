@@ -4,29 +4,76 @@
 <?import javafx.scene.layout.*?>
 <?import org.kordamp.bootstrapfx.scene.layout.Panel?>
 <?import javafx.geometry.Insets?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.MainController">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingController">
 
-    <!-- Top Panel -->
     <top>
-        <Panel fx:id="topPanel">
-            <children>
-                <HBox alignment="CENTER_RIGHT" spacing="10">
-                    <padding>
-                        <Insets top="10" bottom="10" left="10" right="10"/>
-                    </padding>
-                    <Label text="Example" />
-                    <Button text="Primary" styleClass="btn btn-primary"/>
-                    <Button text="Danger" styleClass="btn btn-danger"/>
-                    <Hyperlink text="Click me"/>
-
-                </HBox>
-            </children>
-        </Panel>
+        <fx:include fx:id="header" source="header.fxml"/>
     </top>
 
     <!-- Center content -->
     <center>
+        <SplitPane dividerPositions="0.6">
 
+            <!-- Current Bookings -->
+            <VBox spacing="10" style="-fx-padding: 15;">
+                <Label text="Current Bookings"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <TableView fx:id="bookingTable" VBox.vgrow="ALWAYS">
+
+                    <columns>
+                        <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                        <TableColumn fx:id="customerColumn" text="Customer" prefWidth="140"/>
+                        <TableColumn fx:id="itemColumn" text="Item" prefWidth="120"/>
+                        <TableColumn fx:id="startColumn" text="Start Time" prefWidth="160"/>
+                        <TableColumn fx:id="endColumn" text="End Time" prefWidth="160"/>
+                        <TableColumn fx:id="approvedColumn" text="Approved" prefWidth="90"/>
+                    </columns>
+
+                </TableView>
+            </VBox>
+
+            <!-- Create Booking -->
+            <VBox spacing="15" style="-fx-padding: 20;">
+
+                <Label text="Create New Booking"
+                       style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+                <GridPane hgap="10" vgap="12">
+
+                    <Label text="Customer:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="customerCombo"
+                              promptText="Select customer"
+                              GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <Label text="Item:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <ComboBox fx:id="itemCombo"
+                              promptText="Select vehicle/equipment"
+                              GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                    <Label text="Start Time:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="startDatePicker"
+                                GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <Label text="End Time:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="endDatePicker"
+                                GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                </GridPane>
+
+                <Separator/>
+
+                <HBox spacing="10" alignment="CENTER_RIGHT">
+                    <Button text="Create Booking"
+                            fx:id="createBookingButton"
+                            onAction="#createBooking"/>
+                </HBox>
+
+            </VBox>
+
+        </SplitPane>
     </center>
 
 </BorderPane>

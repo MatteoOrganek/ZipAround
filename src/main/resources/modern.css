@@ -29,7 +29,7 @@
 
 /* --- Buttons --- */
 .button, .btn {
-    -fx-background-radius: 2px;          /* Square buttons */
+    -fx-background-radius: 6px;          /* Square buttons */
     -fx-border-radius: 4px;
     -fx-padding: 8px 16px;
     -fx-font-size: 14px;
@@ -37,20 +37,21 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
     -fx-text-fill: #ffffff;
-    -fx-background-color: #A4C3B2;      /* Primary color */
+    -fx-background-color: #446356;      /* Primary color */
     -fx-border-width: 0;
     -fx-transition: all 0.2s ease;
 }
 
 /* Button hover */
 .button:hover, .btn:hover {
-    -fx-background-color: #6B9080;
+    -fx-background-color: #3f6e5a;
+    -fx-transition: all 0.2s ease;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
 /* Button pressed */
 .button:pressed, .btn:pressed {
-    -fx-background-color: #31614d;
+    -fx-background-color: #304a3f;
     -fx-effect: none;
 }
 

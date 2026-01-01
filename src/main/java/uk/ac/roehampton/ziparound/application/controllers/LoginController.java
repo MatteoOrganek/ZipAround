@@ -1,6 +1,5 @@
 package uk.ac.roehampton.ziparound.application.controllers;
 
-import eu.hansolo.toolbox.tuples.Tuple;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -9,7 +8,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
@@ -17,9 +15,6 @@ import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
@@ -56,59 +51,72 @@ public class LoginController {
         });
 
         // Press Enter on username -> go to password
-        usernameEntry.setOnAction(e -> handleLogin());
+        usernameEntry.setOnAction(e -> passwordEntry.requestFocus());
 
         // Press Enter on password -> trigger login
-        passwordEntry.setOnAction(e -> handleLogin());
+        passwordEntry.setOnAction(e -> login());
 
     }
-    public void handleLogin(){
+    public void login(){
 
-        // Disable all entries and buttons
-        usernameEntry.setDisable(true);
-        passwordEntry.setDisable(true);
-        loginButton.setDisable(true);
+        // Check if either entries are empty, if so notify user
+        if (Objects.equals(usernameEntry.getText(), "") || Objects.equals(passwordEntry.getText(), "")){
 
-        // Create a Task for background work
-        Task<Boolean> loginTask = new Task<>() {
-            @Override
-            protected Boolean call() throws Exception {
-                // Possibly long login call
-                return login();
-            }
-        };
+            showError();
+            hint.setText("Please fill out both entries.");
 
-        loginTask.setOnSucceeded(event -> {
-            boolean success = loginTask.getValue();
+        } else {
 
-            // Re-enable all entries and buttons
-            usernameEntry.setDisable(false);
-            passwordEntry.setDisable(false);
-            loginButton.setDisable(false);
+            // Disable all entries and buttons
+            usernameEntry.setDisable(true);
+            passwordEntry.setDisable(true);
+            loginButton.setDisable(true);
 
-            if (success) {
-                clearErrors();
-                hint.setText("Successful login!");
-                Utils.sceneControllerInstance.switchTo("main");
-                // Switch scene
-            } else {
-                Utils.log("Unsuccessful login!", 5);
-                showError();
-            }
+            // Create a Task for background work
+            Task<Boolean> loginTask = new Task<>() {
+                @Override
+                protected Boolean call() throws Exception {
+                    // Possibly long login call
+                    return checkCredentials();
+                }
+            };
 
-        });
+            loginTask.setOnSucceeded(event -> {
+                boolean success = loginTask.getValue();
 
-        // Error handling
-        loginTask.setOnFailed(event -> {
-            Throwable ex = loginTask.getException();
-            ex.printStackTrace();
-        });
+                // Re-enable all entries and buttons
+                usernameEntry.setDisable(false);
+                passwordEntry.setDisable(false);
+                loginButton.setDisable(false);
 
-        // Run task in a background thread
-        new Thread(loginTask).start();
+                if (success) {
+                    // Reset buttons and labels
+                    clearErrors();
+                    // Log successful login
+                    hint.setText("Successful login!");
+                    // Initialize booking manager
+                    Utils.setBookingManagerInstance();
+                    // Change current scene to main
+                    Utils.changeScene("home");
+                } else {
+                    Utils.log("Unsuccessful login!", 5);
+                    showError();
+                }
+
+            });
+
+            // Error handling
+            loginTask.setOnFailed(event -> {
+                Throwable ex = loginTask.getException();
+                ex.printStackTrace();
+            });
+
+            // Run task in a background thread
+            new Thread(loginTask).start();
+        }
     }
 
-    public boolean login() throws IOException, InterruptedException, NoSuchAlgorithmException {
+    public boolean checkCredentials() throws IOException, InterruptedException, NoSuchAlgorithmException {
 
 
         // Fetch username from entry
@@ -121,13 +129,19 @@ public class LoginController {
         Utils.log();
         Utils.log("Checking credentials u:%s p:%s...".formatted(username, password), 3);
 
-        List<Map<String, Object>> credentialsList = apiDatabaseControllerInstance.getAll("credentials");
+        List<Map<String, Object>> listMaps = apiDatabaseControllerInstance.getAll("credentials");
+
+        if (!listMaps.isEmpty()){
+            Utils.log("User data successfully fetched.", 2);
+        } else {
+            Utils.log("No user data found!", 1);
+        }
 
         boolean usernameHit;
         boolean passwordHit;
 
         // For each credential in list
-        for (Map<String, Object> credentialInfo : credentialsList) {
+        for (Map<String, Object> credentialInfo : listMaps) {
 
             // Hold current id
             int user_id = -1;
@@ -203,11 +217,13 @@ public class LoginController {
                 Utils.log("User found!", 2);
                 if (user instanceof Staff){
                     Utils.currentUser = user;
+                    Utils.currentStaff = (Staff) user;
                     user.printFullInformation((Staff) user);
-                    Utils.log("User is Staff. Heading to Staff View.");
+                    Utils.log("User is Staff.");
                 } else {
-                    Utils.log("User is a Customer. Creating selfService. Heading to Customer View.");
-                    Utils.currentUser = new SelfService();
+                    Utils.log("Successful login! User is a Customer. Creating selfService.");
+                    Utils.currentUser = user;
+                    Utils.currentStaff = new SelfService();
                 }
                 return user;
             }

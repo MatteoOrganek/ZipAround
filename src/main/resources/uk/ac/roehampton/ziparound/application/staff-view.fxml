@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.StaffController" style="-fx-background-color: #F0F2F5;">
+
+        <top>
+            <fx:include fx:id="header" source="header.fxml"/>
+        </top>
+
+        <center>
+            <VBox spacing="30" style="-fx-padding: 30px;">
+
+                <!-- Booking Section -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 25px; -fx-background-radius: 12;">
+                    <Label text="Booking Requests"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+                    <TableView fx:id="bookingRequestsTable" prefHeight="200">
+                        <columns>
+                            <TableColumn text="ID" prefWidth="50"/>
+                            <TableColumn text="Customer" prefWidth="150"/>
+                            <TableColumn text="Vehicle" prefWidth="120"/>
+                            <TableColumn text="Pickup Date" prefWidth="120"/>
+                            <TableColumn text="Return Date" prefWidth="120"/>
+                            <TableColumn text="Status" prefWidth="100"/>
+                            <TableColumn text="Action" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+
+                    <HBox spacing="10">
+                        <Button text="Approve Selected"/>
+                        <Button text="Reject Selected" style="-fx-background-color: #C44D58; -fx-text-fill: white;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Maintenance Section -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 25px; -fx-background-radius: 12;">
+                    <Label text="Vehicle / Equipment Maintenance"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+                    <TableView prefHeight="200">
+                        <columns>
+                            <TableColumn text="ID" prefWidth="50"/>
+                            <TableColumn text="Equipment" prefWidth="150"/>
+                            <TableColumn text="Status" prefWidth="100"/>
+                            <TableColumn text="Last Serviced" prefWidth="150"/>
+                            <TableColumn text="Action" prefWidth="100"/>
+                        </columns>
+                    </TableView>
+
+                    <Button text="Mark Selected as Maintained"/>
+                </VBox>
+
+            </VBox>
+        </center>
+        <bottom>
+            <HBox alignment="CENTER" style="-fx-padding: 5px; -fx-background-color: #16381b;">
+                <Label text="© 2025 Owres, ZipAround (NOT ZipAbout) Staff Portal" style="-fx-text-fill: white; -fx-font-size: 10px;"/>
+            </HBox>
+        </bottom>
+    </BorderPane>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.VehicleController">
+
+    <top>
+        <fx:include fx:id="header" source="header.fxml"/>
+    </top>
+
+    <!-- Center content -->
+    <center>
+
+    </center>
+
+</BorderPane>

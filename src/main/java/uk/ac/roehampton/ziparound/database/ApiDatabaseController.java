@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.database;
 
+import java.awt.print.Book;
 import java.net.URI;
 import java.net.URLStreamHandler;
 import java.net.http.HttpClient;
@@ -12,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import jdk.jshell.execution.Util;
 import org.jetbrains.annotations.NotNull;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.users.Customer;
 import uk.ac.roehampton.ziparound.users.User;
@@ -234,6 +236,46 @@ public class ApiDatabaseController {
         return listUsers;
     }
 
+    public List<Booking> getAllObjects() throws IOException, InterruptedException {
+
+        List<Booking> listBookings = new ArrayList<>();
+
+        List<Map<String, Object>> listMaps = getAll("vehicle");
+
+        // Loop over each vehicle
+        for (Map<String, Object> userInfo : listMaps) {
+
+            // Loop over each info in booking
+            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+
+                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
+            }
+        }
+
+        return listBookings;
+    }
+
+    public List<Booking> getAllBookings() throws IOException, InterruptedException {
+
+        List<Booking> listBookings = new ArrayList<>();
+
+        List<Map<String, Object>> listMaps = getAll("booking");
+
+        // Loop over each boking
+        for (Map<String, Object> userInfo : listMaps) {
+
+            // Loop over each info in booking
+            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+
+                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
+//                switch (entry.getKey()){
+//                    case
+//                }
+            }
+        }
+
+        return listBookings;
+    }
 //    private void convertAll(String table) throws IOException, InterruptedException {
 //        List<Map<String, Object>> listObjects = getAll(table);
 //        List<E> listObjects = new List<E>();

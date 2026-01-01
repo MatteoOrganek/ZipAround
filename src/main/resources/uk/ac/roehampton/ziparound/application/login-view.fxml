@@ -1,23 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.LoginController">
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="uk.ac.roehampton.ziparound.application.controllers.LoginController"
+            style="-fx-background-color: linear-gradient(to bottom right, #6B9080, #A3B18A);">
 
     <!-- Center content -->
     <center>
-        <HBox spacing="10" alignment="CENTER">
-            <VBox spacing="10" alignment="CENTER">
-                <Label>Please enter your credentials below.</Label>
+        <StackPane>
+            <!-- Login Card -->
+            <VBox spacing="20" alignment="CENTER" minHeight="420" maxHeight="420" minWidth="350" maxWidth="350"
+                  style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10,0,0,4);">
 
-                <VBox spacing="40" alignment="CENTER"/>
-                <TextField fx:id="usernameEntry" promptText="Enter Username"/>
-                <PasswordField fx:id="passwordEntry" promptText="Enter Password"/>
-                <VBox spacing="10" alignment="CENTER"/>
-                <Label fx:id="hint"/>
-                <VBox spacing="10" alignment="CENTER"/>
-                <Button fx:id="loginButton" text="Login" onAction="#handleLogin"/>
+                <!-- Logo -->
+                <ImageView fx:id="logo" fitWidth="80" fitHeight="70" pickOnBounds="true" preserveRatio="true">
+                    <image>
+                        <Image url="@imgs/logo_circular.png"/>
+                    </image>
+                </ImageView>
+
+                <!-- Welcome Text -->
+                <Label text="Welcome to ZipAround" style="-fx-font-size: 25px; -fx-font-weight: bold; -fx-text-fill: #446356;"/>
+
+                <!-- Username and Password Entries -->
+                <VBox spacing="15" alignment="CENTER">
+                    <TextField fx:id="usernameEntry" promptText="Username"
+                               style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #A3B18A; -fx-padding: 8;"/>
+                    <PasswordField fx:id="passwordEntry" promptText="Password"
+                                   style="-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #A3B18A; -fx-padding: 8;"/>
+                </VBox>
+
+                <!-- Hint Label -->
+                <Label fx:id="hint" textFill="red" text="Please enter your credentials."/>
+
+                <!-- Login Button -->
+                <Button fx:id="loginButton" text="Login" onAction="#checkCredentials"/>
+
             </VBox>
-        </HBox>
+        </StackPane>
     </center>
-
 </BorderPane>
+

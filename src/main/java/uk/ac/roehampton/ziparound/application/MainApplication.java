@@ -15,6 +15,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
@@ -28,6 +29,9 @@ public class MainApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+
+        Utils.currentUser = new Admin(-1, "Matteo", "Organek", "Admin");
+        Utils.currentStaff = new Admin(-1, "Matteo", "Organek", "Admin");
 
         // Declare root
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
@@ -47,21 +51,15 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Utils.rootStage = stage.getScene();
 
-        // Create a new scene controller
-        Utils.sceneControllerInstance = new SceneController(stage.getScene());
 
         // Initialize instances (ApiDatabaseController and BookingManager)
         Utils.initializeInstances();
 
         // Switch to Log in scene
         // TODO Change to login when done testing
-        Utils.sceneControllerInstance.switchTo("login");
-
-//        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllStaff();
-//        for (User user : listUsers){
-//            user.printFullInformation(new Admin(1000, "", "", ""));
-//        }
+        Utils.changeScene("home");
 
     }
     public static void main(String[] args) {

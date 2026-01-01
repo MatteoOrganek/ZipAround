@@ -3,9 +3,8 @@ package uk.ac.roehampton.ziparound.application.controllers;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import uk.ac.roehampton.ziparound.Utils;
 
-public class BookingController {
+public class VehicleController {
 
     // Needed to prevent header controller to be null
     @FXML
@@ -17,10 +16,8 @@ public class BookingController {
 
     @FXML
     public void initialize() {
-        headerController.inBookingView();
+        headerController.inVehicleView();
     }
 
-    public void createBooking(ActionEvent event) {
-    }
 }
 

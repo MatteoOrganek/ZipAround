@@ -21,7 +21,7 @@ import java.time.Instant;
 public class Booking {
 
     /** Identification for each booking */
-    Integer bookingID;
+    public Integer bookingID;
     /** Start time */
     Instant bookedStartTime;
     /** End time */

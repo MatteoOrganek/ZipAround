@@ -13,12 +13,14 @@ package uk.ac.roehampton.ziparound;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.application.MainApplication;
-import uk.ac.roehampton.ziparound.application.SceneController;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
+import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,27 +36,19 @@ public class Utils {
 
     public static BookingManager bookingManagerInstance;
     public static ApiDatabaseController apiDatabaseControllerInstance;
-    public static SceneController sceneControllerInstance;
 
+    public static Scene rootStage;
 
     public static User currentUser;
+    public static Staff currentStaff;
 
     public static void initializeInstances() throws IOException {
         setApiDatabaseControllerInstance();
-
-        // TODO Make sure that BookingManager is instantiated after successful login
-        // setBookingManagerInstance();
-
-
-        Parent loginView = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource("login-view.fxml")));
-        sceneControllerInstance.addScreen("login", (Pane) loginView);
-
-        Parent mainView = FXMLLoader.load(Objects.requireNonNull(MainApplication.class.getResource("main-view.fxml")));
-        sceneControllerInstance.addScreen("main", (Pane) mainView);
     }
 
     public static void setBookingManagerInstance() {
-        bookingManagerInstance = BookingManager.getInstance();
+        log("New booking manager set!", 3);
+        bookingManagerInstance = BookingManager.getInstance(currentStaff);
     }
 
     public static void setApiDatabaseControllerInstance() {
@@ -113,11 +107,31 @@ public class Utils {
         return hashedString.toString();
     }
 
-    public static User getCurrentUser() {
-        return currentUser;
+    public static void changeScene(String name) {
+        try {
+            Parent root = FXMLLoader.load(
+                    Objects.requireNonNull(MainApplication.class.getResource(name + "-view.fxml"))
+            );
+
+            Stage stage = (Stage) rootStage.getWindow();
+            Scene scene = stage.getScene();
+
+            if (scene == null) {
+                scene = new Scene(root);
+                // add stylesheet once
+                scene.getStylesheets().add("/modern.css");
+                stage.setScene(scene);
+            } else {
+                // The root node gets replaced
+                scene.setRoot(root);
+            }
+
+            log("Heading to %s".formatted(name), 3);
+            stage.show();
+        } catch (Exception e) {
+            log("Failed to change scene: " + e.getMessage(), 5);
+            e.printStackTrace();
+        }
     }
 
-    public static void setCurrentUser(User currentUser) {
-        Utils.currentUser = currentUser;
-    }
 }
