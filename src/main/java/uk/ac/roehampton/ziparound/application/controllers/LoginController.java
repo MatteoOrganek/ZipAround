@@ -122,12 +122,12 @@ public class LoginController {
         // Fetch username from entry
         String username = usernameEntry.getText();
         // Fetch password from entry and hash it
-        String password = Utils.hashString(passwordEntry.getText());
+        String password_hash = Utils.hashString(passwordEntry.getText());
 
         ApiDatabaseController apiDatabaseControllerInstance = Utils.apiDatabaseControllerInstance;
 
         Utils.log();
-        Utils.log("Checking credentials u:%s p:%s...".formatted(username, password), 3);
+        Utils.log("Checking credentials u:%s p:%s...".formatted(username, password_hash), 3);
 
         List<Map<String, Object>> listMaps = apiDatabaseControllerInstance.getAll("credentials");
 
@@ -137,56 +137,21 @@ public class LoginController {
             Utils.log("No user data found!", 1);
         }
 
-        boolean usernameHit;
-        boolean passwordHit;
-
         // For each credential in list
         for (Map<String, Object> credentialInfo : listMaps) {
 
-            // Hold current id
-            int user_id = -1;
+            // Check credentials
+            if (Objects.equals((String) credentialInfo.get("username"), username) && Objects.equals((String) credentialInfo.get("password_hash"), password_hash)) {
 
-            Utils.log();
+                Utils.log();
+                Utils.log("Credentials successfully validated.", 2);
 
-            // Reset Hits for each credential
-            usernameHit = false;
-            passwordHit = false;
+                // Assign Utils' currentUser and currentStaff using the current user_id
+                assignGlobalUser(Integer.parseInt((String) credentialInfo.get("user_id")));
 
-            // For each value in credential
-            for (Map.Entry<String, Object> entry : credentialInfo.entrySet()) {
-
-                // If the current key is username and the username provided is the same in the db
-                if (Objects.equals(entry.getKey(), "username") && Objects.equals(username, entry.getValue())) {
-                    Utils.log(entry.getKey() + "/" + entry.getValue(), 2);
-                    usernameHit = true;
-                }
-
-                // Else if the current key is password_hash and the password hash provided is the same in the db
-                else if (Objects.equals(entry.getKey(), "password_hash") && Objects.equals(password.toString(), entry.getValue())) {
-                    Utils.log(entry.getKey() + "/" + entry.getValue(), 2);
-                    passwordHit = true;
-                }
-
-                // No matches found in the current value.
-                else {
-                    Utils.log(entry.getKey() + "/" + entry.getValue());
-                }
-
-                // Get user_id
-                if (Objects.equals(entry.getKey(), "user_id")){
-                    user_id = Integer.parseInt((String) entry.getValue());
-                }
-
-            }
-
-            // If both username and password match, there is no need to continue, return true.
-            if (usernameHit && passwordHit) {
-                assignGlobalUser(user_id);
                 return true;
             }
         }
-
-        Utils.log();
 
         // No matches found in all credentials. Return false.
         return false;

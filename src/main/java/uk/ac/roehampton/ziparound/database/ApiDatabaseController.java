@@ -52,6 +52,8 @@ public class ApiDatabaseController {
         return instance;
     }
 
+    // DATA FETCHING
+
     // VIEW ALL RECORDS
     // TODO Handle IOException, InterruptedException in here
     public List<Map<String, Object>> getAll(String table) throws IOException, InterruptedException {
@@ -127,6 +129,9 @@ public class ApiDatabaseController {
         return null;
     }
 
+
+    // DATA TRANSLATION
+
     private List<List<Object>> getAllUserInfo() throws IOException, InterruptedException {
 
         List<List<Object>> listUsersInfo = new ArrayList<>();
@@ -157,10 +162,10 @@ public class ApiDatabaseController {
 
     public List<User> getAllUsers() throws IOException, InterruptedException {
 
-        List<User> listUsers = new ArrayList<>();
-
+        // Get all users
         List<List<Object>> listUsersInfo = getAllUserInfo();
 
+        // Staff side
         List<Map<String, Object>> listMaps = getAll("staff");
 
         if (!listMaps.isEmpty()){
@@ -170,34 +175,29 @@ public class ApiDatabaseController {
         }
 
         // Loop over each staff
-        for (Map<String, Object> userInfo : listMaps) {
+        for (Map<String, Object> staffInfo : listMaps) {
 
-            List<Object> listStaffInfo = new ArrayList<>();
+            // Get user id
+            int userID = Integer.parseInt((String) staffInfo.get("user_id"));
 
-            // Loop over each info in staff
-            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-                listStaffInfo.add(entry.getValue());
-            }
-
-
-            // Get staff info through listUsersInfo using the Staff's user_id
-            String foreName = listUsersInfo.get(Integer.parseInt((String) listStaffInfo.get(1))-1).get(1).toString();
-            String lastName = listUsersInfo.get(Integer.parseInt((String) listStaffInfo.get(1))-1).get(2).toString();
+            // Get staff info through listUsersInfo using the Staff's user_id - 1 as the database index starts with 1.
+            String foreName = listUsersInfo.get(userID - 1).get(1).toString();
+            String lastName = listUsersInfo.get(userID - 1).get(2).toString();
 
             // Get department and assign roles
-            Staff staff =  switch (Integer.parseInt((String) listStaffInfo.get(2))) {
+            Staff staff =  switch (Integer.parseInt((String) staffInfo.get("department_id"))) {
                 // Admin
-                case 1 -> new Admin(Integer.parseInt((String) listStaffInfo.get(1)), foreName, lastName, "Admin");
+                case 1 -> new Admin(userID, foreName, lastName, "Admin");
                 // Management
-                case 2 -> new Manager(Integer.parseInt((String) listStaffInfo.get(1)), foreName, lastName, "Management");
+                case 2 -> new Manager(userID, foreName, lastName, "Management");
                 // Management
-                case 3 -> new BookingAgent(Integer.parseInt((String) listStaffInfo.get(1)), foreName, lastName, "Bookings");
+                case 3 -> new BookingAgent(userID, foreName, lastName, "Bookings");
                 // Wrong case, switch to default
                 default -> new SelfService();
             };
 
             // Add staff to list of users
-            listUsers.add(staff);
+            Utils.bookingManagerInstance.addUser(staff);
         }
 
         // Customer side
@@ -210,63 +210,60 @@ public class ApiDatabaseController {
         }
 
         // Loop over each customer
-        for (Map<String, Object> userInfo : listMaps) {
+        for (Map<String, Object> customerInfo : listMaps) {
 
-            List<Object> listCustomerInfo = new ArrayList<>();
+            // Get user id
+            int userID = Integer.parseInt((String) customerInfo.get("user_id"));
 
-            // Loop over each info in customer
-            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+            // Get customer info through listUsersInfo using the Customer's user_id - 1 as the database index starts with 1.
+            String foreName = listUsersInfo.get(userID - 1).get(1).toString();
+            String lastName = listUsersInfo.get(userID - 1).get(2).toString();
 
-                listCustomerInfo.add(entry.getValue());
-            }
-
-            // Get customer info through listUsersInfo using the Customer's user_id
-            String foreName = listUsersInfo.get(Integer.parseInt((String) listCustomerInfo.get(1))-1).get(1).toString();
-            String lastName = listUsersInfo.get(Integer.parseInt((String) listCustomerInfo.get(1))-1).get(2).toString();
-
-
-            // Create customer
-            Customer customer = new Customer(Integer.parseInt((String) listCustomerInfo.get(1)), foreName, lastName);
+            // Create customer (using user's id)
+            Customer customer = new Customer(userID, foreName, lastName);
 
             // Add customer to list of users
-            listUsers.add(customer);
+            Utils.bookingManagerInstance.addUser(customer);
         }
 
-        return listUsers;
+        // Return list
+        return Utils.bookingManagerInstance.getUserArrayList();
     }
 
     public List<Bookable> getAllBookables() throws IOException, InterruptedException {
 
         List<Map<String, Object>> listMaps = getAll("vehicle");
 
+        if (!listMaps.isEmpty()){
+            Utils.log("Vehicle data successfully fetched.", 2);
+        } else {
+            Utils.log("No vehicle data found!", 1);
+        }
+
         // Loop over each vehicle
         for (Map<String, Object> vehicleInfo : listMaps) {
 
-            List<Object> listVehicleInfo = new ArrayList<>();
-
-            // Loop over each vehicle info
-            for (Map.Entry<String, Object> entry : vehicleInfo.entrySet()) {
-                listVehicleInfo.add(entry.getValue());
-            }
-
-            Vehicle vehicle =  switch ((String) listVehicleInfo.get(2)) {
+            // Create the vehicle based on the type
+            Vehicle vehicle =  switch ((String) vehicleInfo.get("type")) {
                 case "EBike" -> new EBike(
-                        Integer.parseInt((String) listVehicleInfo.get(0)),
-                        (String) listVehicleInfo.get(1),
-                        (String) listVehicleInfo.get(3),
-                        Float.parseFloat((String) listVehicleInfo.get(4)),
-                        Integer.parseInt((String) listVehicleInfo.get(5)),
-                        Integer.parseInt((String) listVehicleInfo.get(6))
+                        Integer.parseInt((String) vehicleInfo.get("id")),
+                        (String) vehicleInfo.get("brand"),
+                        (String) vehicleInfo.get("number_plate"),
+                        Float.parseFloat((String) vehicleInfo.get("total_miles")),
+                        Boolean.getBoolean((String) vehicleInfo.get("available")),
+                        Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
+                        Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
                 );
                 case "Scooter" -> new Scooter(
-                        Integer.parseInt((String) listVehicleInfo.get(0)),
-                        (String) listVehicleInfo.get(1),
-                        (String) listVehicleInfo.get(3),
-                        Float.parseFloat((String) listVehicleInfo.get(4)),
-                        Integer.parseInt((String) listVehicleInfo.get(5)),
-                        Integer.parseInt((String) listVehicleInfo.get(6))
+                        Integer.parseInt((String) vehicleInfo.get("id")),
+                        (String) vehicleInfo.get("brand"),
+                        (String) vehicleInfo.get("number_plate"),
+                        Float.parseFloat((String) vehicleInfo.get("total_miles")),
+                        Boolean.getBoolean((String) vehicleInfo.get("available")),
+                        Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
+                        Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
                 );
-                default -> throw new IllegalStateException("Unexpected value: " + (String) listVehicleInfo.get(2));
+                default -> throw new IllegalStateException("Unexpected value: " + vehicleInfo.get("type"));
             };
 
             // Add it to the bookable list in booking manager (Cast it to Bookable as the abstract class Vehicle is not Bookable, (EBike and ))
@@ -276,21 +273,21 @@ public class ApiDatabaseController {
         // Get all equipment
         listMaps = getAll("equipment");
 
+        if (!listMaps.isEmpty()){
+            Utils.log("Vehicle data successfully fetched.", 2);
+        } else {
+            Utils.log("No vehicle data found!", 1);
+        }
+
         // Loop over each equipment
         for (Map<String, Object> equipmentInfo : listMaps) {
 
-            List<Object> listEquipmentInfo = new ArrayList<>();
-
-            // Loop over each equipment info
-            for (Map.Entry<String, Object> entry : equipmentInfo.entrySet()) {
-                listEquipmentInfo.add(entry.getValue());
-            }
 
             Equipment equipment = new Equipment(
-                    Integer.parseInt((String) listEquipmentInfo.get(0)),
-                    (String) listEquipmentInfo.get(1),
-                    (String) listEquipmentInfo.get(2),
-                    Boolean.getBoolean((String) listEquipmentInfo.get(3))
+                    Integer.parseInt((String) equipmentInfo.get("id")),
+                    (String) equipmentInfo.get("name"),
+                    (String) equipmentInfo.get("description"),
+                    Boolean.getBoolean((String) equipmentInfo.get("available"))
             );
 
             // Add it to the bookable list in booking manager
@@ -300,47 +297,47 @@ public class ApiDatabaseController {
         return Utils.bookingManagerInstance.getBookableArrayList();
     }
 
-    public List<Booking> getAllBookings() throws IOException, InterruptedException {
+//    public List<Booking> getAllBookings() throws IOException, InterruptedException {
+//
+//        List<Map<String, Object>> listMaps = getAll("booking");
+//
+//        // Loop over each booking
+//        for (Map<String, Object> userInfo : listMaps) {
+//
+//            List<Object> listBookingInfo = new ArrayList<>();
+//
+//            // Loop over each info in booking
+//            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
+//                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
+//                listBookingInfo.add(entry.getValue());
+//            }
+//
+//            // Get time
+//            Instant startTime = Utils.convertStringToInstant((String) listBookingInfo.get(1));
+//            Instant endTime = Utils.convertStringToInstant((String) listBookingInfo.get(2));
+//            Instant createdOnTime = Utils.convertStringToInstant((String) listBookingInfo.get(3));
+//
+//            User user;
+//            Bookable bookable;
+//            Staff staff;
+//
+//            Booking booking = new Booking(
+//                    Integer.parseInt((String) listBookingInfo.get(0)),
+//                    startTime,
+//                    endTime,
+//                    createdOnTime,
+//                    user,
+//                    bookable,
+//                    Boolean.parseBoolean((String) listBookingInfo.get(7)),
+//                    staff
+//            );
+//            Utils.bookingManagerInstance.addBooking(booking);
+//        }
+//
+//        return Utils.bookingManagerInstance.getBookingArrayList();
+//    }
 
-        List<Map<String, Object>> listMaps = getAll("booking");
-
-        // Loop over each booking
-        for (Map<String, Object> userInfo : listMaps) {
-
-            List<Object> listBookingInfo = new ArrayList<>();
-
-            // Loop over each info in booking
-            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
-                listBookingInfo.add(entry.getValue());
-            }
-
-            // Get time
-            Instant startTime = Utils.convertStringToInstant((String) listBookingInfo.get(1));
-            Instant endTime = Utils.convertStringToInstant((String) listBookingInfo.get(2));
-            Instant createdOnTime = Utils.convertStringToInstant((String) listBookingInfo.get(3));
-
-            User user;
-            Bookable bookable;
-            Staff staff;
-
-            Booking booking = new Booking(
-                    Integer.parseInt((String) listBookingInfo.get(0)),
-                    startTime,
-                    endTime,
-                    createdOnTime,
-                    user,
-                    bookable,
-                    Boolean.parseBoolean((String) listBookingInfo.get(7)),
-                    staff
-            );
-            Utils.bookingManagerInstance.addBooking(booking);
-        }
-
-        return Utils.bookingManagerInstance.getBookingArrayList();
-    }
-
-    public List<Object> getAllObjects(String s) throws IOException, InterruptedException {
+    public List<Object> listAllObjects(String s) throws IOException, InterruptedException {
 
         // Initialize return list
         List<Object> listObject = new ArrayList<>();
@@ -362,9 +359,9 @@ public class ApiDatabaseController {
     }
 
     public void update() throws IOException, InterruptedException {
-        getAllObjects("vehicles");
+        getAllUsers();
         getAllBookables();
-        getAllBookings();
+//        getAllBookings();
     }
 
 }

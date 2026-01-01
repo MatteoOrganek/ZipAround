@@ -81,9 +81,14 @@ public class BookingManager {
         return bookingArrayList;
     }
 
-    // Getter for bookable List
+    // Getter for bookable item List
     public ArrayList<Bookable> getBookableArrayList() {
         return bookableArrayList;
+    }
+
+    // Getter for user List
+    public ArrayList<User> getUserArrayList() {
+        return userArrayList;
     }
 
 
