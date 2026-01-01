@@ -1,4 +1,4 @@
-package uk.ac.roehampton.ziparound.application.controllers;
+package uk.ac.roehampton.ziparound.application.controllers.components;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;

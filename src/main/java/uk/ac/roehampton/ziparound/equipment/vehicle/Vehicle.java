@@ -26,7 +26,7 @@ import uk.ac.roehampton.ziparound.users.staff.Staff;
  * @see Booking
  * @see Electric
  */
-public abstract class Vehicle {
+public abstract class Vehicle implements Bookable {
 
     /** The unique identifier for this vehicle. */
     protected Integer id;
@@ -44,6 +44,12 @@ public abstract class Vehicle {
     // Getter / Setter for "id"
     public Integer getID(@NotNull Staff staff) {
         if (staff.canViewVehicleInfo()) { return id; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    // Getter / Setter for "name"
+    public String getName(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return brand; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 

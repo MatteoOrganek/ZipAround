@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.database;
 
+import java.awt.print.Book;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,6 +27,7 @@ import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.lang.reflect.Type;
 import java.io.IOException;
+
 
 public class ApiDatabaseController {
 
@@ -177,8 +179,12 @@ public class ApiDatabaseController {
         // Loop over each staff
         for (Map<String, Object> staffInfo : listMaps) {
 
+            // Get staff id
+            int staffID = Integer.parseInt((String) staffInfo.get("id"));
+
             // Get user id
             int userID = Integer.parseInt((String) staffInfo.get("user_id"));
+
 
             // Get staff info through listUsersInfo using the Staff's user_id - 1 as the database index starts with 1.
             String foreName = listUsersInfo.get(userID - 1).get(1).toString();
@@ -187,11 +193,11 @@ public class ApiDatabaseController {
             // Get department and assign roles
             Staff staff =  switch (Integer.parseInt((String) staffInfo.get("department_id"))) {
                 // Admin
-                case 1 -> new Admin(userID, foreName, lastName, "Admin");
+                case 1 -> new Admin(userID, staffID, foreName, lastName, "Admin");
                 // Management
-                case 2 -> new Manager(userID, foreName, lastName, "Management");
+                case 2 -> new Manager(userID, staffID, foreName, lastName, "Management");
                 // Management
-                case 3 -> new BookingAgent(userID, foreName, lastName, "Bookings");
+                case 3 -> new BookingAgent(userID, staffID, foreName, lastName, "Bookings");
                 // Wrong case, switch to default
                 default -> new SelfService();
             };
@@ -297,45 +303,74 @@ public class ApiDatabaseController {
         return Utils.bookingManagerInstance.getBookableArrayList();
     }
 
-//    public List<Booking> getAllBookings() throws IOException, InterruptedException {
-//
-//        List<Map<String, Object>> listMaps = getAll("booking");
-//
-//        // Loop over each booking
-//        for (Map<String, Object> userInfo : listMaps) {
-//
-//            List<Object> listBookingInfo = new ArrayList<>();
-//
-//            // Loop over each info in booking
-//            for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-//                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
-//                listBookingInfo.add(entry.getValue());
-//            }
-//
-//            // Get time
-//            Instant startTime = Utils.convertStringToInstant((String) listBookingInfo.get(1));
-//            Instant endTime = Utils.convertStringToInstant((String) listBookingInfo.get(2));
-//            Instant createdOnTime = Utils.convertStringToInstant((String) listBookingInfo.get(3));
-//
-//            User user;
-//            Bookable bookable;
-//            Staff staff;
-//
-//            Booking booking = new Booking(
-//                    Integer.parseInt((String) listBookingInfo.get(0)),
-//                    startTime,
-//                    endTime,
-//                    createdOnTime,
-//                    user,
-//                    bookable,
-//                    Boolean.parseBoolean((String) listBookingInfo.get(7)),
-//                    staff
-//            );
-//            Utils.bookingManagerInstance.addBooking(booking);
-//        }
-//
-//        return Utils.bookingManagerInstance.getBookingArrayList();
-//    }
+    public List<Booking> getAllBookings() throws IOException, InterruptedException {
+
+        List<Map<String, Object>> listMaps = getAll("booking");
+
+        // Loop over each booking
+        for (Map<String, Object> bookingInfo : listMaps) {
+
+            // Get time
+            Instant startTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_start_time"));
+            Instant endTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_end_time"));
+            Instant createdOnTime = Utils.convertStringToInstant((String) bookingInfo.get("created_on"));
+
+            // Initialize user and get userID
+            User user = null;
+            int userID = Integer.parseInt((String) bookingInfo.get("user_id"));
+
+            // Initialize user and get staffID
+            Staff staff = null;
+            String staffStr = (String) bookingInfo.get("staff_approved_id");
+
+            int staffID = -1;
+            // Set staffID if not null in the db (-1 if so)
+            if (Utils.isNumeric(staffStr)) {
+                staffID = Integer.parseInt(staffStr);
+            }
+
+            // For each user in current booking manager list
+            for (User currentUser : Utils.bookingManagerInstance.getUserArrayList()) {
+
+                // If the current user's id matches the one that needs to be found
+                if (currentUser.getID(Utils.currentStaff) == userID) {
+                    // Set the current user as the booking user
+                    user = currentUser;
+                    break;
+                }
+                // If the staff is null, the current user is staff and the current staffID matches the staffID to be found
+                if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
+                    // Set the current user as the staff that approved the booking
+                    staff = (Staff) currentUser;
+                    break;
+                }
+            }
+
+            Bookable bookable = null;
+            int bookableID = Integer.parseInt((String) bookingInfo.get("bookable_id"));
+
+            for (Bookable currentBookable : Utils.bookingManagerInstance.getBookableArrayList()) {
+                if (currentBookable.getID(Utils.currentStaff) == bookableID) {
+                    bookable = currentBookable;
+                    break;
+                }
+            }
+
+            Booking booking = new Booking(
+                    Integer.parseInt((String) bookingInfo.get("id")),
+                    startTime,
+                    endTime,
+                    createdOnTime,
+                    user,
+                    bookable,
+                    Boolean.parseBoolean((String) bookingInfo.get("approved")),
+                    staff
+            );
+            Utils.bookingManagerInstance.addBooking(booking);
+        }
+
+        return Utils.bookingManagerInstance.getBookingArrayList();
+    }
 
     public List<Object> listAllObjects(String s) throws IOException, InterruptedException {
 
@@ -361,7 +396,7 @@ public class ApiDatabaseController {
     public void update() throws IOException, InterruptedException {
         getAllUsers();
         getAllBookables();
-//        getAllBookings();
+        getAllBookings();
     }
 
 }

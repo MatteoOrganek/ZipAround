@@ -1,16 +1,12 @@
 package uk.ac.roehampton.ziparound.application.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
-
-import java.io.IOException;
 
 public class HomeController {
     public Label greetText;

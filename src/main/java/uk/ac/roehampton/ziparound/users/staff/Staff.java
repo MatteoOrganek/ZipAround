@@ -17,6 +17,7 @@ import uk.ac.roehampton.ziparound.users.User;
 public abstract class Staff extends User implements Permissions {
 
     protected String department;
+    protected Integer staffID;
     protected Boolean active;
 
     /**
@@ -27,10 +28,16 @@ public abstract class Staff extends User implements Permissions {
      * @param department Staff department
      * @param active Active status for the user
      */
-    public Staff(Integer userID, String foreName, String lastname, String department, Boolean active) {
+    public Staff(Integer userID, Integer staffID, String foreName, String lastname, String department, Boolean active) {
         super(userID, foreName, lastname);
+        this.staffID = staffID;
         this.department = department;
         this.active = active;
+    }
+
+    public Integer getStaffID(Staff staff) {
+        if (staff.canViewStaffInfo()) { return staffID;}
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 
     public String getDepartment(Staff staff) {

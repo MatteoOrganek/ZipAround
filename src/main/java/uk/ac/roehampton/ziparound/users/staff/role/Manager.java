@@ -17,12 +17,13 @@ public class Manager extends Staff {
      * Constructor for Manager
      *
      * @param userID     ID that identifies each user
+     * @param staffID    ID that identifies each staff
      * @param foreName   First name
      * @param lastname   Last name
      * @param department Staff department
      */
-    public Manager(Integer userID, String foreName, String lastname, String department) {
-        super(userID, foreName, lastname, department, true);
+    public Manager(Integer userID, Integer staffID, String foreName, String lastname, String department) {
+        super(userID, staffID, foreName, lastname, department, true);
     }
 
     // Set permissions

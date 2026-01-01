@@ -4,7 +4,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.StaffController" style="-fx-background-color: #F0F2F5;">
 
         <top>
-            <fx:include fx:id="header" source="header.fxml"/>
+            <fx:include fx:id="header" source="components/header.fxml"/>
         </top>
 
         <center>

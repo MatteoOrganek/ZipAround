@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="uk.ac.roehampton.ziparound.application.controllers.components.HeaderController"
+      spacing="10"
+      alignment="CENTER_LEFT"
+      style="-fx-background-color: #F0F2F5; -fx-padding: 15px;">
+
+    <ImageView fitWidth="40"
+               fitHeight="40"
+               preserveRatio="true">
+        <Image url="@../imgs/logo_circular.png"/>
+    </ImageView>
+
+    <Label text="ZipAround"
+           fx:id="logo"
+           style="-fx-text-fill: #446356;
+                  -fx-font-size: 24px;
+                  -fx-font-weight: bold;"/>
+
+    <Region HBox.hgrow="ALWAYS"/>
+
+    <Button text="My Bookings" fx:id="bookingsButton" onAction="#goToBookingView" styleClass="main"/>
+    <Button text="My Vehicles" fx:id="vehicleButton" onAction="#goToVehicleView" styleClass="main"/>
+    <Button text="My Account" fx:id="accountButton" onAction="#goToAccountView" styleClass="main"/>
+    <Button text="Staff" fx:id="staffButton" onAction="#goToStaffView" styleClass="main"/>
+    <Button text="Customer" fx:id="customerButton" onAction="#goToCustomerView" styleClass="main"/>
+    <Button text="Home" fx:id="homeButton" onAction="#goToHomeView" styleClass="main"/>
+    <Button text="Logout" onAction="#logout" styleClass="main, red"/>
+</HBox>
+

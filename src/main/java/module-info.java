@@ -33,4 +33,6 @@ module uk.ac.roehampton.ziparound {
     opens uk.ac.roehampton.ziparound.booking to javafx.fxml;
     exports uk.ac.roehampton.ziparound.application.controllers;
     opens uk.ac.roehampton.ziparound.application.controllers to javafx.fxml;
+    exports uk.ac.roehampton.ziparound.application.controllers.components;
+    opens uk.ac.roehampton.ziparound.application.controllers.components to javafx.fxml;
 }

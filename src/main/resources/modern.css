@@ -28,8 +28,8 @@
 }
 
 /* --- Buttons --- */
-.button, .btn {
-    -fx-background-radius: 6px;          /* Square buttons */
+.button.main, .btn {
+    -fx-background-radius: 6px;
     -fx-border-radius: 4px;
     -fx-padding: 8px 16px;
     -fx-font-size: 14px;
@@ -37,36 +37,36 @@
     -fx-cursor: hand;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
     -fx-text-fill: #ffffff;
-    -fx-background-color: #446356;      /* Primary color */
+    -fx-background-color: #446356;
     -fx-border-width: 0;
     -fx-transition: all 0.2s ease;
 }
 
 /* Button hover */
-.button:hover, .btn:hover {
+.button.main:hover, .btn:hover {
     -fx-background-color: #3f6e5a;
     -fx-transition: all 0.2s ease;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
 }
 
 /* Button pressed */
-.button:pressed, .btn:pressed {
+.button.main:pressed, .btn:pressed {
     -fx-background-color: #304a3f;
     -fx-effect: none;
 }
 
 /* Default red button */
-.button.red {
+.button.main.red {
     -fx-background-color: #db6767;
     -fx-border-width: 3;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 8px;
-    -fx-cursor: hand; /* shows pointer on hover */
+    -fx-cursor: hand;
 }
 
 /* Hover state */
-.button.red:hover {
+.button.main.red:hover {
     -fx-background-color: #944141;
     -fx-transition: all 0.2s ease;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
@@ -74,7 +74,7 @@
 }
 
 /* Pressed state */
-.button.red:pressed {
+.button.main.red:pressed {
     -fx-background-color: #8a2424;
     -fx-effect: none;
     -fx-text-fill: white;
@@ -126,7 +126,7 @@
 }
 
 .table-view .table-row-cell:filled:selected {
-    -fx-background-color: #007bff33; /* light blue selection */
+    -fx-background-color: #446356;
 }
 
 /* --- Scrollbars --- */
@@ -161,4 +161,62 @@
 
 .hyperlink:hover {
     -fx-text-fill: #0056b3;
+}
+
+/* ================= Main ScrollPane ================= */
+.main-scroll {
+    -fx-padding: 10px;
+}
+
+/* ================= VBox Booking Cards ================= */
+#container > .booking-card {
+    -fx-padding: 16;
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #CAD593;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
+}
+
+/* DatePicker main text field */
+.date-picker {
+    -fx-background-color: white;
+    -fx-text-fill: #446356;
+    -fx-prompt-text-fill: derive(#446356, -30%);
+    -fx-border-color: #ffffff;
+}
+
+
+.date-picker .arrow-button:hover {
+    -fx-text-fill: white;
+    -fx-background-color: #3f6e5a;
+}
+
+/* Calendar popup */
+.date-picker-popup {
+    -fx-background-color: white;
+}
+
+/* Calendar day cells */
+.date-picker .day-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #446356;
+}
+
+/* Selected day */
+.date-picker .day-cell:selected {
+    -fx-background-color: #446356;
+    -fx-text-fill: white;
+}
+
+/* Hovered day */
+.date-picker .day-cell:hover {
+    -fx-background-color: derive(#446356, 40%);
+    -fx-text-fill: white;
+}
+
+/* Today highlight */
+.date-picker .day-cell:today {
+    -fx-background-color: derive(#446356, 30%);
+    -fx-text-fill: white;
 }

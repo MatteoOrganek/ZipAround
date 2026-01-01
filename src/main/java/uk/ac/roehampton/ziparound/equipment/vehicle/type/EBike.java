@@ -32,7 +32,7 @@ import java.time.Instant;
  * @see Vehicle
  * @see Electric
  */
-public class EBike extends Vehicle implements Electric, Bookable, Maintainable {
+public class EBike extends Vehicle implements Electric, Maintainable {
 
     private Integer maxPowerKw;
     private Integer amountOfBatteries;

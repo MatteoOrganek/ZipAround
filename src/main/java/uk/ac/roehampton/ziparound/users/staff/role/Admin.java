@@ -13,9 +13,17 @@ package uk.ac.roehampton.ziparound.users.staff.role;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 public class Admin extends Staff {
-
-    public Admin(Integer userID, String foreName, String lastname, String department) {
-        super(userID, foreName, lastname, department, true);
+    /**
+     * Constructor for Admin
+     *
+     * @param userID     ID that identifies each user
+     * @param staffID    ID that identifies each staff
+     * @param foreName   First name
+     * @param lastname   Last name
+     * @param department Staff department
+     */
+    public Admin(Integer userID, Integer staffID, String foreName, String lastname, String department) {
+        super(userID, staffID, foreName, lastname, department, true);
     }
 
     // Set permissions

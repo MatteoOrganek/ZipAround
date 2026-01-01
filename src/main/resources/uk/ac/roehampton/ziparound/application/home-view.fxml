@@ -7,7 +7,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.HomeController" style="-fx-background-color: linear-gradient(to bottom right, #6B9080, #A3B18A);">
 
     <top>
-        <fx:include fx:id="header" source="header.fxml"/>
+        <fx:include fx:id="header" source="components/header.fxml"/>
     </top>
 
     <center>
@@ -28,7 +28,7 @@
                        style="-fx-font-size: 16px;
                               -fx-text-fill: #666666;"/>
 
-                <Button text="Start a New Booking"/>
+                <Button text="Start a New Booking" styleClass="main"/>
             </VBox>
 
             <HBox spacing="15"
@@ -56,9 +56,8 @@
                 <VBox spacing="5">
                 <Label text=""/>
                 <Button text="Search"
-                        style="-fx-background-color: #6B9080;
-                               -fx-text-fill: white;
-                               -fx-padding: 6 20 6 20;"/>
+                        styleClass="main"
+                        style="-fx-padding: 6 20 6 20;"/>
                 </VBox>
             </HBox>
 

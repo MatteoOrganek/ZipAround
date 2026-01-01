@@ -4,12 +4,17 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingController">
 
     <top>
-        <fx:include fx:id="header" source="header.fxml"/>
+        <fx:include fx:id="header" source="components/header.fxml"/>
     </top>
 
     <!-- Center content -->
     <center>
-
+        <ScrollPane style="-fx-focus-color: transparent;">
+                <HBox spacing="20" style="-fx-padding: 20px;">
+                    <!-- Container for booking cards -->
+                    <VBox fx:id="container" spacing="20" alignment="TOP_CENTER" style="-fx-background-color: transparent;"/>
+                </HBox>
+        </ScrollPane>
     </center>
 
 </BorderPane>

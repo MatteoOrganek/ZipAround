@@ -7,7 +7,7 @@ public class SelfService extends Staff {
      * Constructor for Self Service, a staff extension that grants the user basic booking privileges
      */
     public SelfService() {
-        super(-1, "Self", "Service", "System", true);
+        super(-1, -1, "Self", "Service", "System", true);
     }
 
     // Set permissions
