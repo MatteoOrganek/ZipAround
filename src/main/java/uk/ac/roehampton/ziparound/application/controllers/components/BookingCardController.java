@@ -35,15 +35,14 @@ public class BookingCardController {
     public Button saveButton;
     public Button deleteButton;
     public Button cancelButton;
-    public HBox staffInfoBox;
+    public HBox staffBox;
     public Label bookableText;
     public Button approveButton;
 
     public void setBooking(Booking booking) {
 
         // Fill fields
-
-        bookingIdText.setText(String.valueOf(booking.getID(Utils.currentStaff)));
+        bookingIdText.setText("Booking #" + booking.getID(Utils.currentStaff));
 
         Bookable bookable = booking.getBookableObject(Utils.currentStaff);
         String name = bookable.getName(Utils.currentStaff);
@@ -74,7 +73,19 @@ public class BookingCardController {
 
         // Hide staff info if not staff
         if (Utils.currentUser instanceof Staff) {
-            staffInfoBox.setVisible(false);
+            if (Utils.currentStaff.canViewStaffInfo()) {
+                if (booking.getStaff(Utils.currentStaff) != null) {
+                    staffLabel.setText("Approved by %s.".formatted(booking.getStaff(Utils.currentStaff).getFullName(Utils.currentStaff)));
+                } else {
+                    staffLabel.setText("Awaiting approval.");
+                }
+            } else {
+                staffLabel.setManaged(false);
+                staffLabel.setVisible(false);;
+            }
+        } else {
+            staffBox.setManaged(false);
+            staffBox.setVisible(false);
         }
 
         // Can be edited only if permissions allow

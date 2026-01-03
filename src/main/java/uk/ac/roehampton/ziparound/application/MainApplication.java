@@ -18,7 +18,6 @@ import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 
-import java.util.List;
 import java.util.Objects;
 
 public class MainApplication extends Application {
@@ -28,8 +27,8 @@ public class MainApplication extends Application {
     public void start(Stage stage) throws Exception {
 
         // TODO Remove ghost login
-        Utils.currentUser = new Admin(-1, -1, "Matteo", "Organek", "Admin");
-        Utils.currentStaff = new Admin(-1, -1, "Matteo", "Organek", "Admin");
+        Utils.currentUser = new Admin(1, 1, "Matteo", "Organek", "Admin");
+        Utils.currentStaff = new Admin(1, 1, "Matteo", "Organek", "Admin");
         Utils.setBookingManagerInstance();
 
         // Declare root

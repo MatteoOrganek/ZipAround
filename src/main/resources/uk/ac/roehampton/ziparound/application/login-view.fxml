@@ -34,7 +34,7 @@
                 <Label fx:id="hint" textFill="red" text="Please enter your credentials."/>
 
                 <!-- Login Button -->
-                <Button fx:id="loginButton" text="Login" onAction="#login"/>
+                <Button fx:id="loginButton" text="Login" onAction="#login" styleClass="main"/>
 
             </VBox>
         </StackPane>

@@ -4,6 +4,7 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
+<?import javafx.scene.shape.SVGPath?>
 <HBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="uk.ac.roehampton.ziparound.application.controllers.components.HeaderController"
       spacing="10"
@@ -23,7 +24,7 @@
                   -fx-font-weight: bold;"/>
 
     <Region HBox.hgrow="ALWAYS"/>
-
+    <Button onAction="#update" styleClass="main, refresh"/>
     <Button text="My Bookings" fx:id="bookingsButton" onAction="#goToBookingView" styleClass="main"/>
     <Button text="My Vehicles" fx:id="vehicleButton" onAction="#goToVehicleView" styleClass="main"/>
     <Button text="My Account" fx:id="accountButton" onAction="#goToAccountView" styleClass="main"/>

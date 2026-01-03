@@ -3,7 +3,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.VehicleController">
 
     <top>
-        <fx:include fx:id="header" source="components/header.fxml"/>
+        <fx:include fx:id="header" source="modules/header.fxml"/>
     </top>
 
     <!-- Center content -->

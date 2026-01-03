@@ -14,9 +14,9 @@ package uk.ac.roehampton.ziparound;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.application.MainApplication;
+import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
@@ -42,6 +42,8 @@ public class Utils {
     public static ApiDatabaseController apiDatabaseControllerInstance;
 
     public static Scene rootStage;
+    public static Scene currentScene;
+    public static Updatable currentController;
 
     public static User currentUser;
     public static Staff currentStaff;
@@ -122,12 +124,22 @@ public class Utils {
 
     public static void changeScene(String name) {
         try {
-            Parent root = FXMLLoader.load(
+            FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(MainApplication.class.getResource(name + "-view.fxml"))
             );
+            Parent root = loader.load();
+
+            // Get the controller (must implement Updatable)
+            Object controller = loader.getController();
+            if (controller instanceof Updatable updatable) {
+                currentController = updatable;
+            } else {
+                currentController = null;
+            }
 
             Stage stage = (Stage) rootStage.getWindow();
             Scene scene = stage.getScene();
+            currentScene = scene;
 
             if (scene == null) {
                 scene = new Scene(root);

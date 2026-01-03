@@ -9,6 +9,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
@@ -20,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class LoginController {
+public class LoginController implements Updatable {
     public Button loginButton;
     public TextField usernameEntry;
     public PasswordField passwordEntry;
@@ -28,34 +29,7 @@ public class LoginController {
 
     @FXML
     public void initialize(){
-
-        // Detect when the user clicks or writes on the entries or when they are focused
-
-        usernameEntry.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> usernameEntry.setUserData(true));
-        usernameEntry.addEventFilter(KeyEvent.KEY_PRESSED, e -> usernameEntry.setUserData(true));
-        usernameEntry.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            Boolean userClicked = (Boolean) usernameEntry.getUserData();
-            if (newVal && Boolean.TRUE.equals(userClicked)) {
-                clearErrors();
-                usernameEntry.setUserData(false); // reset flag
-            }
-        });
-        passwordEntry.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> passwordEntry.setUserData(true));
-        passwordEntry.addEventFilter(KeyEvent.KEY_PRESSED, e -> usernameEntry.setUserData(true));
-        passwordEntry.focusedProperty().addListener((obs, oldVal, newVal) -> {
-            Boolean userClicked = (Boolean) passwordEntry.getUserData();
-            if (newVal && Boolean.TRUE.equals(userClicked)) {
-                clearErrors();
-                passwordEntry.setUserData(false); // reset flag
-            }
-        });
-
-        // Press Enter on username -> go to password
-        usernameEntry.setOnAction(e -> passwordEntry.requestFocus());
-
-        // Press Enter on password -> trigger login
-        passwordEntry.setOnAction(e -> login());
-
+        update();
     }
     public void login(){
 
@@ -195,5 +169,41 @@ public class LoginController {
 
         }
         return null;
+    }
+
+    @Override
+    public void update() {
+
+        // Detect when the user clicks or writes on the entries or when they are focused
+
+        usernameEntry.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> usernameEntry.setUserData(true));
+        usernameEntry.addEventFilter(KeyEvent.KEY_PRESSED, e -> usernameEntry.setUserData(true));
+        usernameEntry.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            Boolean userClicked = (Boolean) usernameEntry.getUserData();
+            if (newVal && Boolean.TRUE.equals(userClicked)) {
+                clearErrors();
+                usernameEntry.setUserData(false); // reset flag
+            }
+        });
+        passwordEntry.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> passwordEntry.setUserData(true));
+        passwordEntry.addEventFilter(KeyEvent.KEY_PRESSED, e -> usernameEntry.setUserData(true));
+        passwordEntry.focusedProperty().addListener((obs, oldVal, newVal) -> {
+            Boolean userClicked = (Boolean) passwordEntry.getUserData();
+            if (newVal && Boolean.TRUE.equals(userClicked)) {
+                clearErrors();
+                passwordEntry.setUserData(false); // reset flag
+            }
+        });
+
+        // Press Enter on username -> go to password
+        usernameEntry.setOnAction(e -> passwordEntry.requestFocus());
+
+        // Press Enter on password -> trigger login
+        passwordEntry.setOnAction(e -> login());
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

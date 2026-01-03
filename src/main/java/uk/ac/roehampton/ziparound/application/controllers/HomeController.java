@@ -5,10 +5,13 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
-public class HomeController {
+import java.io.IOException;
+
+public class HomeController implements Updatable {
     public Label greetText;
     public Button staffButton;
 
@@ -20,7 +23,12 @@ public class HomeController {
     private HeaderController headerController;
 
     @FXML
-    public void initialize() {
+    public void initialize() throws IOException {
+        update();
+    }
+
+    @Override
+    public void update() throws IOException {
 
         headerController.inHomeView();
 
@@ -33,6 +41,10 @@ public class HomeController {
         } else {
             greetText.setText("Book Your Ride in Seconds");
         }
+    }
+
+    @Override
+    public void clear() {
 
     }
 }

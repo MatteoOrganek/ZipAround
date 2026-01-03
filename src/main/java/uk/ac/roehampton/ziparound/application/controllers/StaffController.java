@@ -4,10 +4,11 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Booking;
 
-public class StaffController {
+public class StaffController implements Updatable {
 
     // Needed to prevent header controller to be null
     @FXML
@@ -50,5 +51,15 @@ public class StaffController {
 //        bookings.addAll(BookingManager.getInstance().getBookingArrayList());
 //
 //        bookingRequestsTable.setItems(bookings);
+    }
+
+    @Override
+    public void update() {
+
+    }
+
+    @Override
+    public void clear() {
+
     }
 }

@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import uk.ac.roehampton.ziparound.Utils;
@@ -115,4 +116,7 @@ public class HeaderController {
         bookingsButton.setVisible(true);
     }
 
+    public void update() {
+        Utils.apiDatabaseControllerInstance.update();
+    }
 }
