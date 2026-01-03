@@ -10,6 +10,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
+import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
@@ -205,5 +206,10 @@ public class LoginController implements Updatable {
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public HeaderController getHeaderController() {
+        return null;
     }
 }

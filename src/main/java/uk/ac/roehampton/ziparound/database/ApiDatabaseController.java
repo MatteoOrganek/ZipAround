@@ -13,6 +13,7 @@ import com.google.gson.reflect.TypeToken;
 import javafx.concurrent.Task;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
+import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
@@ -168,6 +169,9 @@ public class ApiDatabaseController {
 
     public List<User> getAllUsers() throws IOException, InterruptedException {
 
+        // Reset user list
+        Utils.bookingManagerInstance.resetUserArrayList();
+
         // Get all users
         List<List<Object>> listUsersInfo = getAllUserInfo();
 
@@ -234,6 +238,9 @@ public class ApiDatabaseController {
 
     public List<Bookable> getAllBookables() throws IOException, InterruptedException {
 
+        // Reset bookable list
+        Utils.bookingManagerInstance.resetBookableArrayList();
+
         List<Map<String, Object>> listMaps = getAll("vehicle");
 
         if (listMaps != null){
@@ -246,6 +253,7 @@ public class ApiDatabaseController {
                     case "EBike" -> new EBike(
                             Integer.parseInt((String) vehicleInfo.get("id")),
                             (String) vehicleInfo.get("brand"),
+                            (String) vehicleInfo.get("model"),
                             (String) vehicleInfo.get("number_plate"),
                             Float.parseFloat((String) vehicleInfo.get("total_miles")),
                             Boolean.getBoolean((String) vehicleInfo.get("available")),
@@ -255,6 +263,7 @@ public class ApiDatabaseController {
                     case "Scooter" -> new Scooter(
                             Integer.parseInt((String) vehicleInfo.get("id")),
                             (String) vehicleInfo.get("brand"),
+                            (String) vehicleInfo.get("model"),
                             (String) vehicleInfo.get("number_plate"),
                             Float.parseFloat((String) vehicleInfo.get("total_miles")),
                             Boolean.getBoolean((String) vehicleInfo.get("available")),
@@ -284,6 +293,7 @@ public class ApiDatabaseController {
                 Equipment equipment = new Equipment(
                         Integer.parseInt((String) equipmentInfo.get("id")),
                         (String) equipmentInfo.get("name"),
+                        (String) equipmentInfo.get("model"),
                         (String) equipmentInfo.get("description"),
                         Boolean.getBoolean((String) equipmentInfo.get("available"))
                 );
@@ -302,6 +312,9 @@ public class ApiDatabaseController {
     }
 
     public List<Booking> getAllBookings() throws IOException, InterruptedException {
+
+        // Reset bookings list
+        Utils.bookingManagerInstance.resetBookingArrayList();
 
         List<Map<String, Object>> listMaps = getAll("booking");
 
@@ -341,7 +354,7 @@ public class ApiDatabaseController {
                         user = currentUser;
                     }
                     // If the staff is null, the current user is staff and the current staffID matches the staffID to be found
-                    if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
+                    if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).canViewStaffInfo() && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
                         // Set the current user as the staff that approved the booking
                         staff = (Staff) currentUser;
                     }
@@ -413,19 +426,37 @@ public class ApiDatabaseController {
         Task<Boolean> updateTask = new Task<>() {
             @Override
             protected Boolean call() throws Exception {
+                // Get users
+                updateProgress(1, 3);
+                updateMessage("Loading users...");
                 getAllUsers();
+
+                // Get bookables
+                updateProgress(2, 3);
+                updateMessage("Loading bookables...");
                 getAllBookables();
+
+                // Get bookings
+                updateProgress(3, 3);
+                updateMessage("Loading bookings...");
                 getAllBookings();
+
+                // Reset Progress
+                updateProgress(0, 0);
+
                 return true;
             }
         };
 
+
+        Utils.currentController.getHeaderController().loadBar.progressProperty().bind(updateTask.progressProperty());
         // Disable entire UI while task runs
         Utils.currentScene.getRoot().disableProperty().bind(updateTask.runningProperty());
 
         updateTask.setOnSucceeded(event -> {
             try {
                 Utils.currentController.update();
+
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

@@ -248,6 +248,16 @@ public class BookingManager {
 
     }
 
+    public void resetBookingArrayList() {
+        this.bookingArrayList.clear();
+    }
+    public void resetBookableArrayList() {
+        this.bookableArrayList.clear();
+    }
+    public void resetUserArrayList() {
+        this.userArrayList.clear();
+    }
+
 
     // Booking exceptions
 

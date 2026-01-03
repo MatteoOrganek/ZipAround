@@ -62,6 +62,8 @@ public class MainApplication extends Application {
         // TODO Remove this
         Utils.apiDatabaseControllerInstance.update();
 
+        // All images are from https://rapidscooter.co.uk
+
     }
     public static void main(String[] args) {
         launch(args);

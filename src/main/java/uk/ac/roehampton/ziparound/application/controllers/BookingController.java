@@ -27,15 +27,16 @@ public class BookingController implements Updatable {
 
     @FXML
     public void initialize() throws IOException {
-
-
         update();
     }
 
     @Override
     public void update() throws IOException {
 
-        Utils.log("Currently updating UI...");
+        clear();
+
+        Utils.log("Updating UI...", 3);
+
         headerController.inBookingView();
         List<Booking> listBooking = Utils.bookingManagerInstance.getBookingArrayList();
 
@@ -52,10 +53,10 @@ public class BookingController implements Updatable {
                 Parent bookingCard = loader.load();
                 BookingCardController controller = loader.getController();
 
-                // configure the card
+                // Configure the card
                 controller.setBooking(booking);
 
-                // attach to UI
+                // Attach to UI
                 container.getChildren().add(bookingCard);
             }
 
@@ -64,7 +65,14 @@ public class BookingController implements Updatable {
 
     @Override
     public void clear() {
+        // Remove all items in container
+        container.getChildren().clear();
+        Utils.log("UI Cleared.", 3);
+    }
 
+    @Override
+    public HeaderController getHeaderController() {
+        return headerController;
     }
 }
 

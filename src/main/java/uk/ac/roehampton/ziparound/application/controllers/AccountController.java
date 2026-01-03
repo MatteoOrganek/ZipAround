@@ -31,5 +31,10 @@ public class AccountController implements Updatable {
     public void clear() {
 
     }
+
+    @Override
+    public HeaderController getHeaderController() {
+        return headerController;
+    }
 }
 

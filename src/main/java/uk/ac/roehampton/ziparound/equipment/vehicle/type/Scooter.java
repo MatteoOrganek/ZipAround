@@ -42,6 +42,7 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
 
     public Scooter(Integer id,
                    String brand,
+                   String model,
                    String numberPlate,
                    Float totalMiles,
                    Boolean available,
@@ -49,6 +50,7 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
                    Integer amountOfBatteries) {
         this.id = id;
         this.brand = brand;
+        this.model = model;
         this.type = "Scooter";
         this.numberPlate = numberPlate;
         this.totalMiles = totalMiles;

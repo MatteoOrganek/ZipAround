@@ -168,6 +168,30 @@
     -fx-padding: 10px;
 }
 
+/* ================= Progressbar ================= */
+
+.progress-bar {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+.progress-bar .track {
+    -fx-background-color: #F0F2F5;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.progress-bar .bar {
+    -fx-background-color: linear-gradient(to right, #4CAF50, #81C784);
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
 /* ================= VBox Booking Cards ================= */
 #container > .booking-card {
     -fx-padding: 16;

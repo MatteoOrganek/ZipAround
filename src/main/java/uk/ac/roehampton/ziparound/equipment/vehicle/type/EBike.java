@@ -41,6 +41,7 @@ public class EBike extends Vehicle implements Electric, Maintainable {
 
     public EBike(Integer id,
                  String brand,
+                 String model,
                  String numberPlate,
                  Float totalMiles,
                  Boolean available,
@@ -49,6 +50,7 @@ public class EBike extends Vehicle implements Electric, Maintainable {
         this.id = id;
         this.brand = brand;
         this.type = "EBike";
+        this.model = model;
         this.numberPlate = numberPlate;
         this.totalMiles = totalMiles;
         this.available = available;

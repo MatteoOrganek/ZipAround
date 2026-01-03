@@ -4,6 +4,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
@@ -16,10 +18,12 @@ import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
+import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class BookingCardController {
 
@@ -38,21 +42,27 @@ public class BookingCardController {
     public HBox staffBox;
     public Label bookableText;
     public Button approveButton;
+    public ImageView bikeImage;
 
     public void setBooking(Booking booking) {
 
         // Fill fields
-        bookingIdText.setText("Booking #" + booking.getID(Utils.currentStaff));
 
         Bookable bookable = booking.getBookableObject(Utils.currentStaff);
         String name = bookable.getName(Utils.currentStaff);
+        name += " " + bookable.getModel(Utils.currentStaff);
         if (bookable instanceof EBike) {
             name += " Ebike";
         } else if (bookable instanceof Scooter) {
             name += " Scooter";
         }
+        bookingIdText.setText("%s [Booking #%s]".formatted(name, booking.getID(Utils.currentStaff)));
         bookableText.setText(name);
         createdOnLabel.setText(booking.getCreatedOn(Utils.currentStaff).toString());
+
+        Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Utils.findBookableImagePath(bookable))));
+
+        bikeImage.setImage(image);
 
         // Get LocalDate and LocalTime from Instant in startTime
         LocalDate startDate = booking.getBookedStartTime(Utils.currentStaff).atZone(ZoneId.systemDefault()).toLocalDate();

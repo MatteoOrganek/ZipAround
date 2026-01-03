@@ -16,7 +16,7 @@
 
                 <!-- Logo -->
                 <ImageView fitWidth="80" fitHeight="70" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@imgs/logo_circular.png"/>
+                    <Image url="@logo/logo_circular.png"/>
                 </ImageView>
 
                 <!-- Welcome Text -->

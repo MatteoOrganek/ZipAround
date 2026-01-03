@@ -32,6 +32,8 @@ public abstract class Vehicle implements Bookable {
     protected Integer id;
     /** The brand of this vehicle. */
     protected String brand;
+    /** The model of this vehicle. */
+    protected String model;
     /** The type of vehicle. */
     protected String type;
     /** This vehicle's number plate. */
@@ -61,6 +63,17 @@ public abstract class Vehicle implements Bookable {
 
     public void setBrand(@NotNull String name, @NotNull Staff staff) {
         if (staff.canModifyVehicles()) { this.brand = name; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for "model"
+    public String  getModel(@NotNull Staff staff) {
+        if (staff.canViewVehicleInfo()) { return model; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setModel(@NotNull String model, @NotNull Staff staff) {
+        if (staff.canModifyVehicles()) { this.model = model; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
@@ -97,7 +110,7 @@ public abstract class Vehicle implements Bookable {
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
-    // Getter / Setter for "maxSpeed"
+    // Getter / Setter for "available"
     public Boolean isAvailable(@NotNull Staff staff) {
         if (staff.canViewVehicleInfo()) { return available; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
@@ -108,6 +121,7 @@ public abstract class Vehicle implements Bookable {
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 
+
     public void printInfo(@NotNull Staff staff) {
         if (!staff.canViewVehicleInfo()) {
             throw new SecurityException(Utils.UNAUTHORIZED_ACCESS);
@@ -116,6 +130,7 @@ public abstract class Vehicle implements Bookable {
         System.out.println("----- Vehicle Details ----------------------------------------------");
         System.out.println("Vehicle ID     : " + (id != null ? id : "N/A"));
         System.out.println("Brand          : " + (brand != null ? brand : "N/A"));
+        System.out.println("Model          : " + (model != null ? model : "N/A"));
         System.out.println("Type           : " + (type != null ? type : "N/A"));
         System.out.println("Number Plate   : " + (numberPlate != null ? numberPlate : "N/A"));
         System.out.println("Total Miles    : " + (totalMiles != null ? totalMiles + " mi" : "N/A"));

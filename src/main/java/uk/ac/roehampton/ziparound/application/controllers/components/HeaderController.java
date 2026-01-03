@@ -1,18 +1,22 @@
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import uk.ac.roehampton.ziparound.Utils;
+
+import java.io.IOException;
 
 public class HeaderController {
     public Button bookingsButton;
-    public Button vehicleButton;
     public Button accountButton;
     public Button homeButton;
     public Button staffButton;
     public Button customerButton;
     public Label logo;
+    public ProgressBar loadBar;
 
     public void logout(){
         Utils.currentStaff = null;
@@ -30,10 +34,6 @@ public class HeaderController {
 
     public void goToStaffView() {
         Utils.changeScene("staff");
-    }
-
-    public void goToVehicleView() {
-        Utils.changeScene("vehicle");
     }
 
     public void goToAccountView() {
@@ -66,8 +66,6 @@ public class HeaderController {
         staffButton.setVisible(false);
         bookingsButton.setManaged(false);
         bookingsButton.setVisible(false);
-        vehicleButton.setManaged(false);
-        vehicleButton.setVisible(false);
         homeButton.setManaged(false);
         homeButton.setVisible(false);
 
@@ -84,16 +82,6 @@ public class HeaderController {
 
     }
 
-    public void inVehicleView() {
-        reset();
-        vehicleButton.setManaged(false);
-        vehicleButton.setVisible(false);
-        staffButton.setManaged(false);
-        staffButton.setVisible(false);
-        customerButton.setManaged(false);
-        customerButton.setVisible(false);
-    }
-
     public void inAccountView() {
         reset();
         accountButton.setManaged(false);
@@ -106,14 +94,18 @@ public class HeaderController {
 
     public void reset() {
         logo.setText("ZipAround");
-        vehicleButton.setManaged(true);
-        vehicleButton.setVisible(true);
         accountButton.setManaged(true);
         accountButton.setVisible(true);
         customerButton.setManaged(true);
         customerButton.setVisible(true);
         bookingsButton.setManaged(true);
         bookingsButton.setVisible(true);
+    }
+
+
+    @FXML
+    public void initialize() throws IOException {
+        loadBar.setProgress(0);
     }
 
     public void update() {

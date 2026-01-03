@@ -37,7 +37,7 @@ public class StaffController implements Updatable {
 
     @FXML
     public void initialize() {
-        headerController.inStaffView();
+        update();
 
 //        // Configure columns
 //        bookingIDColumn.setCellValueFactory(data -> new SimpleObjectProperty<>(data.getValue().bookingID));
@@ -55,11 +55,16 @@ public class StaffController implements Updatable {
 
     @Override
     public void update() {
-
+        headerController.inStaffView();
     }
 
     @Override
     public void clear() {
 
+    }
+
+    @Override
+    public HeaderController getHeaderController() {
+        return headerController;
     }
 }

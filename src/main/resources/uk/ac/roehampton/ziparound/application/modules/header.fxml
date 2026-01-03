@@ -5,32 +5,36 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.shape.SVGPath?>
-<HBox xmlns:fx="http://javafx.com/fxml"
+<VBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="uk.ac.roehampton.ziparound.application.controllers.components.HeaderController"
-      spacing="10"
-      alignment="CENTER_LEFT"
-      style="-fx-background-color: #F0F2F5; -fx-padding: 15px;">
+      style="-fx-background-color: #F0F2F5; ">
 
-    <ImageView fitWidth="40"
-               fitHeight="40"
-               preserveRatio="true">
-        <Image url="@../imgs/logo_circular.png"/>
-    </ImageView>
+    <ProgressBar fx:id="loadBar" prefHeight="10" maxWidth="Infinity"/>
 
-    <Label text="ZipAround"
-           fx:id="logo"
-           style="-fx-text-fill: #446356;
+    <HBox style="-fx-padding: 15px;"
+          spacing="10"
+          alignment="CENTER_LEFT">
+        <ImageView fitWidth="40"
+                   fitHeight="40"
+                   preserveRatio="true">
+            <Image url="@../logo/logo_circular.png"/>
+        </ImageView>
+
+        <Label text="ZipAround"
+               fx:id="logo"
+               style="-fx-text-fill: #446356;
                   -fx-font-size: 24px;
                   -fx-font-weight: bold;"/>
 
-    <Region HBox.hgrow="ALWAYS"/>
-    <Button onAction="#update" styleClass="main, refresh"/>
-    <Button text="My Bookings" fx:id="bookingsButton" onAction="#goToBookingView" styleClass="main"/>
-    <Button text="My Vehicles" fx:id="vehicleButton" onAction="#goToVehicleView" styleClass="main"/>
-    <Button text="My Account" fx:id="accountButton" onAction="#goToAccountView" styleClass="main"/>
-    <Button text="Staff" fx:id="staffButton" onAction="#goToStaffView" styleClass="main"/>
-    <Button text="Customer" fx:id="customerButton" onAction="#goToCustomerView" styleClass="main"/>
-    <Button text="Home" fx:id="homeButton" onAction="#goToHomeView" styleClass="main"/>
-    <Button text="Logout" onAction="#logout" styleClass="main, red"/>
-</HBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button onAction="#update" styleClass="main, refresh"/>
+        <Button text="My Bookings" fx:id="bookingsButton" onAction="#goToBookingView" styleClass="main"/>
+        <Button text="My Account" fx:id="accountButton" onAction="#goToAccountView" styleClass="main"/>
+        <Button text="Staff" fx:id="staffButton" onAction="#goToStaffView" styleClass="main"/>
+        <Button text="Customer" fx:id="customerButton" onAction="#goToCustomerView" styleClass="main"/>
+        <Button text="Home" fx:id="homeButton" onAction="#goToHomeView" styleClass="main"/>
+        <Button text="Logout" onAction="#logout" styleClass="main, red"/>
+    </HBox>
+
+</VBox>
 

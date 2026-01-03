@@ -25,6 +25,7 @@ public class Equipment implements Bookable, Maintainable {
 
     private final Integer id;
     private String name;
+    private String model;
     private String description;
     private Boolean available;
     private Booking lastInspection;
@@ -36,9 +37,10 @@ public class Equipment implements Bookable, Maintainable {
      * @param description Description Of the Equipment
      * @param available Whether the Equipment is available for any bookings to be used. (note that the vehicle can be in a booking but still be available)
      */
-    public Equipment(Integer id, String name, String description, Boolean available) {
+    public Equipment(Integer id, String name, String model, String description, Boolean available) {
         this.id = id;
         this.name = name;
+        this.model = model;
         this.description = description;
         this.available = available;
     }
@@ -57,6 +59,17 @@ public class Equipment implements Bookable, Maintainable {
 
     public void setName(String name, Staff staff) {
         if (staff.canModifyEquipment()) { this.name = name; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+    }
+
+    // Getter / Setter for "model"
+    public String getModel(Staff staff) {
+        if (staff.canViewEquipmentInfo()) { return model; }
+        else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
+    }
+
+    public void setModel(String model, Staff staff) {
+        if (staff.canModifyEquipment()) { this.model = model; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
     }
 

@@ -4,16 +4,23 @@ import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class HomeController implements Updatable {
     public Label greetText;
     public Button staffButton;
+    public StackPane cardStack;
 
     // Needed to prevent header controller to be null
     @FXML
@@ -41,10 +48,17 @@ public class HomeController implements Updatable {
         } else {
             greetText.setText("Book Your Ride in Seconds");
         }
+
     }
 
     @Override
     public void clear() {
 
     }
+
+    @Override
+    public HeaderController getHeaderController() {
+        return headerController;
+    }
+
 }

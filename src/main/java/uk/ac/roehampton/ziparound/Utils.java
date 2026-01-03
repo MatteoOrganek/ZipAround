@@ -17,8 +17,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.application.MainApplication;
 import uk.ac.roehampton.ziparound.application.Updatable;
+import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
+import uk.ac.roehampton.ziparound.equipment.Equipment;
+import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
+import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
@@ -175,4 +179,48 @@ public class Utils {
             return false;
         }
     }
+
+    public static String findBookableImagePath(Bookable bookable) {
+        if (bookable instanceof Equipment) {
+            switch (bookable.getModel(Utils.currentStaff)) {
+                // Helmets
+                case "Six Peaks":
+                    return "/uk/ac/roehampton/ziparound/application/imgs/bookable/equipment/six_peaks_adult_cycling_helmet.png";
+                case "HJC Ibex 3":
+                    return "/uk/ac/roehampton/ziparound/application/imgs/bookable/equipment/hjc_ibex_3_helmet.png";
+                // Chains
+                case "Oxford Hardcore":
+                    return "/uk/ac/roehampton/ziparound/application/imgs/bookable/equipment/oxford_hardcore_xc13_chain_lock.png";
+                case "Oxford Alarm":
+                    return "/uk/ac/roehampton/ziparound/application/imgs/bookable/equipment/oxford_alarm_chain.png";
+                // Air Pumps
+                case "Visio":
+                    return "/uk/ac/roehampton/ziparound/application/imgs/bookable/equipment/air_pump.png";
+            }
+        } else {
+            if (bookable instanceof Scooter) {
+                switch (bookable.getModel(Utils.currentStaff)) {
+                    case "D8 Pro":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/scooters/iwheels_d8_pro.png";
+                    case "Kukirin G2 Master":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/scooters/kugoo_kukirin_g2_master.png";
+                    case "VS6 Pro":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/scooters/vipcoo_vs6_pro.png";
+                }
+            }
+
+            if (bookable instanceof EBike) {
+                switch (bookable.getModel(Utils.currentStaff)) {
+                    case "Nova":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/cyrusher_nova.png";
+                    case "Rumble 2":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/cyrusher_rumble_2.png";
+                    case "One":
+                        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/raleigh_one.png";
+                }
+            }
+        }
+        return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/raleigh_one.png";
+    }
+
 }

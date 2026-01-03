@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingController">
 
     <top>
@@ -9,11 +10,12 @@
 
     <!-- Center content -->
     <center>
-        <ScrollPane style="-fx-focus-color: transparent;">
-                <HBox spacing="20" style="-fx-padding: 20px;">
-                    <!-- Container for booking cards -->
-                    <VBox fx:id="container" spacing="20" alignment="TOP_CENTER" style="-fx-background-color: transparent;"/>
-                </HBox>
+        <ScrollPane fitToWidth="true" style="-fx-focus-color: transparent;">
+            <VBox fx:id="container" spacing="20" alignment="TOP_CENTER" style="-fx-background-color: transparent;" >
+                <padding>
+                    <Insets top="20" right="40" bottom="20" left="40"/>
+                </padding>
+            </VBox>
         </ScrollPane>
     </center>
 
