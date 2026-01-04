@@ -14,10 +14,12 @@ import uk.ac.roehampton.ziparound.application.controllers.components.HeaderContr
 import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -148,7 +150,9 @@ public class LoginController implements Updatable {
     }
 
     private User assignGlobalUser(Integer user_id) throws IOException, InterruptedException {
-        List<User> listUsers = Utils.apiDatabaseControllerInstance.getAllUsers();
+        List<User> listUsers = new ArrayList<>();
+        listUsers.addAll(Utils.bookingManagerInstance.getStaffArrayList());
+        listUsers.addAll(Utils.bookingManagerInstance.getCustomerArrayList());
 
         for (User user : listUsers){
 
@@ -158,8 +162,12 @@ public class LoginController implements Updatable {
                 if (user instanceof Staff){
                     Utils.currentUser = user;
                     Utils.currentStaff = (Staff) user;
-                    user.printFullInformation((Staff) user);
-                    Utils.log("User is Staff.");
+                    try {
+                        user.printFullInformation((Staff) user);
+                    } catch (SecurityException e) {
+                        Utils.log("Could not fetch staff data, not enough permissions!");
+                    }
+                    Utils.log("Successful login! User is Staff.");
                 } else {
                     Utils.log("Successful login! User is a Customer. Creating selfService.");
                     Utils.currentUser = user;

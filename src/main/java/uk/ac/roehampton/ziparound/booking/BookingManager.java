@@ -1,6 +1,9 @@
 package uk.ac.roehampton.ziparound.booking;
 
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.equipment.Equipment;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
+import uk.ac.roehampton.ziparound.users.Customer;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
@@ -9,6 +12,7 @@ import java.awt.print.Book;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.Vector;
 
 // BookingManager is a Singleton Factory builder for Booking.
 // I have made this decision based on the fact that the booking class represents only a specific object, without
@@ -24,9 +28,11 @@ public class BookingManager {
     // Array that stores all current bookings
     private final ArrayList<Booking> bookingArrayList;
     // Array that stores all current bookable items
-    private final ArrayList<Bookable> bookableArrayList;
+    private final ArrayList<Equipment> equipmentArrayList;
+    private final ArrayList<Vehicle> vehicleArrayList;
     // Array that stores all current users
-    private final ArrayList<User> userArrayList;
+    private final ArrayList<Customer> customerArrayList;
+    private final ArrayList<Staff> staffArrayList;
     // Staff object for permissions
     private final Staff staff;
 
@@ -35,9 +41,11 @@ public class BookingManager {
      * @param user Staff object required for low level permissions
      */
     private BookingManager(User user) {
-        this.bookableArrayList = new ArrayList<>();
+        this.equipmentArrayList = new ArrayList<>();
+        this.vehicleArrayList = new ArrayList<>();
         this.bookingArrayList = new ArrayList<>();
-        this.userArrayList = new ArrayList<>();
+        this.customerArrayList = new ArrayList<>();
+        this.staffArrayList = new ArrayList<>();
         // Check if user is Staff
         if (user instanceof Staff) {
             // Assign user (staff) to this.staff
@@ -81,14 +89,24 @@ public class BookingManager {
         return bookingArrayList;
     }
 
-    // Getter for bookable item List
-    public ArrayList<Bookable> getBookableArrayList() {
-        return bookableArrayList;
+    // Getter for vehicle item List
+    public ArrayList<Vehicle> getVehicleArrayList() {
+        return vehicleArrayList;
+    }
+
+    // Getter for equipment List
+    public ArrayList<Equipment> getEquipmentArrayList() {
+        return equipmentArrayList;
+    }
+
+    // Getter for customer item List
+    public ArrayList<Customer> getCustomerArrayList() {
+        return customerArrayList;
     }
 
     // Getter for user List
-    public ArrayList<User> getUserArrayList() {
-        return userArrayList;
+    public ArrayList<Staff> getStaffArrayList() {
+        return staffArrayList;
     }
 
 
@@ -145,21 +163,39 @@ public class BookingManager {
     }
 
     /**
-     * Adds a bookable item to bookableArrayList
+     * Adds a vehicle item to vehicleArrayList
      *
-     * @param bookable Bookable item to be added.
+     * @param vehicle Vehicle item to be added.
      */
-    public void addBookable(Bookable bookable) {
-        bookableArrayList.add(bookable);
+    public void addVehicle(Vehicle vehicle) {
+        vehicleArrayList.add(vehicle);
     }
 
     /**
-     * Adds a user to bookableArrayList
+     * Adds a equipment item to equipmentArrayList
      *
-     * @param user Bookable item to be added.
+     * @param equipment Equipment item to be added.
      */
-    public void addUser(User user) {
-        userArrayList.add(user);
+    public void addEquipment(Equipment equipment) {
+        equipmentArrayList.add(equipment);
+    }
+
+    /**
+     * Adds a customer to customerArrayList
+     *
+     * @param customer Customer item to be added.
+     */
+    public void addCustomer(Customer customer) {
+        customerArrayList.add(customer);
+    }
+
+    /**
+     * Adds a staff to staffArrayList
+     *
+     * @param staff Staff item to be added.
+     */
+    public void addStaff(Staff staff) {
+        staffArrayList.add(staff);
     }
 
     /**
@@ -181,7 +217,11 @@ public class BookingManager {
      * @param newBooking Booking to be checked.
      * @return Boolean - Whether the booking does not overlap with another booking having the same object's id.
      */
-    boolean isValid(Booking newBooking) {
+    public boolean isValid(Booking newBooking) {
+
+        // Check if the current booking's start and end time have been swapped
+
+
         // For each booking in the list of bookings
         for (Booking currentBooking : bookingArrayList) {
             // If the bookable object's ids match
@@ -196,6 +236,7 @@ public class BookingManager {
                 // (StartNew < EndCurrent)  and  (EndNew > StartCurrent) = overlap, hence, return false, as it cannot be booked
                 boolean c1 = newBookingStartTime.isBefore(currentBookingEndTime);
                 boolean c2 = newBookingEndTime.isAfter(currentBookingStartTime);
+
                 if (c1 && c2) {
                     return false;
                 }
@@ -251,11 +292,17 @@ public class BookingManager {
     public void resetBookingArrayList() {
         this.bookingArrayList.clear();
     }
-    public void resetBookableArrayList() {
-        this.bookableArrayList.clear();
+    public void resetVehicleArrayList() {
+        this.vehicleArrayList.clear();
     }
-    public void resetUserArrayList() {
-        this.userArrayList.clear();
+    public void resetEquipmentArrayList() {
+        this.equipmentArrayList.clear();
+    }
+    public void resetCustomerArrayList() {
+        this.customerArrayList.clear();
+    }
+    public void resetStaffArrayList() {
+        this.staffArrayList.clear();
     }
 
 

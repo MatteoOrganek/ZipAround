@@ -42,6 +42,8 @@ public class Manager extends Staff {
     @Override public Boolean canAddUsers()          { return true; }
     @Override public Boolean canViewUserInfo()      { return true; }
 
+    @Override public Boolean canViewStaffInfo()      { return true; }
+
     @Override public Boolean canModifyEquipment()   { return true; }
     @Override public Boolean canAddEquipment()      { return true; }
     @Override public Boolean canViewEquipmentInfo() { return true; }

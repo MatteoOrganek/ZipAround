@@ -202,6 +202,11 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 10, 0, 0, 4);
 }
 
+#container > .booking-card:hover {
+    -fx-border-color: #446356;
+    -fx-effect: none;
+}
+
 /* DatePicker main text field */
 .date-picker {
     -fx-background-color: white;

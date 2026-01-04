@@ -145,309 +145,338 @@ public class ApiDatabaseController {
 
     // DATA TRANSLATION
 
-    private List<List<Object>> getAllUserInfo() throws IOException, InterruptedException {
-
-        List<List<Object>> listUsersInfo = new ArrayList<>();
-
-        List<Map<String, Object>> listMaps = getAll("users");
-
-        if (listMaps != null){
-            Utils.log("User data successfully fetched.", 2);
-
-            // Loop over each user
-            for (Map<String, Object> userInfo : listMaps) {
-
-                List<Object> listUserInfo = new ArrayList<>();
-                // Loop over each info in user
-                for (Map.Entry<String, Object> entry : userInfo.entrySet()) {
-                    // Add info to inner list
-                    listUserInfo.add(entry.getValue());
-                }
-                // Add inner list to return list
-                listUsersInfo.add(listUserInfo);
-            }
-
-            return listUsersInfo;
-
-        } else {
-            Utils.log("No user data found!", 1);
-            return null;
-        }
-    }
-
-    public List<User> getAllUsers() throws IOException, InterruptedException {
-
-        // Reset user list
-        Utils.bookingManagerInstance.resetUserArrayList();
-
-        // Get all users
-        List<List<Object>> listUsersInfo = getAllUserInfo();
-
-        // Staff side
-        List<Map<String, Object>> listMaps = getAll("staff");
-
-        if (listMaps != null && listUsersInfo != null){
-
-            Utils.log("Staff data successfully fetched.", 2);
-            // Loop over each staff
-            for (Map<String, Object> staffInfo : listMaps) {
-
-                // Get staff id
-                int staffID = Integer.parseInt((String) staffInfo.get("id"));
-
-                // Get user id
-                int userID = Integer.parseInt((String) staffInfo.get("user_id"));
-
-
-                // Get staff info through listUsersInfo using the Staff's user_id - 1 as the database index starts with 1.
-                String foreName = listUsersInfo.get(userID - 1).get(1).toString();
-                String lastName = listUsersInfo.get(userID - 1).get(2).toString();
-
-                // Get department and assign roles
-                Staff staff =  switch (Integer.parseInt((String) staffInfo.get("department_id"))) {
-                    // Admin
-                    case 1 -> new Admin(userID, staffID, foreName, lastName, "Admin");
-                    // Management
-                    case 2 -> new Manager(userID, staffID, foreName, lastName, "Management");
-                    // Management
-                    case 3 -> new BookingAgent(userID, staffID, foreName, lastName, "Bookings");
-                    // Wrong case, switch to default
-                    default -> new SelfService();
-                };
-
-                // Add staff to list of users
-                Utils.bookingManagerInstance.addUser(staff);
-            }
-        } else {
-            Utils.log("No staff data found!", 1);
-        }
-
-
-        // Loop over each customer (Users)
-        for (List<Object> user : listUsersInfo) {
-
-            // Get user id
-            int userID = Integer.parseInt((String) user.get(0));
-
-            // Get customer info through listUsersInfo 1-forename, 2-lastname.
-            String foreName = user.get(1).toString();
-            String lastName = user.get(2).toString();
-
-            // Create customer (using user's id)
-            Customer customer = new Customer(userID, foreName, lastName);
-
-            // Add customer to list of users
-            Utils.bookingManagerInstance.addUser(customer);
-        }
-
-        // Return userArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
-        return Utils.bookingManagerInstance.getUserArrayList();
-    }
-
-    public List<Bookable> getAllBookables() throws IOException, InterruptedException {
-
-        // Reset bookable list
-        Utils.bookingManagerInstance.resetBookableArrayList();
-
-        List<Map<String, Object>> listMaps = getAll("vehicle");
-
-        if (listMaps != null){
-            Utils.log("Vehicle data successfully fetched.", 2);
-            // Loop over each vehicle
-            for (Map<String, Object> vehicleInfo : listMaps) {
-
-                // Create the vehicle based on the type
-                Vehicle vehicle =  switch ((String) vehicleInfo.get("type")) {
-                    case "EBike" -> new EBike(
-                            Integer.parseInt((String) vehicleInfo.get("id")),
-                            (String) vehicleInfo.get("brand"),
-                            (String) vehicleInfo.get("model"),
-                            (String) vehicleInfo.get("number_plate"),
-                            Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                            Boolean.getBoolean((String) vehicleInfo.get("available")),
-                            Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
-                            Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
-                    );
-                    case "Scooter" -> new Scooter(
-                            Integer.parseInt((String) vehicleInfo.get("id")),
-                            (String) vehicleInfo.get("brand"),
-                            (String) vehicleInfo.get("model"),
-                            (String) vehicleInfo.get("number_plate"),
-                            Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                            Boolean.getBoolean((String) vehicleInfo.get("available")),
-                            Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
-                            Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
-                    );
-                    default -> throw new IllegalStateException("Unexpected value: " + vehicleInfo.get("type"));
-                };
-
-                // Add it to the bookable list in booking manager (Cast it to Bookable as the abstract class Vehicle is not Bookable, (EBike and Scooters, etc.))
-                Utils.bookingManagerInstance.addBookable(vehicle);
-            }
-        } else {
-            Utils.log("No vehicle data found!", 1);
-        }
-
-
-        // Get all equipment
-        listMaps = getAll("equipment");
-
-        if (listMaps != null){
-            Utils.log("Vehicle data successfully fetched.", 2);
-            // Loop over each equipment
-            for (Map<String, Object> equipmentInfo : listMaps) {
-
-
-                Equipment equipment = new Equipment(
-                        Integer.parseInt((String) equipmentInfo.get("id")),
-                        (String) equipmentInfo.get("name"),
-                        (String) equipmentInfo.get("model"),
-                        (String) equipmentInfo.get("description"),
-                        Boolean.getBoolean((String) equipmentInfo.get("available"))
-                );
-
-                // Add it to the bookable list in booking manager
-                Utils.bookingManagerInstance.addBookable(equipment);
-            }
-
-
-        } else {
-            Utils.log("No vehicle data found!", 1);
-        }
-
-        // Return bookableArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
-        return Utils.bookingManagerInstance.getBookableArrayList();
-    }
-
-    public List<Booking> getAllBookings() throws IOException, InterruptedException {
-
-        // Reset bookings list
-        Utils.bookingManagerInstance.resetBookingArrayList();
-
-        List<Map<String, Object>> listMaps = getAll("booking");
-
-        if (    listMaps != null &&
-                !Utils.bookingManagerInstance.getBookableArrayList().isEmpty() &&
-                !Utils.bookingManagerInstance.getUserArrayList().isEmpty()
-        ){
-            Utils.log("Booking data successfully fetched.", 2);
-            // Loop over each booking
-            for (Map<String, Object> bookingInfo : listMaps) {
-
-                // Get time
-                Instant startTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_start_time"));
-                Instant endTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_end_time"));
-                Instant createdOnTime = Utils.convertStringToInstant((String) bookingInfo.get("created_on"));
-
-                // Initialize user and get userID
-                User user = null;
-                int userID = Integer.parseInt((String) bookingInfo.get("user_id"));
-
-                // Initialize user and get staffID
-                Staff staff = null;
-                String staffStr = (String) bookingInfo.get("staff_approved_id");
-
-                int staffID = -1;
-                // Set staffID if not null in the db (-1 if so)
-                if (Utils.isNumeric(staffStr)) {
-                    staffID = Integer.parseInt(staffStr);
-                }
-
-                // For each user in current booking manager list
-                for (User currentUser : Utils.bookingManagerInstance.getUserArrayList()) {
-
-                    // If the current user's id matches the one that needs to be found
-                    if (Objects.equals(currentUser.getID(Utils.currentStaff), userID)) {
-                        // Set the current user as the booking user
-                        user = currentUser;
-                    }
-                    // If the staff is null, the current user is staff and the current staffID matches the staffID to be found
-                    if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).canViewStaffInfo() && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
-                        // Set the current user as the staff that approved the booking
-                        staff = (Staff) currentUser;
-                    }
-
-                    // TODO Check if list is in order
-                    // User array List in bookingManagerInstance is crated with order in mind, where staff is listed at the beginning of the list.
-                    // If user is not null and the current user is a customer, the window of opportunity to identify the staff is already gone, hence run the condition.
-                    if (user != null && currentUser instanceof Customer) {
-                        break;
-                    }
-                }
-
-                Bookable bookable = null;
-                int bookableID = Integer.parseInt((String) bookingInfo.get("bookable_id"));
-
-                for (Bookable currentBookable : Utils.bookingManagerInstance.getBookableArrayList()) {
-                    if (currentBookable.getID(Utils.currentStaff) == bookableID) {
-                        bookable = currentBookable;
-                        break;
-                    }
-                }
-
-                Booking booking = new Booking(
-                        Integer.parseInt((String) bookingInfo.get("id")),
-                        startTime,
-                        endTime,
-                        createdOnTime,
-                        user,
-                        bookable,
-                        "1".equals(bookingInfo.get("approved")),
-                        staff
-                );
-
-                Utils.bookingManagerInstance.addBooking(booking);
-            }
-
-        } else {
-            Utils.log("No booking data found!", 1);
-        }
-
-        // Return bookingArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
-        return Utils.bookingManagerInstance.getBookingArrayList();
-    }
-
-    public List<Object> listAllObjects(String s) throws IOException, InterruptedException {
+    public ArrayList<Object> getObjects(String table) throws IOException, InterruptedException {
 
         // Initialize return list
-        List<Object> listObject = new ArrayList<>();
+        ArrayList<Object> listObject = new ArrayList<>();
 
-        // Get objects
-        List<Map<String, Object>> listMaps = getAll(s);
+        List<Map<String, Object>> listMaps = getAll(table);
 
-        // Loop over each Objects
-        for (Map<String, Object> objectInfo : listMaps) {
+        switch (table) {
+            case "booking":
 
-            // Loop over each info in Object
-            for (Map.Entry<String, Object> entry : objectInfo.entrySet()) {
+                // Reset bookings list
+                Utils.bookingManagerInstance.resetBookingArrayList();
 
-                Utils.log("%s - %s".formatted(entry.getKey(), entry.getValue()));
-            }
+                if ( listMaps != null &&
+                        !Utils.bookingManagerInstance.getVehicleArrayList().isEmpty() &&
+                        !Utils.bookingManagerInstance.getEquipmentArrayList().isEmpty() &&
+                        !Utils.bookingManagerInstance.getCustomerArrayList().isEmpty() &&
+                        !Utils.bookingManagerInstance.getStaffArrayList().isEmpty() ){
+
+                    Utils.log("Booking data successfully fetched.", 2);
+
+                    // Assemble List of Users
+                    List<User> listUsers = new ArrayList<>();
+                    listUsers.addAll(Utils.bookingManagerInstance.getStaffArrayList());
+                    listUsers.addAll(Utils.bookingManagerInstance.getCustomerArrayList());
+
+                    // Loop over each booking
+                    for (Map<String, Object> bookingInfo : listMaps) {
+
+                        // Get time
+                        Instant startTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_start_time"));
+                        Instant endTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_end_time"));
+                        Instant createdOnTime = Utils.convertStringToInstant((String) bookingInfo.get("created_on"));
+
+                        // Initialize user and get userID
+                        User user = null;
+                        int userID = Integer.parseInt((String) bookingInfo.get("user_id"));
+
+                        // Initialize user and get staffID
+                        Staff staff = null;
+                        String staffStr = (String) bookingInfo.get("staff_approved_id");
+
+                        int staffID = -1;
+                        // Set staffID if not null in the db (-1 if so)
+                        if (Utils.isNumeric(staffStr)) {
+                            staffID = Integer.parseInt(staffStr);
+                        }
+
+                        // For each user in current booking manager list
+                        for (User currentUser : listUsers) {
+
+                            // If the current user's id matches the one that needs to be found
+                            if (Objects.equals(currentUser.getID(Utils.currentStaff), userID)) {
+                                // Set the current user as the booking user
+                                user = currentUser;
+                            }
+                            // If the staff is null, the current user is staff and the current staffID matches the staffID to be found
+                            if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).canViewStaffInfo() && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
+                                // Set the current user as the staff that approved the booking
+                                staff = (Staff) currentUser;
+                            }
+
+                            // TODO Check if list is in order
+                            // Staff is listed at the beginning of the list.
+                            // If user is not null and the current user is a customer, the window of opportunity to identify the staff is already gone, hence run the condition.
+                            if (user != null && currentUser instanceof Customer) {
+                                break;
+                            }
+                        }
+
+                        Bookable bookable = null;
+                        int bookableID = Integer.parseInt((String) bookingInfo.get("bookable_id"));
+
+                        // Assemble List of Bookables
+                        List<Bookable> listBookable = new ArrayList<>();
+                        listBookable.addAll(Utils.bookingManagerInstance.getVehicleArrayList());
+                        listBookable.addAll(Utils.bookingManagerInstance.getEquipmentArrayList());
+
+                        for (Bookable currentBookable : listBookable) {
+                            if (currentBookable.getID(Utils.currentStaff) == bookableID) {
+                                bookable = currentBookable;
+                                break;
+                            }
+                        }
+
+                        Booking booking = new Booking(
+                                Integer.parseInt((String) bookingInfo.get("id")),
+                                startTime,
+                                endTime,
+                                createdOnTime,
+                                user,
+                                bookable,
+                                "1".equals(bookingInfo.get("approved")),
+                                staff
+                        );
+
+                        Utils.bookingManagerInstance.addBooking(booking);
+                    }
+
+                } else {
+                    Utils.log("No booking data found!", 1);
+                }
+
+                // Return bookingArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
+                listObject.addAll(Utils.bookingManagerInstance.getBookingArrayList());
+                return listObject;
+
+            case "vehicle":
+
+                // Reset bookable list
+                Utils.bookingManagerInstance.resetVehicleArrayList();
+
+                if (listMaps != null){
+                    Utils.log("Vehicle data successfully fetched.", 2);
+                    // Loop over each vehicle
+                    for (Map<String, Object> vehicleInfo : listMaps) {
+
+                        // Create the vehicle based on the type
+                        Vehicle vehicle =  switch ((String) vehicleInfo.get("type")) {
+                            case "EBike" -> new EBike(
+                                    Integer.parseInt((String) vehicleInfo.get("id")),
+                                    (String) vehicleInfo.get("brand"),
+                                    (String) vehicleInfo.get("model"),
+                                    (String) vehicleInfo.get("number_plate"),
+                                    Float.parseFloat((String) vehicleInfo.get("total_miles")),
+                                    Boolean.getBoolean((String) vehicleInfo.get("available")),
+                                    Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
+                                    Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
+                            );
+                            case "Scooter" -> new Scooter(
+                                    Integer.parseInt((String) vehicleInfo.get("id")),
+                                    (String) vehicleInfo.get("brand"),
+                                    (String) vehicleInfo.get("model"),
+                                    (String) vehicleInfo.get("number_plate"),
+                                    Float.parseFloat((String) vehicleInfo.get("total_miles")),
+                                    Boolean.getBoolean((String) vehicleInfo.get("available")),
+                                    Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
+                                    Integer.parseInt((String) vehicleInfo.get("amount_of_batteries"))
+                            );
+                            default -> throw new IllegalStateException("Unexpected value: " + vehicleInfo.get("type"));
+                        };
+
+                        // Add it to the vehicle list in booking manager
+                        Utils.bookingManagerInstance.addVehicle(vehicle);
+                    }
+                } else {
+                    Utils.log("No vehicle data found!", 1);
+                }
+
+                // Return vehicleArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
+                listObject.addAll(Utils.bookingManagerInstance.getVehicleArrayList());
+                return listObject;
+
+            case "equipment":
+
+                // Get all equipment
+
+                Utils.bookingManagerInstance.resetEquipmentArrayList();
+
+                if (listMaps != null){
+                    Utils.log("Vehicle data successfully fetched.", 2);
+                    // Loop over each equipment
+                    for (Map<String, Object> equipmentInfo : listMaps) {
+
+
+                        Equipment equipment = new Equipment(
+                                Integer.parseInt((String) equipmentInfo.get("id")),
+                                (String) equipmentInfo.get("name"),
+                                (String) equipmentInfo.get("model"),
+                                (String) equipmentInfo.get("description"),
+                                Boolean.getBoolean((String) equipmentInfo.get("available"))
+                        );
+
+                        // Add it to the bookable list in booking manager
+                        Utils.bookingManagerInstance.addEquipment(equipment);
+                    }
+
+
+                } else {
+                    Utils.log("No equipment data found!", 1);
+                }
+
+                // Return equipmentArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
+                listObject.addAll(Utils.bookingManagerInstance.getEquipmentArrayList());
+                return listObject;
+
+            case "users":
+
+                // Reset user list
+                Utils.bookingManagerInstance.resetCustomerArrayList();
+
+                if (listMaps != null) {
+                    Utils.log("Customer data successfully fetched.", 2);
+                    // Loop over each user
+                    for (Map<String, Object> customerInfo : listMaps) {
+
+                        // Get user id
+                        int userID = Integer.parseInt((String) customerInfo.get("id"));
+
+                        // Get customer info
+                        String foreName = customerInfo.get("fore_name").toString();
+                        String lastName = customerInfo.get("last_name").toString();
+
+                        // Create customer (using user's id)
+                        Customer customer = new Customer(userID, foreName, lastName);
+
+                        // Add customer to list of users
+                        Utils.bookingManagerInstance.addCustomer(customer);
+                    }
+                }
+
+                // Return customerArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
+                listObject.addAll(Utils.bookingManagerInstance.getCustomerArrayList());
+                return listObject;
+
+            case "staff":
+
+                // Reset user list
+                Utils.bookingManagerInstance.resetStaffArrayList();
+
+                // Get all users
+                List<Customer> listCustomers = Utils.bookingManagerInstance.getCustomerArrayList();
+
+                if (listMaps != null && listCustomers != null){
+
+                    Utils.log("Staff data successfully fetched.", 2);
+                    // Loop over each staff
+                    for (Map<String, Object> staffInfo : listMaps) {
+
+                        // Get staff id
+                        int staffID = Integer.parseInt((String) staffInfo.get("id"));
+
+                        // Get user id
+                        int userID = Integer.parseInt((String) staffInfo.get("user_id"));
+
+
+                        // Get staff info through Customer's data (Staff can be a Customer too)
+                        String foreName = "";
+                        String lastName = "";
+                        for (Customer customer : listCustomers) {
+                            if (customer.getID(Utils.currentStaff) == userID) {
+                                foreName = customer.getForeName(Utils.currentStaff);
+                                lastName = customer.getLastName(Utils.currentStaff);
+                            }
+                        }
+
+                        // Get department and assign roles
+                        Staff staff = switch (Integer.parseInt((String) staffInfo.get("department_id"))) {
+                            // Admin
+                            case 1 -> new Admin(userID, staffID, foreName, lastName, "Admin");
+                            // Management
+                            case 2 -> new Manager(userID, staffID, foreName, lastName, "Management");
+                            // Management
+                            case 3 -> new BookingAgent(userID, staffID, foreName, lastName, "Bookings");
+                            // Wrong case, switch to default
+                            default -> new SelfService();
+                        };
+
+                        // Add staff to list of users
+                        Utils.bookingManagerInstance.addStaff(staff);
+                    }
+                } else {
+                    Utils.log("No staff data found!", 1);
+                }
+
+                // Return staffArray list from the bookingManagerInstance. Will return an empty list if no items have been inserted.
+                listObject.addAll(Utils.bookingManagerInstance.getStaffArrayList());
+                return listObject;
+
+            default:
+                throw new Error("Table outside of bounds.");
+
         }
-
-        return listObject;
     }
 
     public void updateObject(Object object) throws IOException, InterruptedException {
+        String objectTable = getTable(object);
+        updateRecord(objectTable, getMap(object, objectTable));
+        update();
+    }
+
+    public void addObject(Object object) throws IOException, InterruptedException {
+        String objectTable = getTable(object);
+        addRecord(objectTable, getMap(object, objectTable));
+        update();
+    }
+
+    public void deleteObject(Object object) throws IOException, InterruptedException {
+
+        String objectTable = getTable(object);
+        deleteRecord(objectTable, getMap(object, objectTable));
+        update();
+    }
+
+    private Map<String, Object> getMap(Object object, String objectTable) {
+        Map<String, Object> objectInfo = new HashMap<>();
         if (object instanceof Booking) {
             Booking booking = (Booking) object;
-            Map<String, Object> bookingInfo = new HashMap<>();
 
             LocalDateTime start = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
             LocalDateTime end = LocalDateTime.ofInstant(booking.getBookedEndTime(Utils.currentStaff), ZoneId.systemDefault());
 
-            bookingInfo.put("id", booking.getID(Utils.currentStaff));
-            bookingInfo.put("booked_start_time", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            bookingInfo.put("booked_end_time", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-            bookingInfo.put("user_id", booking.getUser(Utils.currentStaff).getID(Utils.currentStaff));
-            bookingInfo.put("bookable_id", booking.getBookableObject(Utils.currentStaff).getID(Utils.currentStaff));
-            bookingInfo.put("approved", booking.getApproved(Utils.currentStaff));
-            bookingInfo.put("staff_approved_id", ((User) booking.getStaff(Utils.currentStaff)).getID(Utils.currentStaff));
+            objectInfo.put("id", booking.getID(Utils.currentStaff));
+            objectInfo.put("booked_start_time", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            objectInfo.put("booked_end_time", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            objectInfo.put("user_id", booking.getUser(Utils.currentStaff).getID(Utils.currentStaff));
+            objectInfo.put("bookable_id", booking.getBookableObject(Utils.currentStaff).getID(Utils.currentStaff));
+            objectInfo.put("approved", booking.getApproved(Utils.currentStaff));
+            objectInfo.put("staff_approved_id", ((User) booking.getStaff(Utils.currentStaff)).getID(Utils.currentStaff));
 
-            updateRecord("booking", bookingInfo);
-            update();
+            return objectInfo;
+
+        }
+        throw new Error("Unhandled case!");
+    }
+
+    private String getTable(Object object) {
+        if (object instanceof Booking) {
+            return "booking";
+        } else if (object instanceof Vehicle) {
+            return "vehicle";
+        }  else if (object instanceof Equipment) {
+            return "equipment";
+        } else if (object instanceof Customer) {
+            return "users";
+        } else if (object instanceof Staff) {
+            return "staff";
+        } else {
+            throw new Error("Unhandled case!");
         }
     }
+
     // Update data using different threads from ui thread
     public void update() {
 
@@ -455,16 +484,20 @@ public class ApiDatabaseController {
             @Override
             protected Boolean call() throws Exception {
                 // Get users
-                updateProgress(1, 3);
-                getAllUsers();
+                updateProgress(1, 5);
+                getObjects("users");
+                updateProgress(2, 5);
+                getObjects("staff");
 
                 // Get bookables
-                updateProgress(2, 3);
-                getAllBookables();
+                updateProgress(3, 5);
+                getObjects("vehicle");
+                updateProgress(4, 5);
+                getObjects("equipment");
 
                 // Get bookings
-                updateProgress(3, 3);
-                getAllBookings();
+                updateProgress(5, 5);
+                getObjects("booking");
 
                 // Reset Progress
                 updateProgress(0, 0);
@@ -485,12 +518,13 @@ public class ApiDatabaseController {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            Utils.log("Successful update.", 2);
+            Utils.log("Successfully updated.", 2);
         });
 
         updateTask.setOnFailed(event -> {
             Throwable ex = updateTask.getException();
             Utils.log("Update failed: " + ex.getMessage(), 5);
+            Utils.currentController.getHeaderController().loadBar.setProgress(0);
             ex.printStackTrace();
         });
 

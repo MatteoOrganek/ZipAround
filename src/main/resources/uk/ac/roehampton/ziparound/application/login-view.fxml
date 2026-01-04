@@ -36,6 +36,9 @@
                 <!-- Login Button -->
                 <Button fx:id="loginButton" text="Login" onAction="#login" styleClass="main"/>
 
+                <!-- Hint Label -->
+                <Label textFill="red" text="Hint: "/>
+
             </VBox>
         </StackPane>
     </center>

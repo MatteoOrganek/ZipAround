@@ -39,6 +39,7 @@ public class BookingAgent extends Staff {
     @Override public Boolean canAddUsers()          { return true; }
     @Override public Boolean canViewUserInfo()      { return true; }
 
+    @Override public Boolean canViewStaffInfo()      { return true; }
 
     @Override public Boolean canViewEquipmentInfo() { return true; }
 
