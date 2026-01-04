@@ -5,14 +5,21 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.concurrent.Task;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
+import uk.ac.roehampton.ziparound.application.controllers.components.BookingCardController;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
@@ -96,6 +103,7 @@ public class ApiDatabaseController {
     // UPDATE RECORD
     // TODO Handle IOException, InterruptedException in here
     public Map<String, Object> updateRecord(String table, Map<String, ?> data) throws IOException, InterruptedException {
+
         if (!data.containsKey("id")) {
             throw new IllegalArgumentException("Record must include 'id' for update");
         }
@@ -384,7 +392,7 @@ public class ApiDatabaseController {
                         createdOnTime,
                         user,
                         bookable,
-                        Boolean.parseBoolean((String) bookingInfo.get("approved")),
+                        "1".equals(bookingInfo.get("approved")),
                         staff
                 );
 
@@ -420,6 +428,26 @@ public class ApiDatabaseController {
         return listObject;
     }
 
+    public void updateObject(Object object) throws IOException, InterruptedException {
+        if (object instanceof Booking) {
+            Booking booking = (Booking) object;
+            Map<String, Object> bookingInfo = new HashMap<>();
+
+            LocalDateTime start = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
+            LocalDateTime end = LocalDateTime.ofInstant(booking.getBookedEndTime(Utils.currentStaff), ZoneId.systemDefault());
+
+            bookingInfo.put("id", booking.getID(Utils.currentStaff));
+            bookingInfo.put("booked_start_time", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            bookingInfo.put("booked_end_time", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            bookingInfo.put("user_id", booking.getUser(Utils.currentStaff).getID(Utils.currentStaff));
+            bookingInfo.put("bookable_id", booking.getBookableObject(Utils.currentStaff).getID(Utils.currentStaff));
+            bookingInfo.put("approved", booking.getApproved(Utils.currentStaff));
+            bookingInfo.put("staff_approved_id", ((User) booking.getStaff(Utils.currentStaff)).getID(Utils.currentStaff));
+
+            updateRecord("booking", bookingInfo);
+            update();
+        }
+    }
     // Update data using different threads from ui thread
     public void update() {
 
@@ -428,17 +456,14 @@ public class ApiDatabaseController {
             protected Boolean call() throws Exception {
                 // Get users
                 updateProgress(1, 3);
-                updateMessage("Loading users...");
                 getAllUsers();
 
                 // Get bookables
                 updateProgress(2, 3);
-                updateMessage("Loading bookables...");
                 getAllBookables();
 
                 // Get bookings
                 updateProgress(3, 3);
-                updateMessage("Loading bookings...");
                 getAllBookings();
 
                 // Reset Progress

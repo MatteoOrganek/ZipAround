@@ -1,11 +1,13 @@
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
+import javafx.event.ActionEvent;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
@@ -18,6 +20,7 @@ import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -43,10 +46,21 @@ public class BookingCardController {
     public Label bookableText;
     public Button approveButton;
     public ImageView bikeImage;
+    public HBox buttonBox;
+    public AnchorPane root;
+
+    private Boolean showingButtons = false;
+
+    private Booking currentBooking;
 
     public void setBooking(Booking booking) {
 
+        currentBooking = booking;
+
         // Fill fields
+
+        buttonBox.setManaged(false);
+        buttonBox.setVisible(false);
 
         Bookable bookable = booking.getBookableObject(Utils.currentStaff);
         String name = bookable.getName(Utils.currentStaff);
@@ -75,23 +89,28 @@ public class BookingCardController {
         String startTimeString = startTime.format(timeFormatter);
         String endTimeString = endTime.format(timeFormatter);
 
-        // Insert in Fields
+        // Insert Data in Fields
         startDatePicker.setValue(startDate);
         startTimeField.setText(startTimeString);
         endDatePicker.setValue(endDate);
         endTimeField.setText(endTimeString);
 
+        if (booking.getApproved(Utils.currentStaff)) {
+            statusText.setText("Approved");
+        } else {
+            statusText.setText("Awaiting approval");
+        }
+
+
         // Hide staff info if not staff
         if (Utils.currentUser instanceof Staff) {
             if (Utils.currentStaff.canViewStaffInfo()) {
-                if (booking.getStaff(Utils.currentStaff) != null) {
+                if (booking.getApproved(Utils.currentStaff) && booking.getStaff(Utils.currentStaff) != null) {
                     staffLabel.setText("Approved by %s.".formatted(booking.getStaff(Utils.currentStaff).getFullName(Utils.currentStaff)));
-                } else {
-                    staffLabel.setText("Awaiting approval.");
                 }
             } else {
                 staffLabel.setManaged(false);
-                staffLabel.setVisible(false);;
+                staffLabel.setVisible(false);
             }
         } else {
             staffBox.setManaged(false);
@@ -110,5 +129,39 @@ public class BookingCardController {
 
         approveButton.setDisable(!canApprove);
 
+    }
+
+    public void hideShowButtons() {
+
+        if (showingButtons) {
+            root.setStyle("-fx-border-color: transparent; -fx-border-width: 0;");
+            buttonBox.setManaged(false);
+            buttonBox.setVisible(false);
+        } else {
+            root.setStyle("-fx-border-color: #446356; -fx-border-width: 2;");
+            buttonBox.setManaged(true);
+            buttonBox.setVisible(true);
+        }
+        showingButtons = !showingButtons;
+
+    }
+
+    public void save() throws IOException, InterruptedException {
+        Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
+        hideShowButtons();
+    }
+
+    public void approveReject() throws IOException, InterruptedException {
+        currentBooking.setApproved(!currentBooking.getApproved(Utils.currentStaff), Utils.currentStaff);
+        currentBooking.setStaff(Utils.currentStaff, Utils.currentStaff);
+        Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
+    }
+
+    public void delete() {
+        hideShowButtons();
+    }
+
+    public void cancel() {
+        hideShowButtons();
     }
 }
