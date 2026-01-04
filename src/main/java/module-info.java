@@ -16,6 +16,7 @@ module uk.ac.roehampton.ziparound {
     requires java.sql;
     requires java.net.http;
     requires com.google.gson;
+    requires com.calendarfx.view;
 
     opens uk.ac.roehampton.ziparound to javafx.fxml;
     exports uk.ac.roehampton.ziparound;

@@ -135,7 +135,7 @@ public class BookingManager {
             // If the list is not null and not empty
             if (bookingArrayList != null && !bookingArrayList.isEmpty()) {
                 // If the booking does not overlap
-                if (isValid(booking)) {
+                if (isOverlapping(booking)) {
                     // Add the booking in the list.
                     bookingArrayList.add(booking);
                 } else {
@@ -211,36 +211,42 @@ public class BookingManager {
         }
     }
 
+    public Boolean isTheTimeInOrder(Booking booking) {
+        // Check if the current booking's start and end time have been swapped
+        if (booking.getBookedStartTime(staff).isAfter(booking.getBookedEndTime(staff))) {
+            return false;
+        }
+        return true;
+    }
+
     /**
      * This function is able to determine is a booking can be added to the list of bookings by checking the object's
      * ID (Based on Bookable Interface).
      * @param newBooking Booking to be checked.
      * @return Boolean - Whether the booking does not overlap with another booking having the same object's id.
      */
-    public boolean isValid(Booking newBooking) {
-
-        // Check if the current booking's start and end time have been swapped
-        if (newBooking.getBookedStartTime(staff).isAfter(newBooking.getBookedEndTime(staff))) {
-            return false;
-        }
+    public boolean isOverlapping(Booking newBooking) {
 
         // For each booking in the list of bookings
         for (Booking currentBooking : bookingArrayList) {
-            // If the bookable object's ids match
-            if (Objects.equals(currentBooking.bookableObject.getID(staff), newBooking.bookableObject.getID(staff))) {
+            // Check if the booking's id does not match, as it should not count (assuming that it is trying to modify the booking's info)
+            if (newBooking.getID(staff) != currentBooking.getID(staff)) {
+                // If the bookable object's ids match
+                if (Objects.equals(currentBooking.bookableObject.getID(staff), newBooking.bookableObject.getID(staff))) {
 
-                // Define start and end time of the current and new booking
-                Instant currentBookingStartTime = currentBooking.getBookedStartTime(staff);
-                Instant newBookingStartTime = newBooking.getBookedStartTime(staff);
-                Instant currentBookingEndTime = currentBooking.getBookedEndTime(staff);
-                Instant newBookingEndTime = newBooking.getBookedEndTime(staff);
+                    // Define start and end time of the current and new booking
+                    Instant currentBookingStartTime = currentBooking.getBookedStartTime(staff);
+                    Instant newBookingStartTime = newBooking.getBookedStartTime(staff);
+                    Instant currentBookingEndTime = currentBooking.getBookedEndTime(staff);
+                    Instant newBookingEndTime = newBooking.getBookedEndTime(staff);
 
-                // (StartNew < EndCurrent)  and  (EndNew > StartCurrent) = overlap, hence, return false, as it cannot be booked
-                boolean c1 = newBookingStartTime.isBefore(currentBookingEndTime);
-                boolean c2 = newBookingEndTime.isAfter(currentBookingStartTime);
+                    // (StartNew < EndCurrent)  and  (EndNew > StartCurrent) = overlap, hence, return false, as it cannot be booked
+                    boolean c1 = newBookingStartTime.isBefore(currentBookingEndTime);
+                    boolean c2 = newBookingEndTime.isAfter(currentBookingStartTime);
 
-                if (c1 && c2) {
-                    return false;
+                    if (c1 && c2) {
+                        return false;
+                    }
                 }
             }
         }

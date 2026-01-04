@@ -268,3 +268,11 @@
 .button.main.refresh:hover {
     -icon-paint: grey;
     }
+
+.selected-day {
+    -fx-background-color: #c3e3d6 !important;
+}
+/* Override the default CalendarFX selection color */
+.day:selected {
+    -fx-background-color: transparent;
+}

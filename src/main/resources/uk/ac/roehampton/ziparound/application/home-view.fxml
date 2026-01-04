@@ -4,6 +4,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 
+<?import com.calendarfx.view.CalendarView?>
 <BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.HomeController" style="-fx-background-color: linear-gradient(to bottom right, #6B9080, #A3B18A);">
 
     <top>
@@ -15,50 +16,61 @@
               alignment="TOP_CENTER"
               style="-fx-padding: 40px;">
 
-            <VBox spacing="10"
-                  alignment="CENTER"
-                  style="-fx-background-color: white;
-                         -fx-padding: 40px;
-                         -fx-background-radius: 12;
-                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+            <HBox spacing="20">
+                <VBox spacing="10"
+                      alignment="CENTER"
+                      style="-fx-background-color: white;
+                             -fx-padding: 40px;
+                             -fx-background-radius: 12;
+                             -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
 
-                <Label fx:id="greetText" style="-fx-font-size: 28px; -fx-text-fill: #446356; -fx-font-weight: bold;" textAlignment="CENTER"/>
+                    <Label fx:id="greetText" style="-fx-font-size: 28px; -fx-text-fill: #446356; -fx-font-weight: bold;" textAlignment="CENTER"/>
 
-                <Label text="Scooters - Bikes - Lightweight Vehicles"
-                       style="-fx-font-size: 16px;
-                              -fx-text-fill: #666666;"/>
+                    <Label text="Scooters - Bikes - Lightweight Vehicles"
+                           style="-fx-font-size: 16px;
+                                  -fx-text-fill: #666666;"/>
 
-                <Button text="Start a New Booking" styleClass="main"/>
-            </VBox>
+                    <Button text="Start a New Booking" styleClass="main"/>
 
-            <HBox spacing="15"
-                  alignment="CENTER"
-                  style="-fx-background-color: white;
+                    <HBox spacing="15"
+                          alignment="CENTER"
+                          style="-fx-background-color: white;
                          -fx-padding: 25px;
                          -fx-background-radius: 12;
                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0, 0, 4);">
 
-                <VBox spacing="5">
-                    <Label text="Pickup Location"/>
-                    <TextField promptText="Enter location"/>
+                        <VBox spacing="5">
+                            <Label text="Pickup Location"/>
+                            <TextField promptText="Enter location"/>
+                        </VBox>
+
+                        <VBox spacing="5">
+                            <Label text="Date"/>
+                            <DatePicker/>
+                        </VBox>
+
+                        <VBox spacing="5">
+                            <Label text="Time"/>
+                            <TextField promptText="HH:MM"/>
+                        </VBox>
+
+                        <VBox spacing="5">
+                            <Label text=""/>
+                            <Button text="Search"
+                                    styleClass="main"
+                                    style="-fx-padding: 6 20 6 20;"/>
+                        </VBox>
+                    </HBox>
                 </VBox>
 
-                <VBox spacing="5">
-                    <Label text="Date"/>
-                    <DatePicker/>
-                </VBox>
-
-                <VBox spacing="5">
-                    <Label text="Time"/>
-                    <TextField promptText="HH:MM"/>
-                </VBox>
-
-                <VBox spacing="5">
-                <Label text=""/>
-                <Button text="Search"
-                        styleClass="main"
-                        style="-fx-padding: 6 20 6 20;"/>
-                </VBox>
+                <HBox style="-fx-background-color: white;
+                                 -fx-padding: 40px;
+                                 -fx-background-radius: 12;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+                    <CalendarView fx:id="calendarView"
+                                  prefHeight="1000"
+                                  prefWidth="1000"/>
+                </HBox>
             </HBox>
 
         </VBox>

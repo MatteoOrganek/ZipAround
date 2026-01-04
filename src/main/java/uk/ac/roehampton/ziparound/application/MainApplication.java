@@ -44,8 +44,8 @@ public class MainApplication extends Application {
         stage.setMinHeight(300);
         stage.setMinWidth(600);
         stage.setMaximized(true);
-        stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/imgs/logo_circular.png"));
-        stage.setTitle("Zip Around");
+        stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/logo/logo_circular.png"));
+        stage.setTitle("Owres - Zip Around");
         stage.setScene(scene);
         stage.show();
 

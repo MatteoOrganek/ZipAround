@@ -1,12 +1,14 @@
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import jdk.jshell.execution.Util;
@@ -52,6 +54,9 @@ public class BookingCardController {
     private Boolean showingButtons = false;
 
     private Booking currentBooking;
+
+
+    EventHandler<? super MouseEvent> handler;
 
     public void setBooking(Booking booking) {
 
@@ -135,16 +140,25 @@ public class BookingCardController {
 
         approveButton.setDisable(!canApprove);
 
+        handler = root.getOnMouseClicked();
     }
 
     public void hideShowButtons() {
 
+
         if (showingButtons) {
-            root.setStyle("-fx-border-color: transparent; -fx-border-width: 0; -fx-cursor: default;");
+
             buttonBox.setManaged(false);
             buttonBox.setVisible(false);
+
+            root.setStyle("-fx-border-color: transparent; -fx-border-width: 0; -fx-cursor: hand;");
+            // Enables action
+            root.setOnMouseClicked(handler);
+
         } else {
-            root.setStyle("-fx-border-color: #446356; -fx-border-width: 2; -fx-cursor: hand;");
+
+            root.setOnMouseClicked(null);
+            root.setStyle("-fx-border-color: #446356; -fx-border-width: 2; -fx-cursor: cursor;");
             buttonBox.setManaged(true);
             buttonBox.setVisible(true);
         }
@@ -219,18 +233,24 @@ public class BookingCardController {
             currentBooking.setBookedStartTime(startInstant, Utils.currentStaff);
             currentBooking.setBookedEndTime(endInstant, Utils.currentStaff);
 
-            if (Utils.bookingManagerInstance.isValid(currentBooking)) {
-                // Remove approved status
-                currentBooking.setApproved(false, Utils.currentStaff);
-                // Update booking
-                Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
-                hideShowButtons();
+            if (Utils.bookingManagerInstance.isTheTimeInOrder(currentBooking)) {
+                if (Utils.bookingManagerInstance.isOverlapping(currentBooking)) {
+                    // Remove approved status
+                    currentBooking.setApproved(false, Utils.currentStaff);
+                    // Update booking
+                    Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
+                    hideShowButtons();
+                } else {
+                    hintText.setText("Sorry, this item is booked for that time period!");
+                    Utils.log("User tried to book an already booked time slot.", 5);
+                }
             } else {
-                // TODO Check if the user booked in the past
-                hintText.setText("Check the date time, end time cannot be before start time or overlap with other bookings!");
+                hintText.setText("Check the date time, end time cannot begin\nbefore start time.");
+                Utils.log("User inputted end time before start time or date overlaps with another booking of the same item.", 5);
             }
 
         } catch (Error e) {
+            hintText.setText("Please check your entries.");
             Utils.log("User did not follow the time format in Entries.", 5);
         }
 
@@ -242,7 +262,8 @@ public class BookingCardController {
         Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
     }
 
-    public void delete() {
+    public void delete() throws IOException, InterruptedException {
+        Utils.apiDatabaseControllerInstance.deleteObject(currentBooking);
         hideShowButtons();
     }
 

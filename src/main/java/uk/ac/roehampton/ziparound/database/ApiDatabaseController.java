@@ -204,9 +204,11 @@ public class ApiDatabaseController {
                                 user = currentUser;
                             }
                             // If the staff is null, the current user is staff and the current staffID matches the staffID to be found
-                            if (staffID != -1 && currentUser instanceof Staff && ((Staff) currentUser).canViewStaffInfo() && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID ) {
-                                // Set the current user as the staff that approved the booking
-                                staff = (Staff) currentUser;
+                            if (currentUser instanceof Staff && (Utils.currentStaff).canViewStaffInfo()) {
+                                if (staffID != -1 && ((Staff) currentUser).getStaffID(Utils.currentStaff) == staffID) {
+                                    // Set the current user as the staff that approved the booking
+                                    staff = (Staff) currentUser;
+                                }
                             }
 
                             // TODO Check if list is in order
@@ -436,7 +438,7 @@ public class ApiDatabaseController {
 
     public void deleteObject(Object object) throws IOException, InterruptedException {
         String objectTable = getTable(object);
-        deleteRecord(objectTable, getMap(object, true));
+        deleteRecord(objectTable, getMap(object, true).get("id"));
         update();
     }
 
@@ -570,7 +572,6 @@ public class ApiDatabaseController {
         updateTask.setOnFailed(event -> {
             Throwable ex = updateTask.getException();
             Utils.log("Update failed: " + ex.getMessage(), 5);
-            Utils.currentController.getHeaderController().loadBar.setProgress(0);
             ex.printStackTrace();
         });
 
