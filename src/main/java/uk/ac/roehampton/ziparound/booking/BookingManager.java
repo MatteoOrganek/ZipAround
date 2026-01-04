@@ -220,7 +220,9 @@ public class BookingManager {
     public boolean isValid(Booking newBooking) {
 
         // Check if the current booking's start and end time have been swapped
-
+        if (newBooking.getBookedStartTime(staff).isAfter(newBooking.getBookedEndTime(staff))) {
+            return false;
+        }
 
         // For each booking in the list of bookings
         for (Booking currentBooking : bookingArrayList) {

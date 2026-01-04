@@ -23,7 +23,9 @@ import uk.ac.roehampton.ziparound.application.controllers.components.BookingCard
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
@@ -422,32 +424,34 @@ public class ApiDatabaseController {
 
     public void updateObject(Object object) throws IOException, InterruptedException {
         String objectTable = getTable(object);
-        updateRecord(objectTable, getMap(object, objectTable));
+        updateRecord(objectTable, getMap(object, true));
         update();
     }
 
     public void addObject(Object object) throws IOException, InterruptedException {
         String objectTable = getTable(object);
-        addRecord(objectTable, getMap(object, objectTable));
+        addRecord(objectTable, getMap(object, false));
         update();
     }
 
     public void deleteObject(Object object) throws IOException, InterruptedException {
-
         String objectTable = getTable(object);
-        deleteRecord(objectTable, getMap(object, objectTable));
+        deleteRecord(objectTable, getMap(object, true));
         update();
     }
 
-    private Map<String, Object> getMap(Object object, String objectTable) {
+    private Map<String, Object> getMap(Object object, Boolean idRequired) {
+
         Map<String, Object> objectInfo = new HashMap<>();
+
         if (object instanceof Booking) {
+
             Booking booking = (Booking) object;
 
             LocalDateTime start = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
             LocalDateTime end = LocalDateTime.ofInstant(booking.getBookedEndTime(Utils.currentStaff), ZoneId.systemDefault());
 
-            objectInfo.put("id", booking.getID(Utils.currentStaff));
+            if (idRequired) objectInfo.put("id", booking.getID(Utils.currentStaff));
             objectInfo.put("booked_start_time", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             objectInfo.put("booked_end_time", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             objectInfo.put("user_id", booking.getUser(Utils.currentStaff).getID(Utils.currentStaff));
@@ -455,10 +459,52 @@ public class ApiDatabaseController {
             objectInfo.put("approved", booking.getApproved(Utils.currentStaff));
             objectInfo.put("staff_approved_id", ((User) booking.getStaff(Utils.currentStaff)).getID(Utils.currentStaff));
 
-            return objectInfo;
+        } else if (object instanceof Customer) {
 
+            Customer customer = (Customer) object;
+            if (idRequired) objectInfo.put("id", customer.getID(Utils.currentStaff));
+            objectInfo.put("fore_name", customer.getForeName(Utils.currentStaff));
+            objectInfo.put("last_name", customer.getLastName(Utils.currentStaff));
+
+        } else if (object instanceof Staff) {
+
+            Staff staff = (Staff) object;
+            if (idRequired) objectInfo.put("id", staff.getStaffID(Utils.currentStaff));
+            objectInfo.put("user_id", staff.getID(Utils.currentStaff));
+
+            if (staff instanceof Admin) objectInfo.put("department_id", 1);
+            if (staff instanceof Manager) objectInfo.put("department_id", 2);
+            if (staff instanceof BookingAgent) objectInfo.put("department_id", 3);
+
+        } else if (object instanceof Vehicle) {
+
+            Vehicle vehicle = (Vehicle) object;
+            if (idRequired) objectInfo.put("id", vehicle.getID(Utils.currentStaff));
+            objectInfo.put("name", vehicle.getName(Utils.currentStaff));
+            objectInfo.put("model", vehicle.getModel(Utils.currentStaff));
+            objectInfo.put("type", vehicle.getType(Utils.currentStaff));
+            objectInfo.put("number_plate", vehicle.getNumberPlate(Utils.currentStaff));
+            objectInfo.put("total_miles", vehicle.getTotalMiles(Utils.currentStaff));
+            objectInfo.put("available", vehicle.isAvailable(Utils.currentStaff));
+
+            Boolean isElectric = vehicle instanceof EBike || vehicle instanceof Scooter;
+            if (isElectric) objectInfo.put("max_power_kw", ((Electric) vehicle).getMaxPowerKw(Utils.currentStaff));
+            if (isElectric) objectInfo.put("amount_of_batteries", ((Electric) vehicle).getAmountOfBatteries(Utils.currentStaff));
+
+        } else if (object instanceof Equipment) {
+
+            Equipment equipment = (Equipment) object;
+            if (idRequired) objectInfo.put("id", equipment.getID(Utils.currentStaff));
+            objectInfo.put("name", equipment.getName(Utils.currentStaff));
+            objectInfo.put("model", equipment.getModel(Utils.currentStaff));
+            objectInfo.put("description", equipment.getDescription(Utils.currentStaff));
+            objectInfo.put("available", equipment.isAvailable(Utils.currentStaff));
         }
-        throw new Error("Unhandled case!");
+        if (!objectInfo.isEmpty()) {
+            return objectInfo;
+        } else {
+            throw new Error("Unhandled case!");
+        }
     }
 
     private String getTable(Object object) {
