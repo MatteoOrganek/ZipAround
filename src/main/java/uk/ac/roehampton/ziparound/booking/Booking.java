@@ -66,6 +66,22 @@ public class Booking {
         this.staffApproved = staffApproved;
     }
 
+    public Booking(Instant bookedStartTime,
+                   Instant bookedEndTime,
+                   Instant createdOn,
+                   User user,
+                   Bookable bookableObject,
+                   Boolean approved,
+                   Staff staffApproved) {
+        this.bookedStartTime = bookedStartTime;
+        this.bookedEndTime = bookedEndTime;
+        this.createdOn = createdOn;
+        this.user = user;
+        this.bookableObject = bookableObject;
+        this.approved = approved;
+        this.staffApproved = staffApproved;
+    }
+
     // Getter / Setter for "bookingID"
     public Integer getID(@NotNull Staff staff) {
         if (staff.canViewBookingInfo()) { return bookingID; }

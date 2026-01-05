@@ -1,6 +1,5 @@
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
@@ -11,19 +10,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import jdk.jshell.execution.Util;
 import uk.ac.roehampton.ziparound.Utils;
-import uk.ac.roehampton.ziparound.application.controllers.StaffController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
-import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
-import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -46,7 +40,7 @@ public class BookingCardController {
     public HBox staffBox;
     public Label bookableText;
     public Button approveButton;
-    public ImageView bikeImage;
+    public ImageView bookableImage;
     public HBox buttonBox;
     public AnchorPane root;
     public Label hintText;
@@ -80,14 +74,14 @@ public class BookingCardController {
 
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Utils.findBookableImagePath(bookable))));
 
-        bikeImage.setImage(image);
+        bookableImage.setImage(image);
 
         // Get LocalDate and LocalTime from Instant in startTime
         LocalDate startDate = booking.getBookedStartTime(Utils.currentStaff).atZone(ZoneId.systemDefault()).toLocalDate();
         LocalTime startTime = booking.getBookedStartTime(Utils.currentStaff).atZone(ZoneId.systemDefault()).toLocalTime();
         LocalDate endDate = booking.getBookedEndTime(Utils.currentStaff).atZone(ZoneId.systemDefault()).toLocalDate();
         LocalTime endTime = booking.getBookedEndTime(Utils.currentStaff).atZone(ZoneId.systemDefault()).toLocalTime();
-        LocalDateTime createdOnDate = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
+        LocalDateTime createdOnDate = LocalDateTime.ofInstant(booking.getCreatedOn(Utils.currentStaff), ZoneId.systemDefault());
 
         // Format LocalTime
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");

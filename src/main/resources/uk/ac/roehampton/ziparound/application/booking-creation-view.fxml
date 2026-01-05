@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import com.calendarfx.view.CalendarView?>
+<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingCreationController">
+
+    <top>
+        <fx:include fx:id="header" source="modules/header.fxml"/>
+    </top>
+
+    <!-- Center content -->
+    <center>
+
+        <HBox spacing="20" style="-fx-padding: 20px;">
+
+            <VBox spacing="10"
+                  alignment="CENTER"
+                  style="-fx-background-color: white;
+                                 -fx-padding: 40px;
+                                 -fx-background-radius: 12;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+                <VBox fx:id="bookableSelectionContainer">
+                    <HBox prefWidth="10000" prefHeight="10000" style="-fx-padding: 20px;">
+                        <ScrollPane prefWidth="10000" prefHeight="10000" style="-fx-background-color: transparent;">
+                            <HBox fx:id="container" spacing="20" alignment="CENTER" style="-fx-background-color: transparent; " >
+                                <padding>
+                                    <Insets top="20" right="40" bottom="20" left="40"/>
+                                </padding>
+                            </HBox>
+                        </ScrollPane>
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label>Please select an item.</Label>
+                        <Button text="Next"
+                                styleClass="main"
+                                fx:id="nextButton"
+                                onAction="#next"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+            <VBox spacing="10"
+                  style="-fx-background-color: white;
+                                     -fx-padding: 40px;
+                                     -fx-background-radius: 12;
+                                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+
+                <VBox fx:id="dateSelectionContainer">
+                    <CalendarView fx:id="calendarView"
+                                  prefHeight="10000"
+                                  prefWidth="10000"/>
+                    <HBox spacing="10" alignment="CENTER">
+
+                        <Button text="Back"
+                                styleClass="main, red"
+                                fx:id="backButton"
+                                onAction="#back"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <HBox spacing="5"
+                              alignment="CENTER"
+                              style="-fx-background-color: white;
+                                 -fx-padding: 10px;
+                                 -fx-background-radius: 12;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+                            <Label text="Start Date:"/>
+                            <DatePicker fx:id="startDatePicker" prefWidth="130"/>
+                            <Label text="Time:"/>
+                            <TextField fx:id="startTimeField" promptText="HH:MM" text="09:00" prefWidth="60"/>
+                        </HBox>
+
+                        <HBox spacing="5"
+                              alignment="CENTER"
+                              style="-fx-background-color: white;
+                                 -fx-padding: 10px;
+                                 -fx-background-radius: 12;
+                                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 5);">
+
+                            <Label text="End Date:"/>
+                            <DatePicker fx:id="endDatePicker" prefWidth="130"/>
+                            <Label text="Time:"/>
+                            <TextField fx:id="endTimeField" promptText="HH:MM" text="21:00" prefWidth="60"/>
+                        </HBox>
+
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="Book"
+                                styleClass="main"
+                                fx:id="bookButton"
+                                onAction="#book"
+                                disable="true"/>
+
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>

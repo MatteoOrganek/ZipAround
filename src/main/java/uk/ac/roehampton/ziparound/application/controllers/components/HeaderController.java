@@ -82,6 +82,15 @@ public class HeaderController {
 
     }
 
+    public void inBookingCreationView() {
+        reset();
+        staffButton.setManaged(false);
+        staffButton.setVisible(false);
+        customerButton.setManaged(false);
+        customerButton.setVisible(false);
+
+    }
+
     public void inAccountView() {
         reset();
         accountButton.setManaged(false);

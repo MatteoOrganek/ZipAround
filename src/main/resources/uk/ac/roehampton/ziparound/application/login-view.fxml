@@ -11,12 +11,12 @@
     <center>
         <StackPane>
             <!-- Login Card -->
-            <VBox spacing="20" alignment="CENTER" minHeight="420" maxHeight="420" minWidth="350" maxWidth="350"
+            <VBox spacing="20" alignment="CENTER" minHeight="450" maxHeight="450" minWidth="350" maxWidth="350"
                   style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10,0,0,4);">
 
                 <!-- Logo -->
                 <ImageView fitWidth="80" fitHeight="70" pickOnBounds="true" preserveRatio="true">
-                    <Image url="@logo/logo_circular.png"/>
+                    <Image url="@imgs/logo_circular.png"/>
                 </ImageView>
 
                 <!-- Welcome Text -->
@@ -37,7 +37,7 @@
                 <Button fx:id="loginButton" text="Login" onAction="#login" styleClass="main"/>
 
                 <!-- Hint Label -->
-                <Label textFill="red" text="Hint: "/>
+                <Label textFill="red" style="-fx-font-size: 10px" text="${'[admin:123] [mgmt:123]\n[agent:123] [hugo:1234]'}"/>
 
             </VBox>
         </StackPane>

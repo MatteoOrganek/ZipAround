@@ -10,6 +10,9 @@ import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.awt.print.Book;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Vector;
@@ -34,7 +37,7 @@ public class BookingManager {
     private final ArrayList<Customer> customerArrayList;
     private final ArrayList<Staff> staffArrayList;
     // Staff object for permissions
-    private final Staff staff;
+    private Staff staff;
 
     /**
      * Private Constructor for BookingManager
@@ -313,6 +316,13 @@ public class BookingManager {
         this.staffArrayList.clear();
     }
 
+    public LocalDateTime getStartLocalDateTime(Booking booking) {
+        return LocalDateTime.ofInstant(booking.getBookedStartTime(staff), ZoneId.systemDefault());
+    }
+
+    public LocalDateTime getEndLocalDateTime(Booking booking) {
+        return LocalDateTime.ofInstant(booking.getBookedEndTime(staff), ZoneId.systemDefault());
+    }
 
     // Booking exceptions
 

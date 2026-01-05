@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
 import java.util.Objects;
 
 public class MainApplication extends Application {
@@ -44,11 +46,18 @@ public class MainApplication extends Application {
         stage.setMinHeight(300);
         stage.setMinWidth(600);
         stage.setMaximized(true);
-        stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/logo/logo_circular.png"));
+        stage.getIcons().add(new Image("file:src/main/resources/uk/ac/roehampton/ziparound/application/imgs/logo_circular.png"));
         stage.setTitle("Owres - Zip Around");
         stage.setScene(scene);
         stage.show();
 
+        // Tray icon config
+        if (SystemTray.isSupported()) {
+            SystemTray tray = SystemTray.getSystemTray();
+            java.awt.Image awtIcon = ImageIO.read(getClass().getResource("/uk/ac/roehampton/ziparound/application/imgs/logo_circular.png"));
+            TrayIcon trayIcon = new TrayIcon(awtIcon, "ZipAround");
+            tray.add(trayIcon);
+        }
         Utils.rootStage = stage.getScene();
 
 

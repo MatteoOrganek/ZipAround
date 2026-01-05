@@ -425,18 +425,21 @@ public class ApiDatabaseController {
     }
 
     public void updateObject(Object object) throws IOException, InterruptedException {
+        Utils.log("Updating record...", 3);
         String objectTable = getTable(object);
         updateRecord(objectTable, getMap(object, true));
         update();
     }
 
     public void addObject(Object object) throws IOException, InterruptedException {
+        Utils.log("Adding record...", 3);
         String objectTable = getTable(object);
         addRecord(objectTable, getMap(object, false));
         update();
     }
 
     public void deleteObject(Object object) throws IOException, InterruptedException {
+        Utils.log("Deleting record...", 3);
         String objectTable = getTable(object);
         deleteRecord(objectTable, getMap(object, true).get("id"));
         update();
@@ -452,10 +455,12 @@ public class ApiDatabaseController {
 
             LocalDateTime start = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
             LocalDateTime end = LocalDateTime.ofInstant(booking.getBookedEndTime(Utils.currentStaff), ZoneId.systemDefault());
+            LocalDateTime createdOn = LocalDateTime.ofInstant(booking.getCreatedOn(Utils.currentStaff), ZoneId.systemDefault());
 
             if (idRequired) objectInfo.put("id", booking.getID(Utils.currentStaff));
             objectInfo.put("booked_start_time", start.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             objectInfo.put("booked_end_time", end.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+            objectInfo.put("created_on", createdOn.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
             objectInfo.put("user_id", booking.getUser(Utils.currentStaff).getID(Utils.currentStaff));
             objectInfo.put("bookable_id", booking.getBookableObject(Utils.currentStaff).getID(Utils.currentStaff));
             objectInfo.put("approved", booking.getApproved(Utils.currentStaff));

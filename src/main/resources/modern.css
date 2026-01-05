@@ -209,7 +209,7 @@
 
 /* DatePicker main text field */
 .date-picker {
-    -fx-background-color: white;
+    -fx-background-color: transparent;
     -fx-text-fill: #446356;
     -fx-prompt-text-fill: derive(#446356, -30%);
     -fx-border-color: #ffffff;
@@ -269,10 +269,27 @@
     -icon-paint: grey;
     }
 
-.selected-day {
-    -fx-background-color: #c3e3d6 !important;
-}
 /* Override the default CalendarFX selection color */
-.day:selected {
-    -fx-background-color: transparent;
+.day.selected-day, .day.current-week.selected-day {
+    -fx-background-color: #ded992 !important;
 }
+.day.intersected-day, .day.current-week.intersected-day {
+     -fx-background-color: #db6767 !important;
+ }
+.day.blocked-day, .day.current-week.blocked-day {
+     -fx-background-color: #a7baa2 !important;
+     -fx-text-fill: white !important;
+ }
+ /*
+.day.selected-day .entries-pane {
+    -fx-background-color: #c3e3d6;
+}
+
+.day.intersected-day .entries-pane {
+    -fx-background-color: #b6bd95;
+}
+
+.day.blocked-day .entries-pane {
+    -fx-background-color: #c4b4d6;
+}
+*/

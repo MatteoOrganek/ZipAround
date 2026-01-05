@@ -27,11 +27,14 @@ import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.io.IOException;
+import java.net.URL;
 import java.net.UnknownServiceException;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -68,7 +71,7 @@ public class HomeController implements Updatable {
         }
 
         if (Utils.currentStaff != null){
-            greetText.setText("Hello %s,\nBook Your Ride in Seconds".formatted(Utils.currentUser.getForeName(Utils.currentStaff)));
+            greetText.setText("Hello %s,\nBook Your Ride\nin Seconds".formatted(Utils.currentUser.getForeName(Utils.currentStaff)));
         } else {
             greetText.setText("Book Your Ride in Seconds");
         }
@@ -80,10 +83,8 @@ public class HomeController implements Updatable {
         for (Booking booking : Utils.bookingManagerInstance.getBookingArrayList()) {
             if (Objects.equals(booking.getUser(Utils.currentStaff).getID(Utils.currentStaff), Utils.currentUser.getID(Utils.currentStaff))) {
 
-                Instant startInstant = booking.getBookedStartTime(Utils.currentStaff);
-                Instant endInstant = booking.getBookedEndTime(Utils.currentStaff);
-                LocalDateTime start = LocalDateTime.ofInstant(startInstant, ZoneId.systemDefault());
-                LocalDateTime end = LocalDateTime.ofInstant(endInstant, ZoneId.systemDefault());
+                LocalDateTime start = Utils.bookingManagerInstance.getStartLocalDateTime(booking);
+                LocalDateTime end = Utils.bookingManagerInstance.getEndLocalDateTime(booking);
 
 
                 Bookable bookable = booking.getBookableObject(Utils.currentStaff);
@@ -108,92 +109,10 @@ public class HomeController implements Updatable {
         calendarView.setDate(LocalDate.now());
         calendarView.showMonthPage();
         calendarView.getMonthPage().setSelectionMode(SelectionMode.MULTIPLE);
-        MonthPage monthPage = calendarView.getMonthPage();
+        calendarView.getCalendars().forEach(c -> c.setReadOnly(true));
 
-        // Store first click
-        final LocalDate[] firstClick = {null};
-        final List<Region> highlightedCells = new ArrayList<>();
-
-//        Platform.runLater(() -> {
-//            for (Node node : monthPage.lookupAll("*")) {
-//                System.out.println(node + " - " + node.getStyleClass());
-//            }
-//        });
-
-        Set<Node> dayViews = monthPage.lookupAll(".day"); // MonthDayView nodes
-
-        for (Node node : dayViews) {
-            Region dayCell = (Region) node;
-            dayCell.getStyleClass().remove("selected-day");
-
-            // Grab the day label inside
-            Node labelNode = dayCell.lookup(".day-of-month-label");
-            if (!(labelNode instanceof javafx.scene.control.Label label)) continue;
-
-            int dayOfMonth;
-            try {
-                dayOfMonth = Integer.parseInt(label.getText());
-            } catch (NumberFormatException e) {
-                continue;
-            }
-
-            // You might need the current displayed month/year
-            LocalDate cellDate = LocalDate.of(
-                    calendarView.getYearMonthView().getYearMonth().getYear(),
-                    calendarView.getYearMonthView().getYearMonth().getMonth(),
-                    dayOfMonth
-            );
-
-            dayCell.setOnMouseClicked(event -> {
-                if (firstClick[0] == null) {
-                    // First click store date and highlight
-                    firstClick[0] = cellDate;
-                    dayCell.getStyleClass().add("selected-day");
-                    highlightedCells.add(dayCell);
-
-                    // Clear previous highlights
-                    for (Region r : highlightedCells) {
-                        r.getStyleClass().remove("selected-day");
-                    }
-                    highlightedCells.clear();
-
-                } else {
-                    // Second click highlight range
-                    LocalDate start = firstClick[0].isBefore(cellDate) ? firstClick[0] : cellDate;
-                    LocalDate end = firstClick[0].isBefore(cellDate) ? cellDate : firstClick[0];
-
-
-                    // Highlight all cells in range
-                    for (Node n : dayViews) {
-                        Region r = (Region) n;
-                        Node lblNode = r.lookup(".day-of-month-label");
-                        if (!(lblNode instanceof javafx.scene.control.Label l)) continue;
-
-                        int d;
-                        try {
-                            d = Integer.parseInt(l.getText());
-                        } catch (NumberFormatException e) {
-                            continue;
-                        }
-
-                        LocalDate date = LocalDate.of(
-                                calendarView.getYearMonthView().getYearMonth().getYear(),
-                                calendarView.getYearMonthView().getYearMonth().getMonth(),
-                                d
-                        );
-
-                        if (!date.isBefore(start) && !date.isAfter(end)) {
-                            r.getStyleClass().add("selected-day");
-                            highlightedCells.add(r);
-                        }
-                    }
-
-                    // Reset first click
-                    firstClick[0] = null;
-                }
-            });
-        }
     }
+
 
     @Override
     public void clear() {
@@ -204,6 +123,10 @@ public class HomeController implements Updatable {
     @Override
     public HeaderController getHeaderController() {
         return headerController;
+    }
+
+    public void goToBookingCreationView() {
+        Utils.changeScene("booking-creation");
     }
 
 }

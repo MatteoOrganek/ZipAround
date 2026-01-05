@@ -14,6 +14,7 @@ package uk.ac.roehampton.ziparound;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.application.MainApplication;
 import uk.ac.roehampton.ziparound.application.Updatable;
@@ -221,6 +222,15 @@ public class Utils {
             }
         }
         return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/raleigh_one.png";
+    }
+
+    public static void alert(String title, String header, String content) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle(title);
+        alert.setHeaderText(header);
+        alert.setContentText(content);
+
+        alert.showAndWait();
     }
 
 }
