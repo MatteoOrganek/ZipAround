@@ -10,6 +10,7 @@ import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.awt.print.Book;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 // BookingManager is a Singleton Factory builder for Booking.
@@ -402,6 +403,20 @@ public class BookingManager {
 
     public LocalDateTime getEndLocalDateTime(Booking booking) {
         return LocalDateTime.ofInstant(booking.getBookedEndTime(staff), ZoneId.systemDefault());
+    }
+
+
+    /**
+     * This function converts a string with pattern "yyyy-MM-dd HH:mm:ss" into Intant
+     * @param s String to be parsed
+     * @return Parsed Instant
+     */
+    public static Instant convertStringToInstant(String s) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        // Parse to LocalDateTime
+        LocalDateTime localDateTime = LocalDateTime.parse(s, formatter);
+        // Convert to Instant (specify the timezone, e.g., system default)
+        return localDateTime.atZone(ZoneId.systemDefault()).toInstant();
     }
 
     // Booking exceptions

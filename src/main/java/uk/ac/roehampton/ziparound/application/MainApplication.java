@@ -21,6 +21,9 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.util.Objects;
 
+/**
+ * This class handles the main application configuration, such as root page, CSS handling and Initial setup/update.
+ */
 public class MainApplication extends Application {
 
     // All images courtesy from https://rapidscooter.co.uk
@@ -49,6 +52,7 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        // Add initial rootScene and currentScene to Utils
         Utils.rootStage = stage.getScene();
         Utils.currentScene = stage.getScene();
 

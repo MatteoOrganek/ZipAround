@@ -27,6 +27,7 @@ import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
@@ -241,9 +242,9 @@ public class ApiBridge {
                     for (Map<String, Object> bookingInfo : listMaps) {
 
                         // Get time
-                        Instant startTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_start_time"));
-                        Instant endTime = Utils.convertStringToInstant((String) bookingInfo.get("booked_end_time"));
-                        Instant createdOnTime = Utils.convertStringToInstant((String) bookingInfo.get("created_on"));
+                        Instant startTime = BookingManager.convertStringToInstant((String) bookingInfo.get("booked_start_time"));
+                        Instant endTime = BookingManager.convertStringToInstant((String) bookingInfo.get("booked_end_time"));
+                        Instant createdOnTime = BookingManager.convertStringToInstant((String) bookingInfo.get("created_on"));
 
                         // Initialize user and get userID
                         User user = null;

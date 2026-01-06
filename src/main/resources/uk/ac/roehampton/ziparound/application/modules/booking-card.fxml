@@ -117,7 +117,7 @@
 
                 <Button text="Cancel"
                         fx:id="cancelButton"
-                        onAction="#cancel"
+                        onAction="#hideShowButtons"
                         styleClass="main, red"/>
             </HBox>
 

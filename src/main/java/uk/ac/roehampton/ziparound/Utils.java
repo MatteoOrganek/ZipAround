@@ -38,11 +38,17 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
+
+/**
+ * Observable Helper class that contains general functions used to aid other classes
+ */
 public class Utils {
+
+    // Variables declaration
+
     public static String UNAUTHORIZED_ACCESS = "Unauthorized access!";
     public static String UNAUTHORIZED_MODIFICATION = "Unauthorized alteration!";
-    public static String NOT_AVAILABLE = "Not available!!";
-
+    public static String NOT_AVAILABLE = "Not available!";
 
     public static BookingManager bookingManagerInstance;
     public static ApiBridge apiBridgeInstance;
@@ -54,6 +60,9 @@ public class Utils {
     public static User currentUser;
     public static Staff currentStaff;
 
+    /**
+     * This function initializes the booking manager and api bridge singleton instance
+     */
     public static void initializeInstances() {
         Utils.currentStaff = new SelfService();
         setBookingManagerInstance();
@@ -72,6 +81,11 @@ public class Utils {
     }
 
 
+    /**
+     * This function is used instead of sout, as it makes logs more readable.
+     * @param string String to log
+     * @param signal Symbol used to convey importance or output
+     */
     public static void log(String string, Integer signal){
         switch (signal){
             case 1:
@@ -99,14 +113,17 @@ public class Utils {
 
     }
 
+    // Variation of log for printing with no signal
     public static void log(String string){
         System.out.println("[ ] " + string);
     }
 
+    // Variation of log used for printing an empty line
     public static void log(){
         System.out.println(" ");
     }
 
+    // Variation of log used for testing
     public static void logBreakpoint(){
 
         System.out.println();
@@ -116,28 +133,19 @@ public class Utils {
         System.out.println();
     }
 
-    public static String hashString(String s) throws NoSuchAlgorithmException {
-
-        // Encrypt string using sha265
-        MessageDigest digest = MessageDigest.getInstance("SHA-256");
-        byte[] hashBytes = digest.digest(s.getBytes(StandardCharsets.UTF_8));
-
-        // Reassemble hex from bytes
-        StringBuilder hashedString = new StringBuilder();
-        for (byte b : hashBytes) {
-            String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) hashedString.append('0');
-            hashedString.append(hex);
-        }
-        return hashedString.toString();
-    }
-
+    /**
+     * This function changes the current scene by switching the root stage.
+     * @param name String of the name of the view
+     */
     public static void changeScene(String name) {
         try {
 
+            // Create loader
             FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(MainApplication.class.getResource(name + "-view.fxml"))
             );
+
+            // Load loader
             Parent root = loader.load();
 
             // Get the controller (must implement Updatable)
@@ -148,10 +156,10 @@ public class Utils {
                 currentController = null;
             }
 
+            // Setup current scene
             Stage stage = (Stage) rootStage.getWindow();
             Scene scene = stage.getScene();
             currentScene = scene;
-
 
             if (scene == null) {
                 scene = new Scene(root);
@@ -164,30 +172,21 @@ public class Utils {
             }
 
             log("Heading to %s-view.fxml".formatted(name), 3);
+            // Show the stage
             stage.show();
+
         } catch (Exception e) {
             log("Failed to change scene: " + e.getMessage(), 5);
             e.printStackTrace();
         }
     }
 
-    public static Instant convertStringToInstant(String s) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        // Parse to LocalDateTime
-        LocalDateTime localDateTime = LocalDateTime.parse(s, formatter);
-        // Convert to Instant (specify the timezone, e.g., system default)
-        return localDateTime.atZone(ZoneId.systemDefault()).toInstant();
-    }
 
-    public static boolean isNumeric(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch(NumberFormatException e){
-            return false;
-        }
-    }
-
+    /**
+     * THis function inputs a bookable object and is able to output the model's path
+     * @param bookable Bookable object to use
+     * @return Image path of the bookable object
+     */
     public static String findBookableImagePath(Bookable bookable) {
         if (bookable instanceof Equipment) {
             switch (bookable.getModel(Utils.currentStaff)) {
@@ -231,6 +230,9 @@ public class Utils {
         return "/uk/ac/roehampton/ziparound/application/imgs/bookable/vehicles/bikes/raleigh_one.png";
     }
 
+    /**
+     * This function is used to create a popup alert that informs the user.
+     */
     public static void alert(String title, String header, String content) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -240,4 +242,44 @@ public class Utils {
         alert.showAndWait();
     }
 
+    /**
+     * Function used to hash a string using SHA-256
+     * @param s String to be hashed
+     * @return Hashed string
+     */
+    public static String hashString(String s) {
+
+        // Encrypt string using sha265
+        MessageDigest digest = null;
+        try {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        byte[] hashBytes = digest.digest(s.getBytes(StandardCharsets.UTF_8));
+
+        // Reassemble hex from bytes
+        StringBuilder hashedString = new StringBuilder();
+        for (byte b : hashBytes) {
+            String hex = Integer.toHexString(0xff & b);
+            if (hex.length() == 1) hashedString.append('0');
+            hashedString.append(hex);
+        }
+        return hashedString.toString();
+    }
+
+
+    /**
+     * This function is able to determine if a string is an Integer
+     * @param str String to check
+     * @return Numericness
+     */
+    public static boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch(NumberFormatException e){
+            return false;
+        }
+    }
 }

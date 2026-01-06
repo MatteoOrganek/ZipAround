@@ -32,8 +32,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
+/**
+ * This class Controller controls booking-card.fxml.
+ */
 public class BookingCardController {
 
+    // Declare variables
     public Label bookingIdText;
     public Label statusText;
     public DatePicker startDatePicker;
@@ -58,19 +62,26 @@ public class BookingCardController {
 
     private Booking currentBooking;
 
-
+    // Mouse handler used to keep the onMouseClicked action and reapply it when disabled
     EventHandler<? super MouseEvent> handler;
 
-    public void setBooking(Booking booking) {
+    /**
+     * This function populates and adds logic to the fxml using the data presented by booking.
+     * @param booking Booking object used for data population.
+     */
+    public void setUp(Booking booking) {
 
+        // Set current booking
         currentBooking = booking;
 
-        // Fill fields
-
+        // Disable bottom right buttons
         buttonBox.setManaged(false);
         buttonBox.setVisible(false);
 
+        // Get bookable from booking
         Bookable bookable = booking.getBookableObject(Utils.currentStaff);
+
+        // Get name ant type of bookable
         String name = bookable.getName(Utils.currentStaff);
         name += " " + bookable.getModel(Utils.currentStaff);
         if (bookable instanceof EBike) {
@@ -78,11 +89,14 @@ public class BookingCardController {
         } else if (bookable instanceof Scooter) {
             name += " Scooter";
         }
+        // Set bookable name nad id
         bookingIdText.setText("%s [Booking #%s]".formatted(name, booking.getID(Utils.currentStaff)));
         bookableText.setText(name);
 
+        // Get bookable image with path for image based on current bookable
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Utils.findBookableImagePath(bookable))));
 
+        // Set the image in the container
         bookableImage.setImage(image);
 
         // Get LocalDate and LocalTime from Instant in startTime
@@ -107,6 +121,7 @@ public class BookingCardController {
         endTimeField.setText(endTimeString);
         createdOnLabel.setText(createdDateString);
 
+        // Check if the booking ahas been approved
         if (booking.getApproved(Utils.currentStaff)) {
             statusText.setText("Approved");
         } else {
@@ -116,6 +131,7 @@ public class BookingCardController {
         // Hide staff info if not staff
         if (Utils.currentUser instanceof Staff) {
             if (Utils.currentStaff.canModifyBookings()) {
+                // Check if the booking has been approved or rejected
                 if (booking.getApproved(Utils.currentStaff) && booking.getStaff(Utils.currentStaff) != null) {
                     approveButton.setText("Reject");
                     staffLabel.setText("Approved by %s.".formatted(booking.getStaff(Utils.currentStaff).getFullName(Utils.currentStaff)));
@@ -123,6 +139,7 @@ public class BookingCardController {
                     approveButton.setText("Approve");
                 }
             } else {
+                // Hide staff label (approved by)
                 staffLabel.setManaged(false);
                 staffLabel.setVisible(false);
             }
@@ -135,49 +152,72 @@ public class BookingCardController {
         boolean canEdit = Utils.currentStaff.canModifyBookings();
         boolean canApprove = Utils.currentStaff.canApproveBookings();
 
+        // Disable all entries if user can not edit
         startDatePicker.setDisable(!canEdit);
         startTimeField.setDisable(!canEdit);
         endDatePicker.setDisable(!canEdit);
         endTimeField.setDisable(!canEdit);
         saveButton.setDisable(!canEdit);
 
+        // Disable approve button if staff cannot approve
         approveButton.setDisable(!canApprove);
 
+        // Get on mouse clicked action handler
         handler = root.getOnMouseClicked();
     }
 
+    /**
+     * Hides and shows buttons
+     */
     public void hideShowButtons() {
-
 
         if (showingButtons) {
 
+            // Change style
+            root.setStyle("-fx-border-color: transparent; -fx-border-width: 0; -fx-cursor: hand;");
+
+            // Hide buttons
             buttonBox.setManaged(false);
             buttonBox.setVisible(false);
 
-            root.setStyle("-fx-border-color: transparent; -fx-border-width: 0; -fx-cursor: hand;");
-            // Enables action
+            // Enables action (after being disabled)
             root.setOnMouseClicked(handler);
 
         } else {
 
-            root.setOnMouseClicked(null);
+            // Change style
             root.setStyle("-fx-border-color: #446356; -fx-border-width: 2; -fx-cursor: cursor;");
+
+            // Show buttons
             buttonBox.setManaged(true);
             buttonBox.setVisible(true);
+
+            // Not showing buttons, remove onMouseClicked action handler
+            root.setOnMouseClicked(null);
         }
+
+        // Invert boolean
         showingButtons = !showingButtons;
 
     }
 
+    /**
+     * This function saves the content inside the current card, validating the provided time and building a booking class from the ground up.
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     public void save() throws IOException, InterruptedException {
 
         Utils.log("Saving...", 3);
 
         // Validate date (dd-MM-yyyy)
 
+        // Initialize startDate
         LocalDate startDate;
+        // Get raw date from the datePicker
         String rawDate = startDatePicker.getEditor().getText();
 
+        // Try parsing the date, if invalid, inform user
         try {
             LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             startDate = startDatePicker.getValue();
@@ -186,10 +226,12 @@ public class BookingCardController {
             return;
         }
 
-
+        // Initialize endDate
         LocalDate endDate;
+        // Get raw date from the datePicker
         rawDate = endDatePicker.getEditor().getText();
 
+        // Try parsing the date, if invalid, inform user
         try {
             LocalDate.parse(rawDate, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             endDate = endDatePicker.getValue();
@@ -200,7 +242,9 @@ public class BookingCardController {
 
         // Validate time (HH:mm)
 
+        // Initialize startTime
         LocalTime startTime;
+        // Try parsing startTime to LocalTime, if it results in an error, inform user
         try {
             startTime = LocalTime.parse(
                     startTimeField.getText().trim(),
@@ -212,8 +256,10 @@ public class BookingCardController {
             return;
         }
 
+        // Initialize endTime
         LocalTime endTime;
         try {
+            // Try parsing endTime to LocalTime, if it results in an error, inform user
             endTime = LocalTime.parse(
                     startTimeField.getText().trim(),
                     DateTimeFormatter.ofPattern("HH:mm")
@@ -233,15 +279,19 @@ public class BookingCardController {
             Instant startInstant = startDateTime.atZone(ZoneId.systemDefault()).toInstant();
             Instant endInstant = endDateTime.atZone(ZoneId.systemDefault()).toInstant();
 
+            // Insert start and end time in current booking
             currentBooking.setBookedStartTime(startInstant, Utils.currentStaff);
             currentBooking.setBookedEndTime(endInstant, Utils.currentStaff);
 
+            // Check if the time provided is in order (not startTime > endTime)
             if (Utils.bookingManagerInstance.isTheTimeInOrder(currentBooking)) {
+                // Check if the booking is overlapping with another booking with the same id as current booking
                 if (Utils.bookingManagerInstance.isOverlapping(currentBooking)) {
                     // Remove approved status
                     currentBooking.setApproved(false, Utils.currentStaff);
-                    // Update booking
+                    // Update booking to db
                     Utils.apiBridgeInstance.updateObject(currentBooking);
+                    // Hide buttons
                     hideShowButtons();
                 } else {
                     hintText.setText("Sorry, this item is booked for that time period!");
@@ -259,18 +309,30 @@ public class BookingCardController {
 
     }
 
+    /**
+     * This Button action approves the current booking based on whether it is not and vice versa
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     public void approveReject() throws IOException, InterruptedException {
-        currentBooking.setApproved(!currentBooking.getApproved(Utils.currentStaff), Utils.currentStaff);
-        currentBooking.setStaff(Utils.currentStaff, Utils.currentStaff);
+        // Set approved bool based on the opposite of the current status
+        boolean approved = !currentBooking.getApproved(Utils.currentStaff);
+        currentBooking.setApproved(approved, Utils.currentStaff);
+        // Set current staff if approved. If not, pass a null value
+        currentBooking.setStaff((approved) ? Utils.currentStaff : null, Utils.currentStaff);
+        // Update the booking
         Utils.apiBridgeInstance.updateObject(currentBooking);
     }
 
+    /**
+     * This Button action deletes the current booking
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     public void delete() throws IOException, InterruptedException {
-        Utils.apiBridgeInstance.deleteObject(currentBooking);
-        hideShowButtons();
-    }
-
-    public void cancel() {
+        // Delete booking if able to do it, if not alert the user
+        if (Utils.currentStaff.canDeleteBookings()) Utils.apiBridgeInstance.deleteObject(currentBooking);
+        else Utils.alert("Error", "", "Not enough permissions to delete bookings.");
         hideShowButtons();
     }
 }

@@ -16,6 +16,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import uk.ac.roehampton.ziparound.Utils;
@@ -23,18 +24,23 @@ import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
-import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 
 import java.io.IOException;
 
+/**
+ * This class Controller controls staff.fxml.
+ */
 public class StaffController implements Updatable {
-    // Needed to prevent header controller to be null
-    @FXML
-    Parent header;
 
-    @FXML
-    private HeaderController headerController;
+    // Initialize Variables
+    public Button availabilityButton;
+
+    // Needed to prevent header controller to be null
+    @FXML Parent header;
+
+    // Initialize header controller
+    @FXML private HeaderController headerController;
 
     // Booking table
     @FXML private TableView<Booking> bookingRequestsTable;
@@ -45,7 +51,7 @@ public class StaffController implements Updatable {
     @FXML private TableColumn<Booking, String> bookingEndTimeColumn;
     @FXML private TableColumn<Booking, Boolean> bookingApprovedColumn;
 
-    // Booking table
+    // Bookable table
     @FXML private TableView<Bookable> bookableRequestsTable;
     @FXML private TableColumn<Bookable, Integer> bookableIDColumn;
     @FXML private TableColumn<Bookable, String> bookableTypeColumn;
@@ -55,13 +61,17 @@ public class StaffController implements Updatable {
     @FXML private TableColumn<Bookable, Integer> bookableAmountColumn;
     @FXML private TableColumn<Bookable, Boolean> bookableAvailableColumn;
 
+    // On initialization, update
     @FXML
     public void initialize() {
         update();
     }
 
+    // Update UI
     @Override
     public void update() {
+
+        // Update header's buttons
         headerController.inStaffView();
 
         // Configure booking columns
@@ -76,8 +86,10 @@ public class StaffController implements Updatable {
         ObservableList<Booking> bookings = FXCollections.observableArrayList();
         bookings.addAll(Utils.bookingManagerInstance.getBookingArrayList());
 
-        bookingRequestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_NEXT_COLUMN);
         bookingRequestsTable.setItems(bookings);
+
+        // Add constraints to the bookings table
+        bookingRequestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_NEXT_COLUMN);
 
         // Sort table
         bookingIDColumn.setSortType(TableColumn.SortType.DESCENDING);
@@ -96,11 +108,24 @@ public class StaffController implements Updatable {
         ObservableList<Bookable> bookable = FXCollections.observableArrayList();
         bookable.addAll(Utils.bookingManagerInstance.getBookableArrayList());
 
-        bookableRequestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_NEXT_COLUMN);
         bookableRequestsTable.setItems(bookable);
+
+        // Add constraints to the bookable table
+        bookableRequestsTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_NEXT_COLUMN);
+
+        // If the current staff cannot modify vehicles
+        if (!Utils.currentStaff.canModifyVehicles()) {
+            availabilityButton.setManaged(false);
+            availabilityButton.setVisible(false);
+        }
     }
 
 
+    /**
+     * This function approves all items selected in the booking table
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     @FXML
     private void approveSelected() throws IOException, InterruptedException {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
@@ -111,6 +136,11 @@ public class StaffController implements Updatable {
         bookingRequestsTable.refresh();
     }
 
+    /**
+     * This function rejects all items selected in the booking table
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     @FXML
     private void rejectSelected() throws IOException, InterruptedException {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
@@ -121,6 +151,11 @@ public class StaffController implements Updatable {
         bookingRequestsTable.refresh();
     }
 
+    /**
+     * This function deletes all items selected in the booking table
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     @FXML
     private void deleteSelected() throws IOException, InterruptedException {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
@@ -129,6 +164,11 @@ public class StaffController implements Updatable {
         bookingRequestsTable.refresh();
     }
 
+    /**
+     * This function changes the availability of a bookable item.
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     @FXML
     private void changeAvailability() throws IOException, InterruptedException {
         for (Bookable bookable : bookableRequestsTable.getSelectionModel().getSelectedItems()) {
@@ -138,6 +178,11 @@ public class StaffController implements Updatable {
         bookingRequestsTable.refresh();
     }
 
+    /**
+     * This function books a maintenance booking in the nearest future
+     * @throws IOException Exception thrown if the addition process was interrupted.
+     * @throws InterruptedException Exception thrown if the addition process was interrupted.
+     */
     @FXML
     private void bookMaintenance() throws IOException, InterruptedException {
         for (Bookable bookable : bookableRequestsTable.getSelectionModel().getSelectedItems()) {
@@ -147,11 +192,13 @@ public class StaffController implements Updatable {
         bookingRequestsTable.refresh();
     }
 
+    // Clear UI
     @Override
     public void clear() {
-
+        // Nothing to clear
     }
 
+    // Fetch header controller
     @Override
     public HeaderController getHeaderController() {
         return headerController;

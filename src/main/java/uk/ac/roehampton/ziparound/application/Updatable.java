@@ -13,6 +13,9 @@ import uk.ac.roehampton.ziparound.application.controllers.components.HeaderContr
 
 import java.io.IOException;
 
+/**
+ * An interface that defines a controller to be updatable.
+ */
 public interface Updatable {
     void update() throws IOException;
     void clear();

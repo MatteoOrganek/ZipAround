@@ -9,37 +9,24 @@
 
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
-import javafx.event.EventHandler;
-import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.controllers.BookingCreationController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
-import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
-import uk.ac.roehampton.ziparound.users.staff.Staff;
 
-import java.awt.print.Book;
-import java.io.IOException;
 import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
 /**
- * Class Controller that controls bookable-card.fxml.
+ * This class Controller controls bookable-card.fxml.
  */
 public class BookableCardController {
 
@@ -73,45 +60,66 @@ public class BookableCardController {
         } else if (bookable instanceof Scooter) {
             name += " Scooter";
         }
+        // Show name and bookable id
         bookableIdText.setText("%s [#%s]".formatted(name, bookable.getID(Utils.currentStaff)));
 
         // Fill description
         StringBuilder info = new StringBuilder();
         if (bookable instanceof Vehicle) {
+            // Model
             String model = bookable.getModel(Utils.currentStaff);
             info.append(model);
             info.append(" | ");
+            // Amount of batteries
             String batteriesAmount = String.valueOf(((Electric) bookable).getAmountOfBatteries(Utils.currentStaff));
             info.append(batteriesAmount);
             info.append((Objects.equals(batteriesAmount, "1")) ? "x battery | " : "x batteries | ");
+            // Max power
             String maxPowerKw = String.valueOf(((Electric) bookable).getMaxPowerKw(Utils.currentStaff));
             info.append(maxPowerKw);
             info.append("Kw | ");
+            // Number plate
             String numberPlate = ((Vehicle) bookable).getNumberPlate(Utils.currentStaff);
             info.append(numberPlate);
         } else {
             // The current bookable is an Equipment
             info.append(((Equipment) bookable).getDescription(Utils.currentStaff));
         }
+        // Add description to bookableText
         bookableText.setText(info.toString());
 
+        // Get bookable image with path for image based on current bookable
         Image image = new Image(Objects.requireNonNull(getClass().getResourceAsStream(Utils.findBookableImagePath(bookable))));
 
+        // Set the image in the container
         bookableImage.setImage(image);
 
     }
 
+    /**
+     * This function selects and deselects the root card, whe informing the user if a card has not been selected and disable/enable next button.
+     */
     public void select() {
+        // User clicked on the card
         if (selected) {
+            // Change card style
             root.setStyle("-fx-cursor: hand; -fx-padding: 0px; -fx-border-width: 2; -fx-border-color: transparent;");
+            // Disable next button
             currentBookingCreationController.nextButton.setDisable(true);
+            // Inform user
             currentBookingCreationController.hintText.setText("Please select an item.");
+        // User deselected the card
         } else {
-            currentBookingCreationController.deselectAllBookable();
-            currentBookingCreationController.nextButton.setDisable(false);
-            currentBookingCreationController.hintText.setText("");
+            // Change style
             root.setStyle("-fx-cursor: hand; -fx-padding: 0px; -fx-border-width: 2; -fx-border-color: #446356;");
+            // Deselect all other cards
+            currentBookingCreationController.deselectAllBookable();
+            // Disable next button
+            currentBookingCreationController.nextButton.setDisable(false);
+            // Remove hint
+            currentBookingCreationController.hintText.setText("");
         }
+        // Invert selection
         selected = !selected;
     }
 

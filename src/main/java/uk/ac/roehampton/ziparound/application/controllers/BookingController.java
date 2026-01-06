@@ -24,60 +24,74 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class Controller controls booking.fxml.
+ */
 public class BookingController implements Updatable {
 
-    public VBox container;
+    // Initialize the container
+    @FXML public VBox container;
 
     // Needed to prevent header controller to be null
-    @FXML
-    Parent header;
+    @FXML Parent header;
 
-    @FXML
-    private HeaderController headerController;
+    // Fetch HeaderController
+    @FXML private HeaderController headerController;
 
+    // On initialization update
     @FXML
     public void initialize() throws IOException {
         update();
     }
 
+    // Update UI
     @Override
     public void update() throws IOException {
 
+        // Clear all Bookings
         clear();
-
         Utils.log("Updating UI...", 3);
-
+        // Change header buttons layout
         headerController.inBookingView();
+
+        // Get all bookings and save it in a list
         List<Booking> listBooking = Utils.bookingManagerInstance.getBookingArrayList();
+        // Sort list based on id using stream
         List<Booking> sortedListBooking =
                 listBooking.stream()
                         .sorted(Comparator.comparingInt(o -> ((Booking)o).getID(Utils.currentStaff)).reversed())
                         .toList();
-
+        // For each booking in the list
         for (Booking booking : sortedListBooking) {
 
-            // TODO check for null user, as the user might have been deleted from db (same for staff and bookable)
+            // If the current booking's id match
             if (Objects.equals(booking.getUser(Utils.currentStaff).getID(Utils.currentStaff), Utils.currentUser.getID(Utils.currentStaff))) {
 
+                // Create new loader for booking-card.fxml
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/uk/ac/roehampton/ziparound/application/modules/booking-card.fxml")
                 );
 
+                // Load the loader
                 Parent bookingCard = loader.load();
+
+                // Get controller
                 BookingCardController controller = loader.getController();
 
                 // Configure the card
-                controller.setBooking(booking);
+                controller.setUp(booking);
 
                 // Attach to UI
                 container.getChildren().add(bookingCard);
 
-                container.setDisable(!booking.getBookableObject(Utils.currentStaff).isAvailable(Utils.currentStaff));
+                // Disable if it is not available
+                bookingCard.setDisable(!booking.getBookableObject(Utils.currentStaff).isAvailable(Utils.currentStaff));
             }
 
         }
     }
 
+    // Clear all children in container
     @Override
     public void clear() {
         // Remove all items in container
@@ -85,11 +99,15 @@ public class BookingController implements Updatable {
         Utils.log("UI Cleared.", 3);
     }
 
+    // Give current header controller
     @Override
     public HeaderController getHeaderController() {
         return headerController;
     }
 
+    /**
+     * Button action that sends the user to the new booking view
+     */
     public void goToBookView() {
         Utils.changeScene("booking-creation");
     }

@@ -51,8 +51,8 @@
                     </TableView>
 
                     <HBox spacing="10">
-                        <Button text="Book Selected to Maintenance" onAction="#bookMaintenance" styleClass="main"/>
-                        <Button text="Change availability" onAction="#changeAvailability" styleClass="main"/>
+                        <Button text="Book Selected to Maintenance"  onAction="#bookMaintenance" styleClass="main"/>
+                        <Button text="Change availability" fx:id="availabilityButton" onAction="#changeAvailability" styleClass="main"/>
                     </HBox>
                 </VBox>
 

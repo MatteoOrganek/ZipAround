@@ -34,10 +34,11 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Label fx:id="hintText"/>
+                        <Label fx:id="hintText" text="Please select an item."/>
                         <Button text="Next"
                                 styleClass="main"
                                 fx:id="nextButton"
+                                disable="true"
                                 onAction="#next"/>
                     </HBox>
                 </VBox>

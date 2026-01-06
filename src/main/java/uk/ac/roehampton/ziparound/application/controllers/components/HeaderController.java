@@ -17,15 +17,23 @@ import uk.ac.roehampton.ziparound.Utils;
 
 import java.io.IOException;
 
+/**
+ * This class Controller controls header.fxml. It enables and disables buttons based on the current page selection
+ */
 public class HeaderController {
+
+    // Declare variables
     public Button bookingsButton;
     public Button homeButton;
     public Button staffButton;
     public Button customerButton;
-    public Label logo;
     public ProgressBar loadBar;
+    public Label logo;
     public Label currentText;
 
+    /**
+     * Logs the user out and resets current staff and user
+     */
     public void logout(){
         Utils.currentStaff = null;
         Utils.currentUser = null;
@@ -67,6 +75,7 @@ public class HeaderController {
     public void inStaffView() {
         reset();
         logo.setText("Staff Portal");
+        currentText.setText(Utils.currentStaff.getFullName(Utils.currentStaff));
         staffButton.setManaged(false);
         staffButton.setVisible(false);
         bookingsButton.setManaged(false);
@@ -110,10 +119,12 @@ public class HeaderController {
 
     @FXML
     public void initialize() throws IOException {
+        // Set loadbar progress to zero, effectively hiding it
         loadBar.setProgress(0);
     }
 
     public void update() {
+        // Update data, followed by the UI
         Utils.apiBridgeInstance.update();
     }
 }
