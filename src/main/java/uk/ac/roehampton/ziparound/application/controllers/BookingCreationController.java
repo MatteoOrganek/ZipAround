@@ -91,21 +91,24 @@ public class BookingCreationController implements Updatable {
 
         for (Bookable bookable : bookableArrayList) {
 
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/uk/ac/roehampton/ziparound/application/modules/bookable-card.fxml")
-            );
+            if (bookable.isAvailable(Utils.currentStaff)) {
+                FXMLLoader loader = new FXMLLoader(
+                        getClass().getResource("/uk/ac/roehampton/ziparound/application/modules/bookable-card.fxml")
+                );
 
-            Parent bookableCard = loader.load();
-            BookableCardController controller = loader.getController();
+                Parent bookableCard = loader.load();
+                BookableCardController controller = loader.getController();
 
-            // Configure the card
-            controller.setBookable(bookable, this);
-            container.setAlignment(Pos.CENTER);
+                // Configure the card
+                controller.setUp(bookable, this);
+                container.setAlignment(Pos.CENTER);
 
-            // Attach to UI
-            container.getChildren().add(bookableCard);
+                // Attach to UI
+                container.getChildren().add(bookableCard);
 
-            bookableCardControllerList.add(controller);
+                bookableCardControllerList.add(controller);
+            }
+
         }
     }
 

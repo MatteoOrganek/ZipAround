@@ -22,7 +22,9 @@ import java.util.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.concurrent.Task;
+import javafx.scene.control.ProgressBar;
 import uk.ac.roehampton.ziparound.Utils;
+import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
@@ -91,8 +93,11 @@ public class ApiBridge {
                 .GET()
                 .build();
 
+        assert request != null;
+
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+        assert response != null;
 
         Type listType = new TypeToken<List<Map<String, Object>>>(){}.getType();
         // TODO Detect bad response ({status=fail, error=...})
@@ -119,6 +124,7 @@ public class ApiBridge {
                 .POST(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
+        assert request != null;
         // Return the request's response
         return getResponse(request);
     }
@@ -148,6 +154,7 @@ public class ApiBridge {
                 .PUT(HttpRequest.BodyPublishers.ofString(json))
                 .build();
 
+        assert request != null;
         // Return the request's response
         return getResponse(request);
     }
@@ -168,6 +175,7 @@ public class ApiBridge {
                 .DELETE()
                 .build();
 
+        assert request != null;
         // Return the request's response
         return getResponse(request);
     }
@@ -349,7 +357,7 @@ public class ApiBridge {
                                     (String) vehicleInfo.get("model"),
                                     (String) vehicleInfo.get("number_plate"),
                                     Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                                    "1".equals((String) vehicleInfo.get("available")),
+                                    "1".equals(vehicleInfo.get("available")),
                                     Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_batteries")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_bookings"))
@@ -360,7 +368,7 @@ public class ApiBridge {
                                     (String) vehicleInfo.get("model"),
                                     (String) vehicleInfo.get("number_plate"),
                                     Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                                    "1".equals((String) vehicleInfo.get("available")),
+                                    "1".equals(vehicleInfo.get("available")),
                                     Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_batteries")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_bookings"))
@@ -397,7 +405,7 @@ public class ApiBridge {
                                 (String) equipmentInfo.get("name"),
                                 (String) equipmentInfo.get("model"),
                                 (String) equipmentInfo.get("description"),
-                                "1".equals((String) equipmentInfo.get("available")),
+                                "1".equals(equipmentInfo.get("available")),
                                 Integer.parseInt((String) equipmentInfo.get("amount_of_bookings"))
                         );
 
@@ -570,12 +578,9 @@ public class ApiBridge {
         Map<String, Object> objectInfo = new HashMap<>();
 
         // If the object is a booking
-        if (object instanceof Booking) {
+        if (object instanceof Booking booking) {
 
             Utils.log("Processing booking record...");
-
-            // Cast object to booking
-            Booking booking = (Booking) object;
 
             // Get start, end and created on time
             LocalDateTime start = LocalDateTime.ofInstant(booking.getBookedStartTime(Utils.currentStaff), ZoneId.systemDefault());
@@ -604,12 +609,9 @@ public class ApiBridge {
             }
 
         // If the object is a customer
-        } else if (object instanceof Customer) {
+        } else if (object instanceof Customer customer) {
 
             Utils.log("Processing customer record...");
-
-            // Cast object to customer
-            Customer customer = (Customer) object;
 
             // Populate map with keys and values
             if (isIDRequired) objectInfo.put("id", customer.getID(Utils.currentStaff));
@@ -617,12 +619,9 @@ public class ApiBridge {
             objectInfo.put("last_name", customer.getLastName(Utils.currentStaff));
 
         // If the object is staff
-        } else if (object instanceof Staff) {
+        } else if (object instanceof Staff staff) {
 
             Utils.log("Processing staff record...");
-
-            // Cast object to staff
-            Staff staff = (Staff) object;
 
             // Populate map with keys and values
             if (isIDRequired) objectInfo.put("id", staff.getStaffID(Utils.currentStaff));
@@ -633,25 +632,22 @@ public class ApiBridge {
             if (staff instanceof BookingAgent) objectInfo.put("department_id", 3);
 
         // If the object is a vehicle
-        } else if (object instanceof Vehicle) {
+        } else if (object instanceof Vehicle vehicle) {
 
             Utils.log("Processing vehicle record...");
 
-            // Cast object to vehicle
-            Vehicle vehicle = (Vehicle) object;
-
             // Populate map with keys and values
             if (isIDRequired) objectInfo.put("id", vehicle.getID(Utils.currentStaff));
-            objectInfo.put("name", vehicle.getName(Utils.currentStaff));
+            objectInfo.put("brand", vehicle.getBrand(Utils.currentStaff));
             objectInfo.put("model", vehicle.getModel(Utils.currentStaff));
             objectInfo.put("type", vehicle.getType(Utils.currentStaff));
             objectInfo.put("number_plate", vehicle.getNumberPlate(Utils.currentStaff));
             objectInfo.put("total_miles", vehicle.getTotalMiles(Utils.currentStaff));
             objectInfo.put("available", vehicle.isAvailable(Utils.currentStaff));
-            objectInfo.put("amount_of_bookings", vehicle.getID(Utils.currentStaff));
+            objectInfo.put("amount_of_bookings", vehicle.getAmountOfBookings(Utils.currentStaff));
 
             // Check if the vehicle is electric
-            Boolean isElectric = vehicle instanceof EBike || vehicle instanceof Scooter;
+            boolean isElectric = vehicle instanceof EBike || vehicle instanceof Scooter;
             if (isElectric) objectInfo.put("max_power_kw", ((Electric) vehicle).getMaxPowerKw(Utils.currentStaff));
             if (isElectric) objectInfo.put("amount_of_batteries", ((Electric) vehicle).getAmountOfBatteries(Utils.currentStaff));
 
@@ -733,19 +729,19 @@ public class ApiBridge {
             }
         };
 
-        // Get the current controller's header, find its load bar and bind it to updateTask's progressProperty.
+        // Get the current controller's header (if updatable), find its load bar and bind it to updateTask's progressProperty.
         // This enables the task to control the loadBar from another thread.
-        Utils.currentController.getHeaderController().loadBar.progressProperty().bind(updateTask.progressProperty());
+        if (Utils.currentController != null) Utils.currentController.getHeaderController().loadBar.progressProperty().bind(updateTask.progressProperty());
 
         // Disable entire UI while task runs
-        Utils.currentScene.getRoot().disableProperty().bind(updateTask.runningProperty());
+        if (Utils.currentScene != null) Utils.currentScene.getRoot().disableProperty().bind(updateTask.runningProperty());
 
         // Add an event handler that handles a successful result of updateTask.
         updateTask.setOnSucceeded(event -> {
 
             try {
                 // Try to update the UI and logic.
-                Utils.currentController.update();
+                if (Utils.currentController != null) Utils.currentController.update();
 
             } catch (IOException e) {
                 // Handle Interrupted state.

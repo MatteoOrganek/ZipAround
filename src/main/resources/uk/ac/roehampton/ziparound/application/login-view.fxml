@@ -5,6 +5,7 @@
 
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="uk.ac.roehampton.ziparound.application.controllers.LoginController"
+            fx:id="rootStage"
             style="-fx-background-color: linear-gradient(to bottom right, #6B9080, #A3B18A);">
 
     <!-- Center content -->

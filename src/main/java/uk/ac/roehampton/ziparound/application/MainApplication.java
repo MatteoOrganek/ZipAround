@@ -28,8 +28,11 @@ public class MainApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
+        // Initialize instances (ApiDatabaseController and BookingManager)
+        Utils.initializeInstances();
+
         // Declare root
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("login-view.fxml")));
 
         // Create base scene
         Scene scene = new Scene(root);
@@ -46,6 +49,9 @@ public class MainApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
+        Utils.rootStage = stage.getScene();
+        Utils.currentScene = stage.getScene();
+
         // Tray icon config
         if (SystemTray.isSupported()) {
             SystemTray tray = SystemTray.getSystemTray();
@@ -53,17 +59,13 @@ public class MainApplication extends Application {
             TrayIcon trayIcon = new TrayIcon(awtIcon, "ZipAround");
             tray.add(trayIcon);
         }
-        Utils.rootStage = stage.getScene();
 
-
-        // Initialize instances (ApiDatabaseController and BookingManager)
-        Utils.initializeInstances();
+        // Fetch data from db
+        Utils.apiBridgeInstance.update();
 
         // Switch to Log in scene
         Utils.changeScene("login");
 
-        // TODO Remove this
-        Utils.apiBridgeInstance.update();
 
 
     }

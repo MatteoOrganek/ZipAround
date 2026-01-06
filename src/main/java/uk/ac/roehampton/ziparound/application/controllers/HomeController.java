@@ -19,6 +19,8 @@ import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
+import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.io.IOException;
@@ -41,8 +43,11 @@ public class HomeController implements Updatable {
     private HeaderController headerController;
 
     @FXML
-    public void initialize() throws IOException {
+    public void initialize() throws IOException, InterruptedException {
         update();
+
+        Vehicle vehicle = new EBike(999, "", "", "", Float.parseFloat("2.2"), true, 222, 2, 2);
+        Utils.apiBridgeInstance.addObject(vehicle);
     }
 
     @Override

@@ -17,8 +17,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.BorderPane;
 import uk.ac.roehampton.ziparound.Utils;
-import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.database.ApiBridge;
 import uk.ac.roehampton.ziparound.users.User;
@@ -32,16 +32,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class LoginController implements Updatable {
+public class LoginController {
     public Button loginButton;
     public TextField usernameEntry;
     public PasswordField passwordEntry;
     public Label hint;
+    public BorderPane rootStage;
 
     @FXML
     public void initialize(){
+
         update();
     }
+
     public void login(){
 
         // Check if either entries are empty, if so notify user
@@ -188,7 +191,6 @@ public class LoginController implements Updatable {
         return null;
     }
 
-    @Override
     public void update() {
 
         // Detect when the user clicks or writes on the entries or when they are focused
@@ -217,15 +219,5 @@ public class LoginController implements Updatable {
 
         // Press Enter on password -> trigger login
         passwordEntry.setOnAction(e -> login());
-    }
-
-    @Override
-    public void clear() {
-
-    }
-
-    @Override
-    public HeaderController getHeaderController() {
-        return null;
     }
 }

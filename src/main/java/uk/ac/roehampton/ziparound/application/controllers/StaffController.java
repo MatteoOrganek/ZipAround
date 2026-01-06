@@ -23,6 +23,7 @@ import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
+import uk.ac.roehampton.ziparound.equipment.vehicle.Electric;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 
 import java.io.IOException;

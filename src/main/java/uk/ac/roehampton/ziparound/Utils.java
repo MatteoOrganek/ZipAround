@@ -26,6 +26,7 @@ import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
+import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -53,16 +54,20 @@ public class Utils {
     public static User currentUser;
     public static Staff currentStaff;
 
-    public static void initializeInstances() throws IOException {
-        setApiDatabaseControllerInstance();
+    public static void initializeInstances() {
+        Utils.currentStaff = new SelfService();
+        setBookingManagerInstance();
+        Utils.log("Booking instance initialized.", 3);
+        setApiBridgeInstance();
+        Utils.log("API Bridge instance initialized.", 3);
     }
 
+
     public static void setBookingManagerInstance() {
-        log("New booking manager set!", 3);
         bookingManagerInstance = BookingManager.getInstance(currentStaff);
     }
 
-    public static void setApiDatabaseControllerInstance() {
+    public static void setApiBridgeInstance() {
         apiBridgeInstance = ApiBridge.getInstance();
     }
 
@@ -129,6 +134,7 @@ public class Utils {
 
     public static void changeScene(String name) {
         try {
+
             FXMLLoader loader = new FXMLLoader(
                     Objects.requireNonNull(MainApplication.class.getResource(name + "-view.fxml"))
             );
@@ -145,6 +151,7 @@ public class Utils {
             Stage stage = (Stage) rootStage.getWindow();
             Scene scene = stage.getScene();
             currentScene = scene;
+
 
             if (scene == null) {
                 scene = new Scene(root);

@@ -71,6 +71,8 @@ public class BookingController implements Updatable {
 
                 // Attach to UI
                 container.getChildren().add(bookingCard);
+
+                container.setDisable(!booking.getBookableObject(Utils.currentStaff).isAvailable(Utils.currentStaff));
             }
 
         }

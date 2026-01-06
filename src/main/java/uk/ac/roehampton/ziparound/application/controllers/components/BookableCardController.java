@@ -38,10 +38,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
 
-
+/**
+ * Class Controller that controls bookable-card.fxml.
+ */
 public class BookableCardController {
 
-
+    // Variables declaration
     public ImageView bookableImage;
     public Label bookableText;
     public Label bookableIdText;
@@ -49,17 +51,21 @@ public class BookableCardController {
     public Bookable currentBookable;
     public VBox root;
 
+    // Get parent class
     BookingCreationController currentBookingCreationController;
 
+    /**
+     * This function populates and adds logic to the fxml using the data presented by bookable.
+     * @param bookable Bookable object used for data population.
+     * @param bookingCreationController Instance of parent fxml's class.
+     */
+    public void setUp(Bookable bookable, BookingCreationController bookingCreationController) {
 
-    EventHandler<? super MouseEvent> handler;
-
-    public void setBookable(Bookable bookable, BookingCreationController bookingCreationController) {
-
+        // Set current bookable and parent instance to the ones given
         currentBookable = bookable;
         currentBookingCreationController = bookingCreationController;
-        // Fill fields
 
+        // Fill name
         String name = bookable.getName(Utils.currentStaff);
         name += " " + bookable.getModel(Utils.currentStaff);
         if (bookable instanceof EBike) {
@@ -68,8 +74,10 @@ public class BookableCardController {
             name += " Scooter";
         }
         bookableIdText.setText("%s [#%s]".formatted(name, bookable.getID(Utils.currentStaff)));
+
+        // Fill description
         StringBuilder info = new StringBuilder();
-        if (bookable instanceof EBike || bookable instanceof Scooter) {
+        if (bookable instanceof Vehicle) {
             String model = bookable.getModel(Utils.currentStaff);
             info.append(model);
             info.append(" | ");
@@ -81,8 +89,8 @@ public class BookableCardController {
             info.append("Kw | ");
             String numberPlate = ((Vehicle) bookable).getNumberPlate(Utils.currentStaff);
             info.append(numberPlate);
-            
         } else {
+            // The current bookable is an Equipment
             info.append(((Equipment) bookable).getDescription(Utils.currentStaff));
         }
         bookableText.setText(info.toString());
