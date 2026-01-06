@@ -16,18 +16,17 @@ public interface Maintainable {
      * @param endTime Start time of the booking
      */
     void bookInspection(Instant startTime, Instant endTime);
-
     /**
      * Setter for last inspection booking
-     * @param lastInspection Booking from last inspection
+     * @param amountOfBookings Amount of bookings from last inspection
      * @param staff Staff for permissions
      */
-    void setLastInspection(Booking lastInspection, Staff staff);
+    void setAmountOfBookings(Integer amountOfBookings, Staff staff);
     /**
      * Getter for last inspection booking
      * @param staff Staff for permissions
      */
-    Booking getLastInspection(Staff staff);
+    Integer getAmountOfBookings(Staff staff);
     /**
      * Getter for availability.
      * @param staff Staff for permissions

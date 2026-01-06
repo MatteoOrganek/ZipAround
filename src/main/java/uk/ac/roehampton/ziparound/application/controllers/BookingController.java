@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.application.controllers;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -44,7 +45,6 @@ public class BookingController implements Updatable {
 
             // TODO check for null user, as the user might have been deleted from db (same for staff and bookable)
             if (Objects.equals(booking.getUser(Utils.currentStaff).getID(Utils.currentStaff), Utils.currentUser.getID(Utils.currentStaff))) {
-                Utils.log("Adding booking #%s".formatted(booking.getID(Utils.currentStaff)));
 
                 FXMLLoader loader = new FXMLLoader(
                         getClass().getResource("/uk/ac/roehampton/ziparound/application/modules/booking-card.fxml")
@@ -73,6 +73,10 @@ public class BookingController implements Updatable {
     @Override
     public HeaderController getHeaderController() {
         return headerController;
+    }
+
+    public void goToBookView() {
+        Utils.changeScene("booking-creation");
     }
 }
 

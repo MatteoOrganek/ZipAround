@@ -2,21 +2,30 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<BorderPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingController">
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="uk.ac.roehampton.ziparound.application.controllers.BookingController">
 
-    <top>
-        <fx:include fx:id="header" source="modules/header.fxml"/>
-    </top>
+    <BorderPane StackPane.alignment="CENTER">
+        <top>
+            <fx:include fx:id="header" source="modules/header.fxml"/>
+        </top>
 
-    <!-- Center content -->
-    <center>
-        <ScrollPane fitToWidth="true" style="-fx-focus-color: transparent;">
-            <VBox fx:id="container" spacing="20" alignment="TOP_CENTER" style="-fx-background-color: transparent;" >
-                <padding>
-                    <Insets top="20" right="40" bottom="20" left="40"/>
-                </padding>
-            </VBox>
-        </ScrollPane>
-    </center>
+        <!-- Center content -->
+        <center>
+            <ScrollPane fitToWidth="true" style="-fx-focus-color: transparent;">
+                <VBox fx:id="container" spacing="20" alignment="TOP_CENTER" style="-fx-background-color: transparent;" >
+                    <padding>
+                        <Insets top="20" right="40" bottom="20" left="40"/>
+                    </padding>
+                </VBox>
+            </ScrollPane>
+        </center>
+    </BorderPane>
 
-</BorderPane>
+    <Button text="Book now" styleClass="main" onAction="#goToBookView"
+            StackPane.alignment="BOTTOM_RIGHT">
+        <StackPane.margin>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </StackPane.margin>
+    </Button>
+
+</StackPane>

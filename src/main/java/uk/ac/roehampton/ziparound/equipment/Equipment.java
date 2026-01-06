@@ -11,14 +11,11 @@ package uk.ac.roehampton.ziparound.equipment;
 
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.booking.Bookable;
-import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.equipment.maintenance.Maintainable;
-import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
-import java.awt.print.Book;
 import java.time.Instant;
 
 public class Equipment implements Bookable, Maintainable {
@@ -28,7 +25,7 @@ public class Equipment implements Bookable, Maintainable {
     private String model;
     private String description;
     private Boolean available;
-    private Booking lastInspection;
+    private Integer amountOfBookings;
 
     /**
      * Constructor for Equipment.
@@ -37,12 +34,13 @@ public class Equipment implements Bookable, Maintainable {
      * @param description Description Of the Equipment
      * @param available Whether the Equipment is available for any bookings to be used. (note that the vehicle can be in a booking but still be available)
      */
-    public Equipment(Integer id, String name, String model, String description, Boolean available) {
+    public Equipment(Integer id, String name, String model, String description, Boolean available, Integer amountOfBookings) {
         this.id = id;
         this.name = name;
         this.model = model;
         this.description = description;
         this.available = available;
+        this.amountOfBookings = amountOfBookings;
     }
 
     // Getter for "equipmentID"
@@ -120,14 +118,15 @@ public class Equipment implements Bookable, Maintainable {
     }
 
     @Override
-    public void setLastInspection(Booking lastInspection, Staff staff) {
-        if (staff.canModifyMaintenance()) { this.lastInspection = lastInspection; }
+    public void setAmountOfBookings(Integer amountOfBookings, Staff staff) {
+        if (staff.canModifyMaintenance()) { this.amountOfBookings = amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+
     }
 
     @Override
-    public Booking getLastInspection(Staff staff) {
-        if (staff.canViewMaintenanceInfo()) { return lastInspection; }
+    public Integer getAmountOfBookings(Staff staff) {
+        if (staff.canViewMaintenanceInfo()) { return amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 

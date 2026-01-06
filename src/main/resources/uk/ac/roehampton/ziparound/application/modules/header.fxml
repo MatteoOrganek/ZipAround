@@ -26,10 +26,19 @@
                   -fx-font-size: 24px;
                   -fx-font-weight: bold;"/>
 
+        <Label text="•"
+               style="-fx-text-fill: #446356;
+                  -fx-font-size: 24px;
+                  -fx-font-weight: bold;"/>
+
+        <Label fx:id="currentText"
+               style="-fx-text-fill: #446356;
+                  -fx-font-size: 24px;
+                  -fx-font-weight: bold;"/>
+
         <Region HBox.hgrow="ALWAYS"/>
         <Button onAction="#update" styleClass="main, refresh"/>
         <Button text="My Bookings" fx:id="bookingsButton" onAction="#goToBookingView" styleClass="main"/>
-        <Button text="My Account" fx:id="accountButton" onAction="#goToAccountView" styleClass="main"/>
         <Button text="Staff" fx:id="staffButton" onAction="#goToStaffView" styleClass="main"/>
         <Button text="Customer" fx:id="customerButton" onAction="#goToCustomerView" styleClass="main"/>
         <Button text="Home" fx:id="homeButton" onAction="#goToHomeView" styleClass="main"/>

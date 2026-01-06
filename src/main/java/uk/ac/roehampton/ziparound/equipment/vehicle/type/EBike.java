@@ -37,7 +37,7 @@ public class EBike extends Vehicle implements Electric, Maintainable {
     private Integer maxPowerKw;
     private Integer amountOfBatteries;
     private Integer batteryLevel = 100;
-    private Booking lastInspection;
+    private Integer amountOfBookings;
 
     public EBike(Integer id,
                  String brand,
@@ -46,7 +46,8 @@ public class EBike extends Vehicle implements Electric, Maintainable {
                  Float totalMiles,
                  Boolean available,
                  Integer maxPowerKw,
-                 Integer amountOfBatteries) {
+                 Integer amountOfBatteries,
+                 Integer amountOfBookings) {
         this.id = id;
         this.brand = brand;
         this.type = "EBike";
@@ -56,6 +57,7 @@ public class EBike extends Vehicle implements Electric, Maintainable {
         this.available = available;
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
+        this.amountOfBookings = amountOfBookings;
     }
 
 
@@ -86,14 +88,15 @@ public class EBike extends Vehicle implements Electric, Maintainable {
     }
 
     @Override
-    public void setLastInspection(Booking lastInspection, Staff staff) {
-        if (staff.canModifyMaintenance()) { this.lastInspection = lastInspection; }
+    public void setAmountOfBookings(Integer amountOfBookings, Staff staff) {
+        if (staff.canModifyMaintenance()) { this.amountOfBookings = amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+
     }
 
     @Override
-    public Booking getLastInspection(Staff staff) {
-        if (staff.canViewMaintenanceInfo()) { return lastInspection; }
+    public Integer getAmountOfBookings(Staff staff) {
+        if (staff.canViewMaintenanceInfo()) { return amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 }

@@ -8,37 +8,37 @@
         </top>
 
         <center>
-            <VBox spacing="30" style="-fx-padding: 30px;">
+            <HBox spacing="30" style="-fx-padding: 20px;">
 
                 <!-- Booking Section -->
-                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 25px; -fx-background-radius: 12;">
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 12;" HBox.hgrow="ALWAYS">
                     <Label text="Booking Requests"
                            style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-                    <TableView fx:id="bookingRequestsTable" prefHeight="200">
+                    <TableView fx:id="bookingRequestsTable" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn text="ID" prefWidth="50"/>
-                            <TableColumn text="Customer" prefWidth="150"/>
-                            <TableColumn text="Vehicle" prefWidth="120"/>
-                            <TableColumn text="Pickup Date" prefWidth="120"/>
-                            <TableColumn text="Return Date" prefWidth="120"/>
-                            <TableColumn text="Status" prefWidth="100"/>
-                            <TableColumn text="Action" prefWidth="150"/>
+                            <TableColumn fx:id="bookingIDColumn" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="customerNameColumn" text="Customer" prefWidth="150"/>
+                            <TableColumn fx:id="bookableColumn" text="Bookable" prefWidth="120"/>
+                            <TableColumn fx:id="startTimeColumn" text="Pickup Date" prefWidth="120"/>
+                            <TableColumn fx:id="endTimeColumn" text="Return Date" prefWidth="120"/>
+                            <TableColumn fx:id="approvedColumn" text="Approved" prefWidth="100"/>
                         </columns>
                     </TableView>
 
                     <HBox spacing="10">
-                        <Button text="Approve Selected"/>
-                        <Button text="Reject Selected" style="-fx-background-color: #C44D58; -fx-text-fill: white;"/>
+                        <Button onAction="#approveSelected" text="Approve Selected" styleClass="main"/>
+                        <Button onAction="#rejectSelected" text="Reject Selected" styleClass="main, red"/>
+                        <Button onAction="#deleteSelected" text="Delete Selected" styleClass="main, red"/>
                     </HBox>
                 </VBox>
 
                 <!-- Maintenance Section -->
-                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 25px; -fx-background-radius: 12;">
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 12;" HBox.hgrow="ALWAYS">
                     <Label text="Vehicle / Equipment Maintenance"
                            style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-                    <TableView prefHeight="200">
+                    <TableView VBox.vgrow="ALWAYS">
                         <columns>
                             <TableColumn text="ID" prefWidth="50"/>
                             <TableColumn text="Equipment" prefWidth="150"/>
@@ -48,10 +48,10 @@
                         </columns>
                     </TableView>
 
-                    <Button text="Mark Selected as Maintained"/>
+                    <Button text="Mark Selected as Maintained" styleClass="main"/>
                 </VBox>
 
-            </VBox>
+            </HBox>
         </center>
         <bottom>
             <HBox alignment="CENTER" style="-fx-padding: 5px; -fx-background-color: #16381b;">

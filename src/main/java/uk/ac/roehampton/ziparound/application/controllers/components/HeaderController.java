@@ -11,12 +11,12 @@ import java.io.IOException;
 
 public class HeaderController {
     public Button bookingsButton;
-    public Button accountButton;
     public Button homeButton;
     public Button staffButton;
     public Button customerButton;
     public Label logo;
     public ProgressBar loadBar;
+    public Label currentText;
 
     public void logout(){
         Utils.currentStaff = null;
@@ -36,10 +36,6 @@ public class HeaderController {
         Utils.changeScene("staff");
     }
 
-    public void goToAccountView() {
-        Utils.changeScene("account");
-    }
-
     public void goToCustomerView() {
         Utils.changeScene("home");
     }
@@ -52,6 +48,7 @@ public class HeaderController {
 
     public void inHomeView() {
         reset();
+        currentText.setText("Home");
         homeButton.setManaged(false);
         homeButton.setVisible(false);
         customerButton.setManaged(false);
@@ -73,6 +70,7 @@ public class HeaderController {
 
     public void inBookingView() {
         reset();
+        currentText.setText("Current Bookings");
         bookingsButton.setManaged(false);
         bookingsButton.setVisible(false);
         staffButton.setManaged(false);
@@ -84,27 +82,17 @@ public class HeaderController {
 
     public void inBookingCreationView() {
         reset();
+        currentText.setText("New Booking");
         staffButton.setManaged(false);
         staffButton.setVisible(false);
         customerButton.setManaged(false);
         customerButton.setVisible(false);
 
-    }
-
-    public void inAccountView() {
-        reset();
-        accountButton.setManaged(false);
-        accountButton.setVisible(false);
-        staffButton.setManaged(false);
-        staffButton.setVisible(false);
-        customerButton.setManaged(false);
-        customerButton.setVisible(false);
     }
 
     public void reset() {
         logo.setText("ZipAround");
-        accountButton.setManaged(true);
-        accountButton.setVisible(true);
+        currentText.setText("");
         customerButton.setManaged(true);
         customerButton.setVisible(true);
         bookingsButton.setManaged(true);

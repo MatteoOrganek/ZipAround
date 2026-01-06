@@ -37,7 +37,7 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
     private Integer maxPowerKw;
     private Integer amountOfBatteries;
     private Integer batteryLevel = 100;
-    private Booking lastInspection;
+    private Integer amountOfBookings;
 
 
     public Scooter(Integer id,
@@ -47,7 +47,8 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
                    Float totalMiles,
                    Boolean available,
                    Integer maxPowerKw,
-                   Integer amountOfBatteries) {
+                   Integer amountOfBatteries,
+                   Integer amountOfBookings) {
         this.id = id;
         this.brand = brand;
         this.model = model;
@@ -57,6 +58,7 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
         this.available = available;
         this.maxPowerKw = maxPowerKw;
         this.amountOfBatteries = amountOfBatteries;
+        this.amountOfBookings = amountOfBookings;
     }
 
     // Getter / Setter for "maxPowerKw"
@@ -86,14 +88,15 @@ public class Scooter extends Vehicle implements Electric, Bookable, Maintainable
     }
 
     @Override
-    public void setLastInspection(Booking lastInspection, Staff staff) {
-        if (staff.canModifyMaintenance()) { this.lastInspection = lastInspection; }
+    public void setAmountOfBookings(Integer amountOfBookings, Staff staff) {
+        if (staff.canModifyMaintenance()) { this.amountOfBookings = amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_MODIFICATION); }
+
     }
 
     @Override
-    public Booking getLastInspection(Staff staff) {
-        if (staff.canViewMaintenanceInfo()) { return lastInspection; }
+    public Integer getAmountOfBookings(Staff staff) {
+        if (staff.canViewMaintenanceInfo()) { return amountOfBookings; }
         else { throw new SecurityException(Utils.UNAUTHORIZED_ACCESS); }
     }
 }
