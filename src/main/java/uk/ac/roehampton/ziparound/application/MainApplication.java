@@ -1,6 +1,6 @@
 /**
  * MainApplication.java
- * Handles window management (CSS load, page definition, etc.).
+ * Handles window management (FXML pages, CSS load, Window size etc.).
  *
  * @author Matteo Organek
  * @version 1.0
@@ -16,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import uk.ac.roehampton.ziparound.Utils;
-import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -24,14 +23,10 @@ import java.util.Objects;
 
 public class MainApplication extends Application {
 
+    // All images courtesy from https://rapidscooter.co.uk
 
     @Override
     public void start(Stage stage) throws Exception {
-
-        // TODO Remove ghost login
-        Utils.currentUser = new Admin(1, 1, "Matteo", "Organek", "Admin");
-        Utils.currentStaff = new Admin(1, 1, "Matteo", "Organek", "Admin");
-        Utils.setBookingManagerInstance();
 
         // Declare root
         Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("main-view.fxml")));
@@ -65,13 +60,11 @@ public class MainApplication extends Application {
         Utils.initializeInstances();
 
         // Switch to Log in scene
-        // TODO Change to login when done testing
-        Utils.changeScene("home");
+        Utils.changeScene("login");
 
         // TODO Remove this
-        Utils.apiDatabaseControllerInstance.update();
+        Utils.apiBridgeInstance.update();
 
-        // All images are from https://rapidscooter.co.uk
 
     }
     public static void main(String[] args) {

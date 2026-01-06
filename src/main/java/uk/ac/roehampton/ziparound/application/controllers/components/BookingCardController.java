@@ -1,3 +1,12 @@
+/**
+ * BookingCardController.java
+ * Controller for booking-card.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
 import javafx.event.EventHandler;
@@ -232,7 +241,7 @@ public class BookingCardController {
                     // Remove approved status
                     currentBooking.setApproved(false, Utils.currentStaff);
                     // Update booking
-                    Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
+                    Utils.apiBridgeInstance.updateObject(currentBooking);
                     hideShowButtons();
                 } else {
                     hintText.setText("Sorry, this item is booked for that time period!");
@@ -253,11 +262,11 @@ public class BookingCardController {
     public void approveReject() throws IOException, InterruptedException {
         currentBooking.setApproved(!currentBooking.getApproved(Utils.currentStaff), Utils.currentStaff);
         currentBooking.setStaff(Utils.currentStaff, Utils.currentStaff);
-        Utils.apiDatabaseControllerInstance.updateObject(currentBooking);
+        Utils.apiBridgeInstance.updateObject(currentBooking);
     }
 
     public void delete() throws IOException, InterruptedException {
-        Utils.apiDatabaseControllerInstance.deleteObject(currentBooking);
+        Utils.apiBridgeInstance.deleteObject(currentBooking);
         hideShowButtons();
     }
 

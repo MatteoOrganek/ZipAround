@@ -1,3 +1,12 @@
+/**
+ * LoginController.java
+ * Controller for login.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers;
 
 import javafx.concurrent.Task;
@@ -11,10 +20,9 @@ import javafx.scene.input.MouseEvent;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
-import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
+import uk.ac.roehampton.ziparound.database.ApiBridge;
 import uk.ac.roehampton.ziparound.users.User;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
-import uk.ac.roehampton.ziparound.users.staff.role.Admin;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.io.IOException;
@@ -101,12 +109,12 @@ public class LoginController implements Updatable {
         // Fetch password from entry and hash it
         String password_hash = Utils.hashString(passwordEntry.getText());
 
-        ApiDatabaseController apiDatabaseControllerInstance = Utils.apiDatabaseControllerInstance;
+        ApiBridge apiBridgeInstance = Utils.apiBridgeInstance;
 
         Utils.log();
         Utils.log("Checking credentials u:%s p:%s...".formatted(username, password_hash), 3);
 
-        List<Map<String, Object>> listMaps = apiDatabaseControllerInstance.getAll("credentials");
+        List<Map<String, Object>> listMaps = apiBridgeInstance.getAll("credentials");
 
         if (!listMaps.isEmpty()){
             Utils.log("User data successfully fetched.", 2);

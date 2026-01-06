@@ -20,7 +20,7 @@ import uk.ac.roehampton.ziparound.application.MainApplication;
 import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.BookingManager;
-import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
+import uk.ac.roehampton.ziparound.database.ApiBridge;
 import uk.ac.roehampton.ziparound.equipment.Equipment;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.EBike;
 import uk.ac.roehampton.ziparound.equipment.vehicle.type.Scooter;
@@ -44,7 +44,7 @@ public class Utils {
 
 
     public static BookingManager bookingManagerInstance;
-    public static ApiDatabaseController apiDatabaseControllerInstance;
+    public static ApiBridge apiBridgeInstance;
 
     public static Scene rootStage;
     public static Scene currentScene;
@@ -63,7 +63,7 @@ public class Utils {
     }
 
     public static void setApiDatabaseControllerInstance() {
-        apiDatabaseControllerInstance = ApiDatabaseController.getInstance();
+        apiBridgeInstance = ApiBridge.getInstance();
     }
 
 

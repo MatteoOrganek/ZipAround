@@ -1,3 +1,12 @@
+/**
+ * BookableCardController.java
+ * Controller for bookable-card.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
 import javafx.event.EventHandler;
@@ -28,6 +37,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Objects;
+
 
 public class BookableCardController {
 
@@ -86,8 +96,12 @@ public class BookableCardController {
     public void select() {
         if (selected) {
             root.setStyle("-fx-cursor: hand; -fx-padding: 0px; -fx-border-width: 2; -fx-border-color: transparent;");
+            currentBookingCreationController.nextButton.setDisable(true);
+            currentBookingCreationController.hintText.setText("Please select an item.");
         } else {
             currentBookingCreationController.deselectAllBookable();
+            currentBookingCreationController.nextButton.setDisable(false);
+            currentBookingCreationController.hintText.setText("");
             root.setStyle("-fx-cursor: hand; -fx-padding: 0px; -fx-border-width: 2; -fx-border-color: #446356;");
         }
         selected = !selected;

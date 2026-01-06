@@ -12,6 +12,9 @@ package uk.ac.roehampton.ziparound.equipment.vehicle;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
+/**
+ * An interface that defines an object to be electric.
+ */
 public interface Electric {
 
     default Boolean isElectric() { return true; }

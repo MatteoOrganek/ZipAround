@@ -1,3 +1,12 @@
+/**
+ * StaffController.java
+ * Controller for staff.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers;
 
 import javafx.beans.property.SimpleFloatProperty;
@@ -5,7 +14,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.control.TableColumn;
@@ -15,7 +23,6 @@ import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
-import uk.ac.roehampton.ziparound.booking.BookingManager;
 import uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle;
 
 import java.io.IOException;
@@ -98,7 +105,7 @@ public class StaffController implements Updatable {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
             booking.setApproved(true, Utils.currentStaff);
             booking.setStaff(Utils.currentStaff, Utils.currentStaff);
-            Utils.apiDatabaseControllerInstance.updateObject(booking);
+            Utils.apiBridgeInstance.updateObject(booking);
         }
         bookingRequestsTable.refresh();
     }
@@ -108,7 +115,7 @@ public class StaffController implements Updatable {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
             booking.setApproved(false, Utils.currentStaff);
             booking.setStaff(null, Utils.currentStaff);
-            Utils.apiDatabaseControllerInstance.updateObject(booking);
+            Utils.apiBridgeInstance.updateObject(booking);
         }
         bookingRequestsTable.refresh();
     }
@@ -116,7 +123,7 @@ public class StaffController implements Updatable {
     @FXML
     private void deleteSelected() throws IOException, InterruptedException {
         for (Booking booking : bookingRequestsTable.getSelectionModel().getSelectedItems()) {
-            Utils.apiDatabaseControllerInstance.deleteObject(booking);
+            Utils.apiBridgeInstance.deleteObject(booking);
         }
         bookingRequestsTable.refresh();
     }
@@ -125,7 +132,7 @@ public class StaffController implements Updatable {
     private void changeAvailability() throws IOException, InterruptedException {
         for (Bookable bookable : bookableRequestsTable.getSelectionModel().getSelectedItems()) {
             bookable.setAvailable(!bookable.isAvailable(Utils.currentStaff), Utils.currentStaff);
-            Utils.apiDatabaseControllerInstance.updateObject(bookable);
+            Utils.apiBridgeInstance.updateObject(bookable);
         }
         bookingRequestsTable.refresh();
     }
@@ -134,7 +141,7 @@ public class StaffController implements Updatable {
     private void bookMaintenance() throws IOException, InterruptedException {
         for (Bookable bookable : bookableRequestsTable.getSelectionModel().getSelectedItems()) {
             Booking booking = Utils.bookingManagerInstance.findMaintenanceSlot(bookable, 2, Utils.currentStaff);
-            Utils.apiDatabaseControllerInstance.addObject(booking);
+            Utils.apiBridgeInstance.addObject(booking);
         }
         bookingRequestsTable.refresh();
     }

@@ -1,7 +1,6 @@
 package uk.ac.roehampton.ziparound;
 
 import uk.ac.roehampton.ziparound.booking.BookingManager;
-import uk.ac.roehampton.ziparound.database.ApiDatabaseController;
 
 import java.io.IOException;
 

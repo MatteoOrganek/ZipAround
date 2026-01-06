@@ -34,7 +34,7 @@
 
                         <Region HBox.hgrow="ALWAYS"/>
 
-                        <Label>Please select an item.</Label>
+                        <Label fx:id="hintText"/>
                         <Button text="Next"
                                 styleClass="main"
                                 fx:id="nextButton"

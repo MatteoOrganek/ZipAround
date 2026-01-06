@@ -1,14 +1,18 @@
+/**
+ * BookingCreationController.java
+ * Controller for booking-creation.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers;
 
 import com.calendarfx.model.Calendar;
-import com.calendarfx.model.Entry;
 import com.calendarfx.view.CalendarView;
-import com.calendarfx.view.DateControl;
-import com.calendarfx.view.DayView;
-import com.calendarfx.view.DayViewBase;
 import com.calendarfx.view.page.MonthPage;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -21,16 +25,11 @@ import javafx.scene.layout.VBox;
 import uk.ac.roehampton.ziparound.Utils;
 import uk.ac.roehampton.ziparound.application.Updatable;
 import uk.ac.roehampton.ziparound.application.controllers.components.BookableCardController;
-import uk.ac.roehampton.ziparound.application.controllers.components.BookingCardController;
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Bookable;
 import uk.ac.roehampton.ziparound.booking.Booking;
-import uk.ac.roehampton.ziparound.users.User;
-import uk.ac.roehampton.ziparound.users.staff.role.BookingAgent;
 
-import java.awt.print.Book;
 import java.io.IOException;
-import java.sql.PseudoColumnUsage;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -51,6 +50,8 @@ public class BookingCreationController implements Updatable {
     public TextField startTimeField;
     public TextField endTimeField;
     public Bookable currentBookable;
+    public Button nextButton;
+    public Label hintText;
     // Create bookings calendar
     Calendar<Node> bookingsCalendar = new Calendar("Bookings");
 
@@ -380,7 +381,7 @@ public class BookingCreationController implements Updatable {
                 if (Utils.bookingManagerInstance.isOverlapping(currentBooking)) {
                     // Upload it to the db
                     currentBooking.printInfo(Utils.currentStaff);
-                    Utils.apiDatabaseControllerInstance.addObject(currentBooking);
+                    Utils.apiBridgeInstance.addObject(currentBooking);
                     return true;
                 } else {
                     Utils.alert("Error", "Booking", "Sorry, this item is booked for that time period!");

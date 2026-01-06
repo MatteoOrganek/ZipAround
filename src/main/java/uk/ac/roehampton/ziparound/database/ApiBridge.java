@@ -1,6 +1,14 @@
+/**
+ * ApiBridge.java
+ * Singleton class that is able to fetch data from a database using requests through an api in owres.org
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.database;
 
-import java.awt.print.Book;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -38,18 +46,18 @@ import java.io.IOException;
  * This class deals with the communication between the database and this client.
  * It is able to translate all custom Objects into json to be sent to the database and vice versa.
  */
-public class ApiDatabaseController {
+public class ApiBridge {
 
     // Function declaration
     private final String apiBaseUrl;
     private final HttpClient client;
     private final Gson gson;
-    private static ApiDatabaseController instance;
+    private static ApiBridge instance;
 
     /**
      * This constructor configures the instance.
      */
-    private ApiDatabaseController() {
+    private ApiBridge() {
         this.apiBaseUrl = "https://owres.org/ziparound/";
         this.client = HttpClient.newHttpClient();
         this.gson = new Gson();
@@ -58,11 +66,11 @@ public class ApiDatabaseController {
     /**
      * This function sets up the singleton instance.
      */
-    public static synchronized ApiDatabaseController getInstance() {
+    public static synchronized ApiBridge getInstance() {
         // If instance does not exist
         if (instance == null) {
             // Call private constructor
-            instance = new ApiDatabaseController();
+            instance = new ApiBridge();
         }
         return instance;
     }

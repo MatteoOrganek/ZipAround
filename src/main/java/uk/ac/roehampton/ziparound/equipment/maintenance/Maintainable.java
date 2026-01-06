@@ -1,6 +1,17 @@
+/**
+ * Maintainable.java
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 22/10/2025
+ *
+ * @see uk.ac.roehampton.ziparound.equipment.vehicle.Vehicle
+ * @see uk.ac.roehampton.ziparound.equipment.Equipment
+ * @see uk.ac.roehampton.ziparound.booking.Bookable
+ */
+
 package uk.ac.roehampton.ziparound.equipment.maintenance;
 
-import uk.ac.roehampton.ziparound.booking.Booking;
 import uk.ac.roehampton.ziparound.users.staff.Staff;
 
 import java.time.Instant;

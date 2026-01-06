@@ -1,6 +1,14 @@
+/**
+ * BookingController.java
+ * Controller for booking.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,7 +19,6 @@ import uk.ac.roehampton.ziparound.application.controllers.components.BookingCard
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Booking;
 
-import java.awt.print.Book;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;

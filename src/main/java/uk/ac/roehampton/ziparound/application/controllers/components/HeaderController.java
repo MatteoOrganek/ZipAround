@@ -1,6 +1,14 @@
+/**
+ * HeaderController.java
+ * Controller for header.fxml.
+ *
+ * @author Matteo Organek
+ * @version 1.0
+ * @since 01/01/2026
+ */
+
 package uk.ac.roehampton.ziparound.application.controllers.components;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -106,6 +114,6 @@ public class HeaderController {
     }
 
     public void update() {
-        Utils.apiDatabaseControllerInstance.update();
+        Utils.apiBridgeInstance.update();
     }
 }
