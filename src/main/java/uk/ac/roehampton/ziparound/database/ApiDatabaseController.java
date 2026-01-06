@@ -1,5 +1,6 @@
 package uk.ac.roehampton.ziparound.database;
 
+import java.awt.print.Book;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -73,7 +74,7 @@ public class ApiDatabaseController {
      * @throws IOException Exception thrown if the addition process was interrupted.
      * @throws InterruptedException Exception thrown if the addition process was interrupted.
      */
-    private List<Map<String, Object>> getAll(String table) throws IOException, InterruptedException {
+    public List<Map<String, Object>> getAll(String table) throws IOException, InterruptedException {
 
         Utils.log("Calling %s".formatted(apiBaseUrl + "api.php?table=" + table), 3);
 
@@ -340,7 +341,7 @@ public class ApiDatabaseController {
                                     (String) vehicleInfo.get("model"),
                                     (String) vehicleInfo.get("number_plate"),
                                     Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                                    Boolean.getBoolean((String) vehicleInfo.get("available")),
+                                    "1".equals((String) vehicleInfo.get("available")),
                                     Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_batteries")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_bookings"))
@@ -351,7 +352,7 @@ public class ApiDatabaseController {
                                     (String) vehicleInfo.get("model"),
                                     (String) vehicleInfo.get("number_plate"),
                                     Float.parseFloat((String) vehicleInfo.get("total_miles")),
-                                    Boolean.getBoolean((String) vehicleInfo.get("available")),
+                                    "1".equals((String) vehicleInfo.get("available")),
                                     Integer.parseInt((String) vehicleInfo.get("max_power_kw")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_batteries")),
                                     Integer.parseInt((String) vehicleInfo.get("amount_of_bookings"))
@@ -388,7 +389,7 @@ public class ApiDatabaseController {
                                 (String) equipmentInfo.get("name"),
                                 (String) equipmentInfo.get("model"),
                                 (String) equipmentInfo.get("description"),
-                                Boolean.getBoolean((String) equipmentInfo.get("available")),
+                                "1".equals((String) equipmentInfo.get("available")),
                                 Integer.parseInt((String) equipmentInfo.get("amount_of_bookings"))
                         );
 
@@ -467,6 +468,8 @@ public class ApiDatabaseController {
 
                         // Get department and assign roles
                         Staff staff = switch (Integer.parseInt((String) staffInfo.get("department_id"))) {
+                            // Maintenance
+                            case -2 -> new Admin(userID, staffID, foreName, lastName, "Maintenance");
                             // Admin
                             case 1 -> new Admin(userID, staffID, foreName, lastName, "Admin");
                             // Management

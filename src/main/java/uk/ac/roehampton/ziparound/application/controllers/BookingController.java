@@ -11,7 +11,9 @@ import uk.ac.roehampton.ziparound.application.controllers.components.BookingCard
 import uk.ac.roehampton.ziparound.application.controllers.components.HeaderController;
 import uk.ac.roehampton.ziparound.booking.Booking;
 
+import java.awt.print.Book;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,8 +42,12 @@ public class BookingController implements Updatable {
 
         headerController.inBookingView();
         List<Booking> listBooking = Utils.bookingManagerInstance.getBookingArrayList();
+        List<Booking> sortedListBooking =
+                listBooking.stream()
+                        .sorted(Comparator.comparingInt(o -> ((Booking)o).getID(Utils.currentStaff)).reversed())
+                        .toList();
 
-        for (Booking booking : listBooking) {
+        for (Booking booking : sortedListBooking) {
 
             // TODO check for null user, as the user might have been deleted from db (same for staff and bookable)
             if (Objects.equals(booking.getUser(Utils.currentStaff).getID(Utils.currentStaff), Utils.currentUser.getID(Utils.currentStaff))) {

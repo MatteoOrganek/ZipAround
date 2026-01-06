@@ -9,13 +9,8 @@ import uk.ac.roehampton.ziparound.users.staff.Staff;
 import uk.ac.roehampton.ziparound.users.staff.role.SelfService;
 
 import java.awt.print.Book;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Vector;
+import java.time.*;
+import java.util.*;
 
 // BookingManager is a Singleton Factory builder for Booking.
 // I have made this decision based on the fact that the booking class represents only a specific object, without
@@ -90,6 +85,15 @@ public class BookingManager {
     // Getter for booking List
     public ArrayList<Booking> getBookingArrayList() {
         return bookingArrayList;
+    }
+
+
+    // Getter for bookable List
+    public ArrayList<Bookable> getBookableArrayList() {
+        ArrayList<Bookable> bookableArrayList = new ArrayList<>();
+        bookableArrayList.addAll(vehicleArrayList);
+        bookableArrayList.addAll(equipmentArrayList);
+        return bookableArrayList;
     }
 
     // Getter for vehicle item List
@@ -261,7 +265,6 @@ public class BookingManager {
      * This function assigns a new ID based on the last item's id on the booking list.
      * @return New ID.
      */
-    // TODO Remove this as it may cause some issues later on
     int assignID() {
         // If the booking list is not empty
         if (!bookingArrayList.isEmpty()){
@@ -299,6 +302,83 @@ public class BookingManager {
         }
 
     }
+
+    /**
+     * This function walks through each booking assigned to bookable and is able to book automatically a slot based on durationHours.
+     * @param bookable Bookable item that needs to be booked.
+     * @param durationHours How many hours need to be booked.
+     * @param staff Staff used for permission handling.
+     * @return Maintenance booking.
+     */
+    public Booking findMaintenanceSlot(
+            Bookable bookable,
+            int durationHours,
+            Staff staff
+    ) {
+        // Get all bookings
+        List<Booking> bookings = getBookingArrayList();
+        // Get duration based on integer
+        Duration maintenanceDuration = Duration.ofHours(durationHours);
+
+        // Fetch maintenance bot account
+        Staff maintenance = null;
+        for (Staff currentStaff : instance.getStaffArrayList()) {
+            if (currentStaff.getStaffID(Utils.currentStaff) == -2) maintenance = currentStaff;
+        }
+        assert maintenance != null;
+        // Filter and sort bookings for this bookable using stream
+        List<Booking> sortedBookings =
+                bookings.stream()
+                        .filter(b ->
+                                b.bookableObject.getID(staff)
+                                        .equals(bookable.getID(staff))
+                        )
+                        .sorted(Comparator.comparing(b -> b.bookedStartTime))
+                        .toList();
+
+        // Get current time
+        Instant currentTime = Instant.now();
+
+        // Walk bookings and check gaps
+        for (Booking booking : sortedBookings) {
+
+            // If there is a gap between the current time and the next booking
+            if (Duration.between(currentTime, booking.bookedStartTime)
+                    .compareTo(maintenanceDuration) >= 0) {
+
+                // Assemble booking
+                return new Booking(
+                        null,
+                        currentTime,
+                        currentTime.plus(maintenanceDuration),
+                        currentTime,
+                        maintenance,
+                        bookable,
+                        true,
+                        maintenance
+                );
+            }
+
+            // Set the current time to the end of the current booking and continue the loop
+            if (booking.bookedEndTime.isAfter(currentTime)) {
+                currentTime = booking.bookedEndTime;
+            }
+        }
+
+        // No gap found between bookings, schedule after last one
+        return new Booking(
+                null,
+                currentTime,
+                currentTime.plus(maintenanceDuration),
+                currentTime,
+                maintenance,
+                bookable,
+                true,
+                maintenance
+        );
+    }
+
+
 
     public void resetBookingArrayList() {
         this.bookingArrayList.clear();

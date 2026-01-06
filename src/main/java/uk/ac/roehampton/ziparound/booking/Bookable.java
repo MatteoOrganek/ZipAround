@@ -9,6 +9,8 @@ public interface Bookable {
     Integer getID(Staff staff);
     String getName(Staff staff);
     String getModel(Staff staff);
+    Integer getAmountOfBookings(Staff staff);
     Boolean isAvailable(Staff staff);
+    void setAvailable(Boolean available, Staff staff);
     void printInfo(Staff staff);
 }

@@ -66,6 +66,9 @@ public class Booking {
         this.staffApproved = staffApproved;
     }
 
+    /***
+     * Additional polymorph constructor for creating a new booking (the ID is assigned by the server)
+     */
     public Booking(Instant bookedStartTime,
                    Instant bookedEndTime,
                    Instant createdOn,

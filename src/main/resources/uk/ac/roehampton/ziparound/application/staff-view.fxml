@@ -17,12 +17,12 @@
 
                     <TableView fx:id="bookingRequestsTable" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn fx:id="bookingIDColumn" text="ID" prefWidth="50"/>
-                            <TableColumn fx:id="customerNameColumn" text="Customer" prefWidth="150"/>
-                            <TableColumn fx:id="bookableColumn" text="Bookable" prefWidth="120"/>
-                            <TableColumn fx:id="startTimeColumn" text="Pickup Date" prefWidth="120"/>
-                            <TableColumn fx:id="endTimeColumn" text="Return Date" prefWidth="120"/>
-                            <TableColumn fx:id="approvedColumn" text="Approved" prefWidth="100"/>
+                            <TableColumn fx:id="bookingIDColumn" text="ID" prefWidth="25"/>
+                            <TableColumn fx:id="bookingCustomerNameColumn" text="Customer" prefWidth="100"/>
+                            <TableColumn fx:id="bookingNameColumn" text="Bookable" prefWidth="190"/>
+                            <TableColumn fx:id="bookingStartTimeColumn" text="Pickup Date" prefWidth="110"/>
+                            <TableColumn fx:id="bookingEndTimeColumn" text="Return Date" prefWidth="110"/>
+                            <TableColumn fx:id="bookingApprovedColumn" text="Approved" prefWidth="50"/>
                         </columns>
                     </TableView>
 
@@ -38,17 +38,22 @@
                     <Label text="Vehicle / Equipment Maintenance"
                            style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
-                    <TableView VBox.vgrow="ALWAYS">
+                    <TableView fx:id="bookableRequestsTable" VBox.vgrow="ALWAYS">
                         <columns>
-                            <TableColumn text="ID" prefWidth="50"/>
-                            <TableColumn text="Equipment" prefWidth="150"/>
-                            <TableColumn text="Status" prefWidth="100"/>
-                            <TableColumn text="Last Serviced" prefWidth="150"/>
-                            <TableColumn text="Action" prefWidth="100"/>
+                            <TableColumn fx:id="bookableIDColumn" text="ID" prefWidth="50"/>
+                            <TableColumn fx:id="bookableTypeColumn" text="Type" prefWidth="50"/>
+                            <TableColumn fx:id="bookableNameColumn" text="Name" prefWidth="150"/>
+                            <TableColumn fx:id="bookableModelColumn" text="Model" prefWidth="150"/>
+                            <TableColumn fx:id="bookableMilesColumn" text="Total Miles" prefWidth="100"/>
+                            <TableColumn fx:id="bookableAmountColumn" text="Total bookings" prefWidth="100"/>
+                            <TableColumn fx:id="bookableAvailableColumn" text="Available" prefWidth="100"/>
                         </columns>
                     </TableView>
 
-                    <Button text="Mark Selected as Maintained" styleClass="main"/>
+                    <HBox spacing="10">
+                        <Button text="Book Selected to Maintenance" onAction="#bookMaintenance" styleClass="main"/>
+                        <Button text="Change availability" onAction="#changeAvailability" styleClass="main"/>
+                    </HBox>
                 </VBox>
 
             </HBox>
